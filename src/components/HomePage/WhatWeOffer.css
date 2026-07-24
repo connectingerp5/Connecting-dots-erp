@@ -1,0 +1,527 @@
+/* CoursesSection.module.css — theme via CSS custom properties per card. */
+
+.section {
+    position: relative;
+    padding: 64px 20px;
+    overflow: hidden;
+    /* white base with whisper-level corner tints */
+    background:
+        radial-gradient(40% 45% at 0% 0%, rgba(26, 99, 232, 0.12), transparent 65%),
+        radial-gradient(38% 42% at 100% 100%, rgba(232, 114, 12, 0.11), transparent 65%),
+        radial-gradient(30% 35% at 100% 0%, rgba(124, 47, 214, 0.08), transparent 65%),
+        radial-gradient(30% 35% at 0% 100%, rgba(30, 158, 70, 0.08), transparent 65%),
+        #ffffff;
+}
+
+/* crisp dot clusters, masked into three patches */
+.section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(rgba(51, 65, 85, 0.4) 1.5px, transparent 1.5px);
+    background-size: 22px 22px;
+    -webkit-mask-image:
+        radial-gradient(26% 34% at 84% 10%, #000 30%, transparent 78%),
+        radial-gradient(22% 30% at 10% 92%, #000 30%, transparent 78%),
+        radial-gradient(14% 20% at 40% 4%, #000 30%, transparent 78%);
+    mask-image:
+        radial-gradient(26% 34% at 84% 10%, #000 30%, transparent 78%),
+        radial-gradient(22% 30% at 10% 92%, #000 30%, transparent 78%),
+        radial-gradient(14% 20% at 40% 4%, #000 30%, transparent 78%);
+}
+
+/* small colored dots */
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.b1 {
+    width: 14px;
+    height: 14px;
+    left: 6%;
+    top: 18%;
+    background: #4f8ef7;
+    opacity: 0.55;
+}
+
+.b2 {
+    width: 11px;
+    height: 11px;
+    right: 8%;
+    top: 12%;
+    background: #a05ce8;
+    opacity: 0.55;
+}
+
+.b3 {
+    width: 12px;
+    height: 12px;
+    left: 34%;
+    bottom: 10%;
+    background: #4cc06e;
+    opacity: 0.55;
+}
+
+.b4 {
+    width: 15px;
+    height: 15px;
+    right: 22%;
+    bottom: 14%;
+    background: #f79a4a;
+    opacity: 0.5;
+}
+
+/* outline rings breaking the corners */
+.ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 2.5px solid rgba(79, 142, 247, 0.28);
+    pointer-events: none;
+}
+
+.r1 {
+    width: 180px;
+    height: 180px;
+    left: -60px;
+    bottom: -60px;
+}
+
+.r2 {
+    width: 150px;
+    height: 150px;
+    right: -46px;
+    top: -50px;
+    border-color: rgba(124, 47, 214, 0.28);
+}
+
+/* thin accent lines */
+.line {
+    position: absolute;
+    pointer-events: none;
+    height: 3px;
+    border-radius: 2px;
+}
+
+.l1 {
+    width: 120px;
+    left: 12%;
+    top: 8%;
+    background: linear-gradient(90deg, transparent, rgba(79, 142, 247, 0.6), transparent);
+    transform: rotate(-20deg);
+}
+
+.l2 {
+    width: 100px;
+    right: 14%;
+    bottom: 8%;
+    background: linear-gradient(90deg, transparent, rgba(247, 154, 74, 0.6), transparent);
+    transform: rotate(-20deg);
+}
+
+/* plus marks */
+.plus {
+    position: absolute;
+    pointer-events: none;
+    color: rgba(79, 142, 247, 0.5);
+    font: 700 22px/1 sans-serif;
+}
+
+.p1 {
+    left: 24%;
+    top: 12%;
+}
+
+.p2 {
+    right: 30%;
+    top: 22%;
+    font-size: 17px;
+    color: rgba(160, 92, 232, 0.5);
+}
+
+.p3 {
+    left: 8%;
+    bottom: 30%;
+    font-size: 18px;
+    color: rgba(76, 192, 110, 0.5);
+}
+
+.p4 {
+    right: 6%;
+    bottom: 38%;
+    color: rgba(247, 154, 74, 0.55);
+}
+
+.grid {
+    position: relative;
+    z-index: 1;
+    max-width: 1240px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+}
+
+@media (max-width: 1100px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
+/* ------------------------------ card ------------------------------ */
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    /* the card itself is the colored gradient; a tilted white panel sits on top */
+    background: linear-gradient(135deg, var(--c), var(--c2) 70%);
+    border-bottom: 3px solid var(--c);
+    border-radius: 26px;
+    padding: 18px 20px 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px -12px rgba(15, 23, 42, 0.14);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* lighter diagonal sheen on the colored band */
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 150px;
+    background: color-mix(in srgb, var(--c2) 45%, #fff);
+    clip-path: polygon(42% 0, 100% 0, 100% 100%, 6% 100%);
+    opacity: 0.55;
+}
+
+@media (hover: hover) {
+    .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 20px 40px -16px color-mix(in srgb, var(--c) 35%, rgba(15, 23, 42, 0.2));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .card,
+    .cta,
+    .ctaArrow {
+        transition: none !important;
+    }
+
+    .card:hover {
+        transform: none;
+    }
+}
+
+/* per-card theme variables */
+.sap {
+    --c: #1a63e8;
+    --c2: #4f8ef7;
+    --tint: #eaf1fe;
+}
+
+.it {
+    --c: #1e9e46;
+    --c2: #4cc06e;
+    --tint: #e9f7ee;
+}
+
+.ai {
+    --c: #7c2fd6;
+    --c2: #a05ce8;
+    --tint: #f3ecfc;
+}
+
+.hr {
+    --c: #e8720c;
+    --c2: #f79a4a;
+    --tint: #fdf0e4;
+}
+
+/* tilted white inner panel — the card body that "cuts" the colored top */
+.ribbon {
+    position: absolute;
+    left: -10%;
+    right: -10%;
+    top: 46px;
+    bottom: -12%;
+    background: linear-gradient(180deg, #fdfeff, #f7fafd 30%, #fff);
+    border-radius: 42px;
+    transform: rotate(-5deg);
+    transform-origin: 100% 0;
+    box-shadow: 0 -8px 20px rgba(15, 23, 42, 0.1);
+    pointer-events: none;
+}
+
+.badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 2;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    background: #fff;
+    border-radius: 14px;
+    color: var(--c);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.14);
+}
+
+.badge svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* illustration — aspect-ratio box reserves space => zero CLS */
+.figure {
+    position: relative;
+    z-index: 1;
+    margin: 64px auto 8px;
+    width: min(100%, 216px);
+    aspect-ratio: 440 / 388;
+}
+
+.img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 14px 18px color-mix(in srgb, var(--c) 22%, transparent));
+}
+
+.title,
+.desc,
+.rule,
+.features,
+.cta {
+    position: relative;
+    z-index: 1;
+}
+
+.title {
+    margin: 0 0 6px;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--c);
+    letter-spacing: -0.01em;
+}
+
+.desc {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: #334155;
+}
+
+.rule {
+    display: block;
+    width: 42px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--c);
+    margin: 10px 0;
+}
+
+.features {
+    list-style: none;
+    margin: 0 0 14px;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+    flex-grow: 1;
+}
+
+.features li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.fIcon {
+    flex: none;
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 9px;
+    background: var(--tint);
+    color: var(--c);
+}
+
+.fIcon svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* ------------------------------- CTA ------------------------------- */
+
+.cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, var(--c2), var(--c));
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 6px 14px -4px color-mix(in srgb, var(--c) 55%, transparent);
+    transition: filter 0.2s ease;
+}
+
+.cta:hover {
+    filter: brightness(1.08);
+}
+
+.cta:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--c) 45%, transparent);
+    outline-offset: 2px;
+}
+
+.ctaArrow {
+    flex: none;
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.22);
+    transition: transform 0.2s ease;
+}
+
+.ctaArrow svg {
+    width: 16px;
+    height: 16px;
+}
+
+.cta:hover .ctaArrow {
+    transform: translateX(3px);
+}
+
+/* ------------------------- mobile refinements ------------------------- */
+
+@media (max-width: 640px) {
+
+    /* 2×2 compact grid on phones */
+    .section {
+        padding: 24px 10px;
+    }
+
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .card {
+        padding: 12px;
+        border-radius: 18px;
+        border-bottom-width: 2px;
+    }
+
+    .ribbon {
+        top: 30px;
+        transform: rotate(-4deg);
+        border-radius: 28px;
+    }
+
+    .badge {
+        top: 10px;
+        left: 10px;
+        width: 32px;
+        height: 32px;
+        border-radius: 10px;
+    }
+
+    .badge svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .figure {
+        margin: 38px auto 4px;
+        width: min(100%, 140px);
+    }
+
+    .title {
+        font-size: 1.02rem;
+        margin: 0 0 4px;
+    }
+
+    .desc {
+        font-size: 0.78rem;
+        line-height: 1.45;
+    }
+
+    .rule {
+        margin: 8px 0;
+        height: 2px;
+    }
+
+    .features {
+        gap: 6px;
+        margin: 0 0 10px;
+    }
+
+    .features li {
+        font-size: 0.75rem;
+        gap: 7px;
+    }
+
+    .fIcon {
+        width: 24px;
+        height: 24px;
+        border-radius: 7px;
+    }
+
+    .fIcon svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .cta {
+        padding: 9px 12px;
+        font-size: 0.8rem;
+        min-height: 40px;
+    }
+
+    .ctaArrow {
+        width: 22px;
+        height: 22px;
+    }
+
+    .ctaArrow svg {
+        width: 13px;
+        height: 13px;
+    }
+}
+
+/* very narrow phones fall back to 1 column */
+@media (max-width: 360px) {
+    .grid {
+        grid-template-columns: 1fr;
+        max-width: 340px;
+        margin: 0 auto;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 1100px) {
+    .grid {
+        gap: 18px;
+    }
+
+    .figure {
+        width: min(100%, 200px);
+    }
+}
