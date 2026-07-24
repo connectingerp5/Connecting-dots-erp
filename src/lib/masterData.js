@@ -10843,7 +10843,7 @@ export const coursesData = {
                 },
                 {
                   name: "Keras",
-                  icon: "https://res.cloudinary.com/df65lfym1/image/upload/v1781500642/images_klkspp.web",
+                  icon: "https://res.cloudinary.com/bropujss/image/upload/v1784703423/images_klkspp_yzacf9.webp",
                   alt: "Keras",
                 },
                 {
@@ -10884,7 +10884,7 @@ export const coursesData = {
                 },
                 {
                   name: "Keras",
-                  icon: "https://res.cloudinary.com/df65lfym1/image/upload/v1781500642/images_klkspp.webp",
+                  icon: "https://res.cloudinary.com/bropujss/image/upload/v1784703423/images_klkspp_yzacf9.webp",
                   alt: "Keras",
                 },
                 {

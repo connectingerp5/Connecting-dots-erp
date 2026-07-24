@@ -1,6 +1,6 @@
 import Image from "next/image";
 import dynamic from "next/dynamic";
-
+import { Barlow_Condensed } from "next/font/google";
 const ConsultationButton = dynamic(
   () => import("./ConsultationButton"),
   {
@@ -55,6 +55,12 @@ const OrbitBackground = ({ className }) => (
   </svg>
 );
 
+// font for hero section 
+const barlow = Barlow_Condensed({
+  subsets: ["latin"],
+  weight: ["700", "800"],
+});
+
 /* ---------- Data ---------- */
 
 // Was a raw, untransformed Cloudinary URL (full-resolution WhatsApp upload —
@@ -64,19 +70,19 @@ const OrbitBackground = ({ className }) => (
 // and cap the source Cloudinary serves before Next's image optimizer even
 // touches it.
 const heroBackgroundImage =
-  "https://res.cloudinary.com/djdhtkjhn/image/upload/v1782994449/WhatsApp_Image_2026-06-18_at_3.51.37_PM_cvycpj.webp";
+  "https://res.cloudinary.com/bropujss/image/upload/v1784808224/updated_heroSection_lflaw1.webp";
 
 /* ---------- Component (Server Component — no "use client") ---------- */
 
 export default function CareerHeroSlide({ onOpenForm }) {
   return (
-    <section className="relative w-full overflow-hidden bg-white sm:min-h-[560px] md:min-h-[700px] lg:min-h-[800px] sm:bg-purple-50">
+    <section className="relative w-full overflow-hidden bg-white sm:min-h-[560px] md:min-h-[500px] lg:min-h-[800px] sm:bg-purple-50">
       {/* ================================================================
           IMAGE BLOCK
           Mobile: fixed h-[300px] (UNCHANGED HEIGHT — do not modify)
           Desktop (sm+): absolute inset-0, exactly as before
       ================================================================ */}
-      <div className="relative h-[300px] w-full overflow-hidden sm:absolute sm:inset-0 sm:h-full">
+      <div className="w-full overflow-hidden relative aspect-[3/2] sm:aspect-auto sm:absolute sm:inset-0 sm:h-full">
         <Image
           src={heroBackgroundImage}
           alt="Connecting Dots ERP building"
@@ -84,14 +90,8 @@ export default function CareerHeroSlide({ onOpenForm }) {
           priority
           fetchPriority="high"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1920px"
-          className="-z-0 object-cover object-[70%_center] sm:object-center"
-        />
-
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-purple-950/15 via-transparent to-transparent" />
-        {/* decorative sparkles */}
-        <span className="pointer-events-none absolute right-5 top-10 z-10 select-none text-xl text-purple-200 sm:right-10 sm:top-12 sm:text-2xl">✦</span>
-        <span className="pointer-events-none absolute right-1/3 top-24 z-10 hidden select-none text-lg text-purple-200 sm:block">✦</span>
-        <span className="pointer-events-none absolute bottom-40 left-1/2 z-10 hidden select-none text-base text-purple-200 md:block">✦</span>
+          className="w-full -z-0 object-contain sm:object-cover object-bottom translate-y-[-2%]"
+        />        
 
         {/* ---------- MOBILE-ONLY: smooth white fade at bottom of image, so it
              blends into the floating card / content below ---------- */}
@@ -109,22 +109,13 @@ export default function CareerHeroSlide({ onOpenForm }) {
 
           {/* heading, with a subtle radial glow behind it */}
           <div className="relative mt-8">
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -top-4 left-4 -z-10 h-40 w-40 rounded-full bg-purple-500/30 blur-3xl"
-            />
-            <h1 className="text-4xl font-extrabold leading-[1.08] tracking-tight text-white [text-shadow:0_2px_16px_rgba(0,0,0,0.35)]">
-              Secure your
-              <br />
-              <span
-                className="bg-gradient-to-r from-[#7C3AED] via-[#A855F7] to-[#D946EF] bg-clip-text text-transparent"
-                style={{ WebkitBackgroundClip: "text", backgroundClip: "text" }}
-              >
-                Dream Career
-              </span>{" "}
-              with
-              <br />
-              Live Classes
+            <h1 className={`font-bold text-xl ${barlow.className}`}>
+              <pre>
+                Launching your
+                it career with
+                <span>Industry focused</span>
+                <span>training</span>
+              </pre>
             </h1>
           </div>
         </div>
@@ -156,12 +147,12 @@ export default function CareerHeroSlide({ onOpenForm }) {
       {/* ================================================================
           DESKTOP CONTENT BLOCK — UNCHANGED
       ================================================================ */}
-      <div className="relative z-10 mx-auto hidden max-w-[1400px] px-5 pb-8 pt-5 sm:block sm:px-8 sm:pb-0 sm:pt-12 lg:px-10 lg:pt-14">
+      <div className="relative h-full z-10 mx-auto hidden max-w-[1400px] px-5 pb-8 pt-5 sm:block sm:px-8 sm:pb-0 sm:pt-12 lg:px-10 lg:pt-14">
         <div className="grid grid-cols-1 items-center gap-6 lg:grid-cols-12 lg:gap-8">
           {/* ---------------- Left column ---------------- */}
           <div className="relative z-10 max-w-2xl lg:col-span-5">
             {/* badge */}
-            <div className="inline-flex max-w-full items-center gap-2 rounded-full bg-white px-3 py-2 shadow-sm ring-1 ring-purple-100 sm:px-4">
+            <div className="inline-flex max-w-full items-center gap-2 rounded-full bg-white px-3 py-2 shadow-sm ring-1 ring-purple-100 sm:px-4 mb-5">
               <StarIcon className="h-4 w-4 shrink-0 text-purple-600" />
               <span className="min-w-0 text-xs font-semibold text-gray-800 sm:text-sm">
                 India&apos;s Leading SAP &amp; IT Training with AI Institute
@@ -169,16 +160,52 @@ export default function CareerHeroSlide({ onOpenForm }) {
             </div>
 
             {/* heading */}
-            <h1 className="mt-6 text-3xl font-extrabold leading-[1.05] tracking-tight text-white sm:mt-7 lg:!text-gray-900 lg:text-6xl xl:text-7xl">
-              Secure your
+            <h1
+              className={`${barlow.className}
+              text-[40px]
+              lg:text-[65px]
+              leading-[0.9]
+              font-extrabold
+              uppercase
+              tracking-[0.05em]
+              text-white heroHeading`}
+            >
+              LAUNCH YOUR
               <br />
-              <span className="text-purple-600">Dream Career</span> with
+              IT CAREER WITH
               <br />
-              Live Classes
+              <span className="bg-gradient-to-r from-[#ff9a3d] via-[#ff5b7b] to-[#b17dff] bg-clip-text text-transparent">
+                INDUSTRY-FOCUSED
+              </span>
+              <br />
+              <span className="bg-gradient-to-r from-purple-400 to-blue-600 text-transparent bg-clip-text">TRAINING</span>
             </h1>
 
+            <style jsx>{`
+              .heroHeading {
+                position: relative;
+                display: inline-block; /* Makes the line only as wide as the text */
+              }
+
+              .heroHeading::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                bottom: -18px; /* Distance below the text */
+                width: 120px; /* Line width */
+                height: 5px; /* Line thickness */
+                border-radius: 999px;
+                background: linear-gradient(
+                  90deg,
+                  #ff9f43 0%,
+                  #ff5e62 50%,
+                  #b16cea 100%
+                );
+              }
+            `}</style>
+
             {/* sub copy */}
-            <p className="mt-5 max-w-md rounded-3xl bg-white/85 px-4 py-3 text-base font-medium leading-relaxed text-gray-700 shadow-sm shadow-slate-900/5 sm:mt-6 sm:text-lg">
+            <p className="mt-4 max-w-md rounded-3xl py-2 md:text-md font-thin leading-relaxed text-white sm:mt-6 sm:text-lg">
               From more than 10 years,we&apos;ve been passionate about providing engaging, instructor-led training that helps professionals around the world grow and succeed
             </p>
 

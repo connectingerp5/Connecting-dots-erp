@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { FaPhone, FaWhatsapp, FaMapMarkerAlt } from "react-icons/fa";
-import Branches from "@/components/HomePage/Branches";
 import { countryCodes } from "@/utils/countryCodes";
 
 const ContactUsClientContent = ({ formData = {}, setFormData }) => {
@@ -602,9 +601,7 @@ const ContactUsClientContent = ({ formData = {}, setFormData }) => {
       </div>
 
       {/* Branches Component */}
-      <div className="mt-16">
-        <Branches />
-      </div>
+      
     </div>
   );
 };

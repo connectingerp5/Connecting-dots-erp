@@ -23,7 +23,7 @@ const bottomImages= [
   { id: "b3", src: "https://res.cloudinary.com/bropujss/image/upload/v1783683611/WhatsApp_Image_2026-02-09_at_3.19.17_PM_djjbgt_el0d1w.webp"  , alt: "Connecting Dots Erp" },
   { id: "b4", src: "https://res.cloudinary.com/bropujss/image/upload/v1783682302/Student_Certificate_pune.jpg_qjrfrf_h4pqps.webp"  , alt: "Connecting Dots Erp" },
   { id: "b5", src: "https://res.cloudinary.com/bropujss/image/upload/v1783682375/sap_JD_geotag.jpg_xykawo_pke0ec.webp" , alt: "Connecting Dots Erp" },
-  { id: "b6", src: "https://res.cloudinary.com/df65lfym1/image/upload/v1781760570/sap_studnet_dexojs.webp" , alt: "Connecting Dots Erp" },
+  { id: "b6", src: "https://res.cloudinary.com/bropujss/image/upload/v1783682501/sap_studnet_dexojs_v8bvsd.webp" , alt: "Connecting Dots Erp" },
   { id: "b7", src: "https://res.cloudinary.com/bropujss/image/upload/v1783683741/WhatsApp_Image_2026-03-04_at_11.39.18_AM_1_a1pgng_xsbsbv.webp" , alt: "Connecting Dots Erp" },
   { id: "b8", src: "https://res.cloudinary.com/duz9xipfm/image/upload/v1765433354/15_rpr8xg.avif"  , alt: "Connecting Dots Erp" },
   { id: "b9", src: "https://res.cloudinary.com/duz9xipfm/image/upload/v1765433428/14_ewaid4.avif"  , alt: "Connecting Dots Erp" },

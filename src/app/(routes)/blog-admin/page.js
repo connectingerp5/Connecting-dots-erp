@@ -6,6 +6,8 @@ import { useAuth } from "@/context/AuthContext";
 import CreateBlogPost from "@/components/BlogsPage/CreateBlogPost";
 import ProtectedPage from "@/components/blog-admin/ProtectedPage";
 
+export const dynamic = "force-dynamic";
+
 // Backend API base URL - Update this to match your backend
 const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5002";
 

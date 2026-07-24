@@ -62,7 +62,7 @@ const STORIES = [
     id: 4,
     name: "Nitesh Kumar",
     role: "SAP FICO",
-    image: "https://res.cloudinary.com/brohttps://res.cloudinary.com/bropujss/image/upload/v1784182727/pic4pp_v0iqs4_nt8vb1.webp",
+    image: "https://res.cloudinary.com/bropujss/image/upload/v1784182727/pic4pp_v0iqs4_nt8vb1.webp",
     lpa: "15 LPA",
     company: "Market Legos",
     companyLogo: "https://res.cloudinary.com/bropujss/image/upload/v1784183045/marketlegos_asz8ud_e7zifc.avif",

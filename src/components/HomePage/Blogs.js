@@ -155,13 +155,13 @@ const LatestBlogs = () => {
       blog.content.replace(/<[^>]*>?/gm, '').substring(0, 100) + '...' :
       'No description available'),
     category: blog.category || 'Blog',
-    image: blog.image || blog.featuredImage || 'https://res.cloudinary.com/decptkmx7/image/upload/v1751974369/trending_pg_img_nmsinr.jpg',
+    image: blog.image || blog.featuredImage || 'https://res.cloudinary.com/bropujss/image/upload/v1784710442/trending_pg_img_nmsinr_dbclqw.jpg',
     author: blog.author || 'Admin',
     date: blog.createdAt ? new Date(blog.createdAt).toLocaleDateString() : 'No date',
     readTime: '5 min read',
     slug: blog.slug || '#',
     excerpt: blog.excerpt || (blog.content ? blog.content.substring(0, 150) + '...' : 'No excerpt available'),
-    featuredImage: blog.image || blog.featuredImage || 'https://res.cloudinary.com/decptkmx7/image/upload/v1751974369/trending_pg_img_nmsinr.jpg'
+    featuredImage: blog.image || blog.featuredImage || 'https://res.cloudinary.com/bropujss/image/upload/v1784710442/trending_pg_img_nmsinr_dbclqw.jpg'
   }));
 
   // Create extended array for infinite loop effect

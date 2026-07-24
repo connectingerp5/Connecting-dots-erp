@@ -5,68 +5,95 @@ import { useState, useEffect } from 'react';
 import styles from '@/styles/CoursesComponents/FAQ.module.css';
 // Removed: import { CityContext } from '@/context/CityContext'; // Not needed here anymore
 
-const FAQAccordion = ({ data }) => { // Renamed prop to 'data' for consistency
-  // Removed: const [data, setData] = useState(null);
-  // Removed: const [loading, setLoading] = useState(true);
-  // Removed: const [error, setError] = useState(null);
-  const [expandedIndex, setExpandedIndex] = useState(null);
-  // Removed: const { city } = useContext(CityContext);
+const FAQAccordion = ({ data }) => {
+  const [expandedKey, setExpandedKey] = useState(null);
 
-  // Removed: useEffect for data fetching
+  const normalizeFaqSections = (payload) => {
+    if (!payload) return [];
 
-  const handleToggle = (index) => {
-    setExpandedIndex(expandedIndex === index ? null : index);
+    if (Array.isArray(payload)) {
+      return payload.flatMap(normalizeFaqSections);
+    }
+
+    if (typeof payload !== "object") {
+      return [];
+    }
+
+    if (payload.title && Array.isArray(payload.items)) {
+      return [payload];
+    }
+
+    if (Array.isArray(payload.sections)) {
+      return payload.sections.flatMap(normalizeFaqSections);
+    }
+
+    return Object.values(payload).flatMap((value) => normalizeFaqSections(value));
   };
 
-  // Simplified loading/error handling as data is passed directly
-  if (!data) {
+  const faqSections = normalizeFaqSections(data);
+
+  const handleToggle = (key) => {
+    setExpandedKey(expandedKey === key ? null : key);
+  };
+
+  if (!faqSections.length) {
     return (
-      <div /* Add loading/error styling */>
-        <p>No FAQ data available (check masterData.js or prop passing).</p>
+      <div>
+        <p className="text-white text-center">No FAQ data available.</p>
       </div>
     );
   }
 
+  const primaryVideo = faqSections.find((section) => section.video)?.video;
+
   return (
     <div className={styles.containerFaqDs}>
-      <h2 className={styles.containerFaqDsh2}>{data.title}</h2>
-      <p>{data.description}</p>
+      <h2 className={styles.containerFaqDsh2}>Frequently Asked Questions</h2>
       <div className={styles.faqContent}>
         <div className={styles.faqImage}>
-          {/* Ensure video source exists in data */}
-          {data.video && (
+          {primaryVideo && (
             <video loop autoPlay muted>
-              <source src={data.video} type="video/mp4" />
+              <source src={primaryVideo} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           )}
         </div>
         <div className={styles.faqQuestions}>
-          {data.items && data.items.length > 0 ? (
-            data.items.map((item, index) => (
-              <div key={index} className={styles.accordionItem}>
-                <button
-                  aria-expanded={expandedIndex === index}
-                  onClick={() => handleToggle(index)}
-                  className={styles.accordionButton}
-                >
-                  <span className={styles.accordionTitle}>{item.question}</span>
-                  <span className={styles.icon} aria-hidden="true"></span>
-                </button>
-                <div
-                  className={styles.accordionContent}
-                  style={{
-                    opacity: expandedIndex === index ? 1 : 0,
-                    maxHeight: expandedIndex === index ? '9em' : 0, /* Adjust max-height if content is longer */
-                  }}
-                >
-                  <p>{item.answer}</p>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p>No FAQs available.</p>
-          )}
+          {faqSections.map((section, sectionIndex) => (
+            <div key={`${section.title}-${sectionIndex}`} style={{ marginBottom: "16px" }}>
+              <h3 className={styles.containerFaqDsh2} style={{ fontSize: "1.1rem", marginBottom: "8px" }}>
+                {section.title}
+              </h3>
+              {section.items && section.items.length > 0 ? (
+                section.items.map((item, itemIndex) => {
+                  const itemKey = `${sectionIndex}-${itemIndex}`;
+                  return (
+                    <div key={itemKey} className={styles.accordionItem}>
+                      <button
+                        aria-expanded={expandedKey === itemKey}
+                        onClick={() => handleToggle(itemKey)}
+                        className={styles.accordionButton}
+                      >
+                        <span className={styles.accordionTitle}>{item.question}</span>
+                        <span className={styles.icon} aria-hidden="true"></span>
+                      </button>
+                      <div
+                        className={styles.accordionContent}
+                        style={{
+                          opacity: expandedKey === itemKey ? 1 : 0,
+                          maxHeight: expandedKey === itemKey ? "9em" : 0,
+                        }}
+                      >
+                        <p>{item.answer}</p>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <p>No FAQs available.</p>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </div>

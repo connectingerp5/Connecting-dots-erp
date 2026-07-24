@@ -1,11 +1,50 @@
 "use client";
 
+import { Briefcase, Calendar, Globe2, Star, Users } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState,useRef } from "react";
+
+// Lightweight replacement for react-countup — no deps, animates once on view
+function useCountUp(end, duration = 1200) {
+  const [value, setValue] = useState(0);
+  const ref = useRef(null);
+  const hasRun = useRef(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasRun.current) {
+          hasRun.current = true;
+          const start = performance.now();
+
+          const tick = (now) => {
+            const progress = Math.min((now - start) / duration, 1);
+            setValue(Math.floor(progress * end));
+            if (progress < 1) requestAnimationFrame(tick);
+            else setValue(end);
+          };
+
+          requestAnimationFrame(tick);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [end, duration]);
+
+  return { value, ref };
+}
+
 
 const premiumClients = [
   "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784196792/Accenture_tq8yph_csm5fm.avif", "https://res.cloudinary.com/bropujss/image/upload/v1784190703/wipro_uaggn6_pa26lz.avif", "https://res.cloudinary.com/bropujss/image/upload/v1784193712/infosys_fwvbzh_peauzo.avif", "https://res.cloudinary.com/bropujss/image/upload/v1784194657/google_fyyiqe_cnt0ft.avif",
-  "https://res.cloudinary.com/bropujss/image/upload/v1784193553/microsoft_rpgsvd_ufsjh5.avif", "https://res.cloudinary.com/bropujss/image/upload/v1784196247/capgemini_a2rbho_fghbhe.avif", "https://res.cloudinary.com/df65lfym1/image/upload/v1777975974/tcs_d0gfvm.avif", "https://res.cloudinary.com/bropujss/image/upload/v1784196516/amdocs_ht9zgl_jjlvem.avif",
+  "https://res.cloudinary.com/bropujss/image/upload/v1784193553/microsoft_rpgsvd_ufsjh5.avif", "https://res.cloudinary.com/bropujss/image/upload/v1784196247/capgemini_a2rbho_fghbhe.avif", "https://res.cloudinary.com/bropujss/image/upload/v1784193319/tcs_d0gfvm_n8ckd5.avif", "https://res.cloudinary.com/bropujss/image/upload/v1784196516/amdocs_ht9zgl_jjlvem.avif",
   "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784197852/Ibmm_rmcikx_nh4x5a.webp", "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784199617/paytm_e2vqfx_zk6tmu.webp", "https://res.cloudinary.com/bropujss/image/upload/v1784196247/capgemini_a2rbho_fghbhe.avif", "https://res.cloudinary.com/bropujss/image/upload/v1784193411/swiggy_t0utde_o5pxt2.avif",
   "https://res.cloudinary.com/bropujss/image/upload/v1784194527/hdfc_jvdkoi_cf4mlm.avif", "https://res.cloudinary.com/bropujss/image/upload/v1784194989/God_g8j8xc_nl5owb.avif", "https://res.cloudinary.com/bropujss/image/upload/v1784196399/baja_xxmf3l_saurcq.webp", "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784196972/bharatpe_p9ixem_wio63w.webp", "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784199566/pizza-hut_dhd1o8_argx2k.webp",
 ];
@@ -18,8 +57,36 @@ const enterpriseClients = [
 
 const growingClients = [
   "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784196748/airmeet_idryrc_lcmgoo.avif", "https://res.cloudinary.com/bropujss/image/upload/v1784196453/ask_nncu3a_nucsuv.avif", "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784196925/bharatgri_weuerc_vltjko.webp", "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784197129/capita_r10ko1_epy8vy.webp",
-  "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784197269/crisi_ciluav_crx1ki.webp", "https://res.cloudinary.com/df65lfym1/image/upload/v1777975969/eatfit_bg4cj0.webp", "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784197751/genius_tqh8rw_b4u9dl.webp", "https://res.cloudinary.com/bropujss/image/upload/v1784194452/homelane_rl9bh6_dkwqll.avif",
+  "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784197269/crisi_ciluav_crx1ki.webp", "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784197679/eatfit_bg4cj0_tg3tj6.webp", "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784197751/genius_tqh8rw_b4u9dl.webp", "https://res.cloudinary.com/bropujss/image/upload/v1784194452/homelane_rl9bh6_dkwqll.avif",
   "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784197917/iss_gcjk9j_ymm5xy.webp", "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784199398/kelly_bkcgnw_emivqo.webp",
+];
+
+// all clients 
+const allClients=[...premiumClients,...enterpriseClients,...growingClients]
+
+// stats data 
+const statsData = [
+  {
+    number: 15,
+    text: "Years experience",
+    Icon: Calendar,
+  },
+  {
+    number: 200,
+    text: "Happy students",
+    Icon: Users,
+  },
+  {
+    number: 20,
+    text: "hiring partners",
+    Icon: Globe2,
+  },
+  {
+    number: 50,
+    text: "expert courses",
+    Icon: Briefcase,
+    last:true
+  },
 ];
 
 const shuffleArray = (array) => {
@@ -32,6 +99,8 @@ const shuffleArray = (array) => {
 };
 
 const getLogoAlt = (logoUrl) => {
+  if (typeof logoUrl !== "string" || !logoUrl) return "Client logo";
+
   const filename = logoUrl.split("/").pop() || logoUrl;
   return filename
     .replace(/\.[^/.]+$/, "")
@@ -40,11 +109,73 @@ const getLogoAlt = (logoUrl) => {
     .trim();
 };
 
-const MarqueeRow = ({ logos, direction = "left", speed = "normal", shuffle = false }) => {
-  const [logosToUse, setLogosToUse] = useState(logos);
+// statistics bar
+function Stat({ number, text, Icon }) {
+  const { value, ref } = useCountUp(number);
+  return (
+    <div ref={ref} className="flex items-center gap-2.5">
+      <Icon className="w-4 h-4 text-blue-500 shrink-0" />
+      <div className="flex flex-col items-start">
+        <span className="text-sm font-semibold text-blue-900 tabular-nums leading-none">
+          {value}+
+        </span>
+        <span className="text-[9px] uppercase tracking-wide text-gray-400">
+          {text}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function StatsBar({ statsData }) {
+  return (
+    <div className="w-[70%] mx-auto flex flex-wrap items-center justify-between gap-5 py-3 px-5 rounded-lg mb-5 bg-white shadow-sm">
+      {statsData.map((stat) => (
+        <div key={stat.text} className="flex items-center gap-4">
+          <Stat {...stat} />
+        </div>
+      ))}
+
+      {/* Google rating — pulled out of the loop, shown once */}
+      <div className="flex items-center gap-2.5 border-l border-gray-200 pl-5">
+        <div className="flex flex-col items-start">
+          <span className="text-base font-semibold text-blue-600 leading-none">
+            4.5
+          </span>
+          <img
+            src="https://res.cloudinary.com/bropujss/image/upload/v1784781687/GoogleremoveBG_kzwuip.avif"
+            alt="Google rating"
+            width={36}
+            height={20}
+            loading="lazy"
+            className="mt-1"
+          />
+        </div>
+        <div className="flex flex-col items-start gap-0.5">
+          <div className="flex gap-0.5">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Star key={i} fill="#A16207" stroke="#A16207" size={10} />
+            ))}
+          </div>
+          <span className="text-[9px] font-medium uppercase text-gray-400">
+            Google Rating
+          </span>
+        </div>
+      </div>
+
+      <button className="py-1 px-3 text-xs rounded-md bg-blue-500 font-medium text-white uppercase">
+        Book Demo
+      </button>
+    </div>
+  );
+}
+
+const MarqueeRow = ({ logos = [], direction = "left", speed = "normal", shuffle = false }) => {
+  const [logosToUse, setLogosToUse] = useState(() => Array.isArray(logos) ? logos : []);
 
   useEffect(() => {
-    setLogosToUse(shuffle ? shuffleArray(logos) : logos);
+    const safeLogos = Array.isArray(logos) ? logos : [];
+    setLogosToUse(shuffle ? shuffleArray(safeLogos) : safeLogos);
   }, [logos, shuffle]);
 
   const speedMultiplier =
@@ -54,6 +185,10 @@ const MarqueeRow = ({ logos, direction = "left", speed = "normal", shuffle = fal
 
   const animationClass =
     direction === "right" ? "animate-marquee-reverse" : "animate-marquee";
+
+  const safeLogos = Array.isArray(logosToUse) ? logosToUse : [];
+
+  if (!safeLogos.length) return null;
 
   return (
     <div className="relative overflow-hidden">
@@ -66,7 +201,7 @@ const MarqueeRow = ({ logos, direction = "left", speed = "normal", shuffle = fal
           animationTimingFunction: "linear"
         }}
       >
-        {logosToUse.map((logo, index) => (
+        {safeLogos.map((logo, index) => (
           <div
             key={`first-${index}`}
             className="flex-shrink-0 group w-24 h-20 sm:w-28 sm:h-24 md:w-32 md:h-28 flex items-center justify-center bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-2"
@@ -83,7 +218,7 @@ const MarqueeRow = ({ logos, direction = "left", speed = "normal", shuffle = fal
             />
           </div>
         ))}
-        {logosToUse.map((logo, index) => (
+        {safeLogos.map((logo, index) => (
           <div
             key={`second-${index}`}
             className="flex-shrink-0 group w-24 h-20 sm:w-28 sm:h-24 md:w-32 md:h-28 flex items-center justify-center bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-2"
@@ -127,6 +262,9 @@ const OurClients = () => {
       />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
+        {/* stats */}
+        <StatsBar statsData={statsData}/>
+        
         <div className="text-center mb-10 sm:mb-14 md:mb-16">
           <div className="relative z-10">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-slate-950 via-blue-900 to-slate-900 bg-clip-text text-transparent mb-2">
@@ -143,7 +281,7 @@ const OurClients = () => {
             <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-blue-50 to-transparent z-10 pointer-events-none"></div>
             <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-blue-50 to-transparent z-10 pointer-events-none"></div>
             <MarqueeRow 
-              logos={premiumClients} 
+              logos={allClients} 
               direction="left" 
               speed="slow" 
               shuffle={true} 
@@ -151,7 +289,7 @@ const OurClients = () => {
           </div>
 
           {/* Enterprise clients row */}
-          <div className="relative">
+          {/* <div className="relative">
             <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-blue-50 to-transparent z-10 pointer-events-none"></div>
             <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-blue-50 to-transparent z-10 pointer-events-none"></div>
             <MarqueeRow 
@@ -160,10 +298,10 @@ const OurClients = () => {
               speed="normal" 
               shuffle={false} 
             />
-          </div>
+          </div> */}
 
           {/* Growing clients row */}
-          <div className="relative">
+          {/* <div className="relative">
             <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-blue-50 to-transparent z-10 pointer-events-none"></div>
             <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-blue-50 to-transparent z-10 pointer-events-none"></div>
             <MarqueeRow 
@@ -172,7 +310,7 @@ const OurClients = () => {
               speed="fast" 
               shuffle={true} 
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

@@ -18,7 +18,7 @@ import {
   FaExclamationTriangle,
 } from "react-icons/fa";
 
-import XLSX from "xlsx";
+import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { fetchWithAuth } from "@/utils/auth";
 import { useActivityLogger } from "./layout";
