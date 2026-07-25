@@ -244,66 +244,66 @@ const MarqueeRow = ({ logos = [], direction = "left", speed = "normal", shuffle 
 
 const OurClients = () => {
   return (
-    <SectionBackground>
-      <section
-        className="py-10 sm:py-12 md:py-16 relative max-w-[1800px]"
-      >
+    <div className="w-screen flex justify-center items-center bg-red-500 relative left-1/2 -translate-x-1/2">
+      <SectionBackground>
+        <section
+          className="sm:py-12 md:py-12 relative"
+          style={{
+            background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
+            overflow: 'hidden',
+            maxWidth: '1800px',
+            margin: '0 auto',
+          }}
+        >
 
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
-          {/* stats */}
-          <StatsBar statsData={statsData} />
-
-          <div className="text-center mb-10 sm:mb-14 md:mb-16">
-            <div className="relative z-10">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-slate-950 via-blue-900 to-slate-900 bg-clip-text text-transparent mb-2">
-                Our Clients
-              </h2>
-              <div className="w-20 h-1 mx-auto bg-gradient-to-r from-blue-500 to-blue-700 rounded-full mb-4"></div>
-              <p className="text-gray-600 text-sm sm:text-base">Trusted by industry leaders worldwide</p>
-            </div>
-          </div>
-
-          <div className="space-y-8 sm:space-y-10 md:space-y-12">
-            {/* Premium clients row */}
-            <div className="relative">
-              <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-blue-50 to-transparent z-10 pointer-events-none"></div>
-              <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-blue-50 to-transparent z-10 pointer-events-none"></div>
-              <MarqueeRow
-                logos={allClients}
-                direction="left"
-                speed="slow"
-                shuffle={true}
-              />
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div className="text-center mb-4 sm:mb-14 md:mb-16">
+              <div className="relative z-8">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-slate-950 via-blue-900 to-slate-900 bg-clip-text text-transparent mb-2">
+                  Trust Bar
+                </h2>
+                <div className="w-20 h-1 mx-auto bg-gradient-to-r from-blue-500 to-blue-700 rounded-full mb-4"></div>
+                <p className="text-gray-600 text-sm sm:text-base">Trusted by industry leaders worldwide</p>
+              </div>
             </div>
 
-            {/* Enterprise clients row */}
-            {/* <div className="relative">
-            <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-blue-50 to-transparent z-10 pointer-events-none"></div>
-            <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-blue-50 to-transparent z-10 pointer-events-none"></div>
-            <MarqueeRow 
-              logos={enterpriseClients} 
-              direction="right" 
-              speed="normal" 
-              shuffle={false} 
-            />
-          </div> */}
+            <div className="w-[90%] mx-auto pb-8 mt-8">
+              <TrustBar />
+            </div>
 
-            {/* Growing clients row */}
-            {/* <div className="relative">
-            <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-blue-50 to-transparent z-10 pointer-events-none"></div>
-            <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-blue-50 to-transparent z-10 pointer-events-none"></div>
-            <MarqueeRow 
-              logos={growingClients} 
-              direction="left" 
-              speed="fast" 
-              shuffle={true} 
-            />
-          </div> */}
+            <div className="space-y-8 sm:space-y-10 md:space-y-12">
+              {/* Premium clients row */}
+              <div className="relative">
+                <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-blue-50 to-transparent z-10 pointer-events-none"></div>
+                <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-blue-50 to-transparent z-10 pointer-events-none"></div>
+                <MarqueeRow
+                  logos={allClients}
+                  direction="left"
+                  speed="slow"
+                  shuffle={true}
+                />
+              </div>
+
+              <div className="space-y-8 sm:space-y-10 md:space-y-12">
+                {/* Premium clients row */}
+                <div className="relative">
+                  <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-blue-50 to-transparent z-10 pointer-events-none"></div>
+                  <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-blue-50 to-transparent z-10 pointer-events-none"></div>
+                  <MarqueeRow
+                    logos={allClients}
+                    direction="left"
+                    speed="slow"
+                    shuffle={true}
+                  />
+                </div>
+              </div>
+            </div>
+
           </div>
-        </div>
-      </section>
-    </SectionBackground>
+        </section>
+      </SectionBackground>
+    </div>
   );
-};
+}
 
 export default OurClients;

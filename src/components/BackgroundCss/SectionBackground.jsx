@@ -142,7 +142,7 @@ const styles = `
 }
 `;
 
-export default function SectionBackground({ children, className = "" }) {
+export default function SectionBackground({ children, className = "max-w-[1800px] w-full mx-auto" }) {
   return (
     <div className={`sb-bg ${className}`}>
       <style>{styles}</style>
