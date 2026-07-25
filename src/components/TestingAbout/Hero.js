@@ -283,30 +283,42 @@ export default function Hero() {
   }, [screenSize]);
 
   return (
-    <div className="relative overflow-hidden bg-[#1a1f36] min-h-screen">
+    <div className="relative overflow-hidden min-h-screen backgroundImgAbout">
+
+    {/* style for hero section */}
+    <style>
+      {`
+        .backgroundImgAbout{
+          background-image: url("/aboutImageUP.png");
+          background-position:center;
+          background-size:cover;
+        }
+      `}
+    </style>
+
       {/* Vanta.js WAVES Background */}
-      <div
+      {/* <div
         ref={vantaRef}
         className={`absolute inset-0 z-0 transition-opacity duration-500 ${
           vantaLoaded ? "opacity-100" : "opacity-0"
         } w-full h-full`}
         style={{ willChange: "opacity" }}
-      />
+      /> */}
 
       {/* Fallback gradient background */}
-      <div
+      {/* <div
         className={`absolute inset-0 z-0 bg-gradient-to-br from-[#1a1f36] via-[#2a2d47] to-[#1a1f36] w-full h-full transition-opacity duration-500 ${
           vantaLoaded ? "opacity-0" : "opacity-100"
         }`}
         style={{ willChange: "opacity" }}
-      />
+      /> */}
 
       {/* Floating particles for enhanced visual effect */}
-      <div className="absolute inset-0 z-5 pointer-events-none">
+      {/* <div className="absolute inset-0 z-5 pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-yellow-400/30 rounded-full animate-ping"></div>
         <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-blue-400/40 rounded-full animate-pulse"></div>
         <div className="absolute top-1/2 right-1/3 w-1.5 h-1.5 bg-purple-400/30 rounded-full animate-bounce"></div>
-      </div>
+      </div> */}
 
       {/* Desktop/Laptop Icon Cloud */}
       <div className="absolute right-18 sm:right-20 md:right-24 lg:right-28 xl:right-32 top-72 transform -translate-y-1/2 w-1/3 sm:w-1/4 md:w-1/3 lg:w-2/5 xl:w-1/3 z-10 opacity-90 hidden lg:block">

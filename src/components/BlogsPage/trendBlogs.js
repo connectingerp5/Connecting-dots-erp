@@ -201,7 +201,7 @@ const TrendingBlogs = () => {
                     href={`/blogs/${blog.category.toLowerCase()}/${blog.slug}`}
                     title={blog.title}
                     description={blog.description}
-                    image={blog.image}
+                    image="https://res.cloudinary.com/decptkmx7/image/upload/v1751974369/trending_pg_img_nmsinr.jpg"
                     contentClassName="p-3"
                     imageClassName="h-40"
                     className="h-full flex flex-col"

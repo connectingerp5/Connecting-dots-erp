@@ -261,7 +261,7 @@ const LatestBlogs = () => {
                       <div
                         className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-110"
                         style={{
-                          backgroundImage: `url(${blog.image})`,
+                          backgroundImage: `url("https://res.cloudinary.com/decptkmx7/image/upload/v1751974369/trending_pg_img_nmsinr.jpg")`,
                           backgroundPosition: 'center',
                           backgroundSize: 'cover',
                           backgroundRepeat: 'no-repeat'

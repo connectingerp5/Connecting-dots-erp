@@ -119,37 +119,24 @@ const Header = () => {
   }, [pathname]);
 
   // Enhanced scroll effect for smoother floating navbar transition
-  useEffect(() => {
-    let ticking = false;
+ useEffect(() => {
+  let ticking = false;
 
-    const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          const scrollY = window.scrollY;
-          const isScrolled = scrollY > 50;
-          const shouldFloat = scrollY > 150;
+  const handleScroll = () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const scrollY = window.scrollY;
+        setScrolled(scrollY > 50);
+        setFloatingNav(scrollY > 150);
+        ticking = false;
+      });
+      ticking = true;
+    }
+  };
 
-          setScrolled(isScrolled);
-
-          if (shouldFloat !== floatingNav) {
-            setIsTransitioning(true);
-            setFloatingNav(shouldFloat);
-
-            // Reset transition state after animation completes
-            setTimeout(() => {
-              setIsTransitioning(false);
-            }, 600);
-          }
-
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [floatingNav]);
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
 
   const closeSidebar = useCallback(() => {
     setIsSidebarVisible(false);

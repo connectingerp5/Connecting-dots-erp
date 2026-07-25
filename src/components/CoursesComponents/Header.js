@@ -313,7 +313,7 @@ const DSHeader = ({ data }) => {
         <h2>
           <span className={styles.dsHeaderSpan2}>{data.subtitle}</span>
         </h2>
-        <p>{data.description}</p>
+        <p className="text-black">{data.description}</p>
         <ul className={styles.featuresItDs}>
           {data.features.map((feature, index) => (
             <li className={styles.featuresItDsli} key={index}>
@@ -322,7 +322,7 @@ const DSHeader = ({ data }) => {
           ))}
         </ul>
         <div className={styles.alumniItDs}>
-          <span class>Find our Alumni at -</span>
+          <span>Find our Alumni at -</span>
           <div className={styles.alumniLogosItDs}>
             {data.alumni.map((company, index) => (
               <img
