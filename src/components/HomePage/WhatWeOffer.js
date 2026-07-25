@@ -6,6 +6,7 @@
 // global because the file was named ".css" instead of ".module.css".
 import Image from "next/image";
 import Link from "next/link";
+import SectionBackground from "../BackgroundCss/SectionBackground";
 
 /* ---------- inline SVG icons (stroke inherits currentColor) ---------- */
 
@@ -154,81 +155,76 @@ const COURSES = [
 export default function CoursesSection() {
     return (
         <div className="relative left-1/2 -translate-x-1/2 w-screen">
-            <section className="cs-section max-w-[1800px] w-full mx-auto" aria-label="Our courses">
-                <span className="cs-blob cs-b1" aria-hidden="true" />
-                <span className="cs-blob cs-b2" aria-hidden="true" />
-                <span className="cs-blob cs-b3" aria-hidden="true" />
-                <span className="cs-blob cs-b4" aria-hidden="true" />
-                <span className="cs-ring cs-r1" aria-hidden="true" />
-                <span className="cs-ring cs-r2" aria-hidden="true" />
-                <span className="cs-line cs-l1" aria-hidden="true" />
-                <span className="cs-line cs-l2" aria-hidden="true" />
-                <span className="cs-plus cs-p1" aria-hidden="true">+</span>
-                <span className="cs-plus cs-p2" aria-hidden="true">+</span>
-                <span className="cs-plus cs-p3" aria-hidden="true">+</span>
-                <span className="cs-plus cs-p4" aria-hidden="true">+</span>
+            <SectionBackground>
+                <section className="cs-section max-w-[1800px] w-full mx-auto" aria-label="Our courses">
+                    <span className="cs-blob cs-b1" aria-hidden="true" />
+                    <span className="cs-blob cs-b2" aria-hidden="true" />
+                    <span className="cs-blob cs-b3" aria-hidden="true" />
+                    <span className="cs-blob cs-b4" aria-hidden="true" />
+                    <span className="cs-ring cs-r1" aria-hidden="true" />
+                    <span className="cs-ring cs-r2" aria-hidden="true" />
+                    <span className="cs-line cs-l1" aria-hidden="true" />
+                    <span className="cs-line cs-l2" aria-hidden="true" />
+                    <span className="cs-plus cs-p1" aria-hidden="true">+</span>
+                    <span className="cs-plus cs-p2" aria-hidden="true">+</span>
+                    <span className="cs-plus cs-p3" aria-hidden="true">+</span>
+                    <span className="cs-plus cs-p4" aria-hidden="true">+</span>
 
-                <h2 className="cs-heading">
-                    <span className="cs-h-dark">What We</span>{" "}
-                    <span className="cs-h-blue">Offer</span>
-                </h2>
-                <span className="cs-heading-rule" aria-hidden="true" />
+                    <h2 className="cs-heading">
+                        <span className="cs-h-dark">What We</span>{" "}
+                        <span className="cs-h-blue">Offer</span>
+                    </h2>
+                    <span className="cs-heading-rule" aria-hidden="true" />
 
-                <div className="cs-grid">
-                    {COURSES.map((c) => (
-                        <article
-                            key={c.key}
-                            className="cs-card"
-                            style={{ "--c": c.theme.c, "--c2": c.theme.c2, "--tint": c.theme.tint }}
-                        >
-                            <span className="cs-ribbon" aria-hidden="true" />
-                            <span className="cs-badge">{c.badge}</span>
+                    <div className="cs-grid">
+                        {COURSES.map((c) => (
+                            <article
+                                key={c.key}
+                                className="cs-card"
+                                style={{ "--c": c.theme.c, "--c2": c.theme.c2, "--tint": c.theme.tint }}
+                            >
+                                <span className="cs-ribbon" aria-hidden="true" />
+                                <span className="cs-badge">{c.badge}</span>
 
-                            <div className="cs-figure">
-                                <Image
-                                    src={c.img}
-                                    alt={c.alt}
-                                    width={440}
-                                    height={388}
-                                    sizes="(max-width: 480px) 30vw, (max-width: 900px) 22vw, 140px"
-                                    className="cs-img"
-                                />
-                            </div>
+                                <div className="cs-figure">
+                                    <Image
+                                        src={c.img}
+                                        alt={c.alt}
+                                        width={440}
+                                        height={388}
+                                        sizes="(max-width: 480px) 30vw, (max-width: 900px) 22vw, 140px"
+                                        className="cs-img"
+                                    />
+                                </div>
 
-                            <h3 className="cs-title">{c.title}</h3>
-                            <p className="cs-desc">{c.desc}</p>
-                            <span className="cs-rule" aria-hidden="true" />
+                                <h3 className="cs-title">{c.title}</h3>
+                                <p className="cs-desc">{c.desc}</p>
+                                <span className="cs-rule" aria-hidden="true" />
 
-                            <ul className="cs-features">
-                                {c.features.map((f) => (
-                                    <li key={f.text}>
-                                        <span className="cs-fIcon">{f.icon}</span>
-                                        {f.text}
-                                    </li>
-                                ))}
-                            </ul>
+                                <ul className="cs-features">
+                                    {c.features.map((f) => (
+                                        <li key={f.text}>
+                                            <span className="cs-fIcon">{f.icon}</span>
+                                            {f.text}
+                                        </li>
+                                    ))}
+                                </ul>
 
-                            <Link href={c.href} className="cs-cta">
-                                {c.cta}
-                                <span className="cs-ctaArrow">{I.arrow}</span>
-                            </Link>
-                        </article>
-                    ))}
-                </div>
+                                <Link href={c.href} className="cs-cta">
+                                    {c.cta}
+                                    <span className="cs-ctaArrow">{I.arrow}</span>
+                                </Link>
+                            </article>
+                        ))}
+                    </div>
 
-                {/* Scoped styles — every selector is prefixed "cs-" so this can
+                    {/* Scoped styles — every selector is prefixed "cs-" so this can
                 be dropped into any page without touching existing CSS. */}
-                <style>{`
+                    <style>{`
                 .cs-section {
                     position: relative;
                     padding: 40px 16px;
                     overflow: hidden;
-                    background:
-                        radial-gradient(40% 45% at 0% 0%, rgba(26, 99, 232, 0.12), transparent 65%),
-                        radial-gradient(38% 42% at 100% 100%, rgba(232, 114, 12, 0.11), transparent 65%),
-                        radial-gradient(30% 35% at 100% 0%, rgba(124, 47, 214, 0.08), transparent 65%),
-                        radial-gradient(30% 35% at 0% 100%, rgba(30, 158, 70, 0.08), transparent 65%),
-                        #ffffff;
                 }
 
                 .cs-section::before {
@@ -510,7 +506,8 @@ export default function CoursesSection() {
                     .cs-figure { width: min(100%, 130px); }
                 }
             `}</style>
-            </section>
+                </section>
+            </SectionBackground>
         </div>
     );
 }
