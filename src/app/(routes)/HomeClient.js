@@ -4,21 +4,29 @@
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import HeaderCarousel from "@/components/HomePage/HeaderCarousel";
+import faqdata from "../../../public/Jsonfolder/faqdata.json";
+import WhyChooseSection from "@/components/HomePage/WhyChooseSection";
+import WhatWeOffer from "../../components/HomePage/WhatWeOffer"
+import SectionBackground from "@/components/BackgroundCss/SectionBackground";
 
 const Marquee = dynamic(() => import("@/components/HomePage/Marquee2"), {
   ssr: false,
   loading: () => <div style={{ height: "60px" }} />,
 });
 
-const Chevron = dynamic(() => import("@/components/HomePage/Chevron"), {
-  ssr: false,
-  loading: () => <div style={{ minHeight: "100px" }} />,
-});
+// const Chevron = dynamic(() => import("@/components/HomePage/Chevron"), {
+//   ssr: false,
+//   loading: () => <div style={{ minHeight: "100px" }} />,
+// });
 
-const Keypoints = dynamic(() => import("@/components/HomePage/Keypoints"), {
+const TrainingProcessSection = dynamic(() => import('@/components/HomePage/ProcessSection'), {
   ssr: false,
-  loading: () => <div style={{ minHeight: "300px" }} />,
-}); 
+})
+
+// const Keypoints = dynamic(() => import("@/components/HomePage/Keypoints"), {
+//   ssr: false,
+//   loading: () => <div style={{ minHeight: "300px" }} />,
+// });
 
 const OurClients = dynamic(() => import("@/components/HomePage/OurClients"), {
   ssr: false,
@@ -42,7 +50,7 @@ const FeedbackAndReviews = dynamic(
 
 const Courses = dynamic(() => import("@/components/HomePage/PopCourses"), {
   ssr: false,
-  loading: () => <div style={{ minHeight: "520px",position:"absolute", top:'-105px' }} />,
+  loading: () => <div style={{ minHeight: "520px", position: "absolute", top: '-105px' }} />,
 });
 
 const LatestBlogs = dynamic(() => import("@/components/HomePage/Blogs"), {
@@ -50,12 +58,11 @@ const LatestBlogs = dynamic(() => import("@/components/HomePage/Blogs"), {
   loading: () => <div style={{ minHeight: "400px" }} />,
 });
 
-const FAQAccordion = dynamic(()=> import("@/components/CoursesComponents/FAQ"),{
-  ssr:false,
-  loading: ()=><div style={{minHeight:'600px'}}/>
+const FAQAccordion = dynamic(() => import("@/components/CoursesComponents/FAQ"), {
+  ssr: false,
+  loading: () => <div style={{ minHeight: '600px' }} />
 })
 
-import faqdata from "../../../public/Jsonfolder/faqdata.json";
 
 const allowedFaqKeys = ["hrhcmfaq"];
 const homeFaqData = allowedFaqKeys.flatMap((key) => {
@@ -101,9 +108,9 @@ const LazySection = ({ children, fallback, rootMargin = "350px", intrinsicSize }
       style={
         intrinsicSize
           ? {
-              contentVisibility: "auto",
-              containIntrinsicSize: intrinsicSize,
-            }
+            contentVisibility: "auto",
+            containIntrinsicSize: intrinsicSize,
+          }
           : undefined
       }
     >
@@ -128,16 +135,22 @@ export default function HomeClient() {
           <Marquee />
         </LazySection>
         <LazySection fallback={<div style={{ minHeight: "200px" }} />}>
-          <OurClients />
+          <SectionBackground>
+            <OurClients />
+          </SectionBackground>
+        </LazySection>
+        <LazySection fallback={<div style={{ minHeight: "200px" }} />}>
+          <WhatWeOffer />
         </LazySection>
         <LazySection fallback={<div style={{ minHeight: "520px" }} />} intrinsicSize="520px">
           <Courses />
         </LazySection>
         <LazySection fallback={<div style={{ minHeight: "300px" }} />}>
-          <Keypoints />
+          {/* <Keypoints /> */}
+          <WhyChooseSection />
         </LazySection>
-        <LazySection fallback={<div style={{ minHeight: "100px" }} />}>
-          <Chevron />
+        <LazySection fallback={<div />}>
+          <TrainingProcessSection />
         </LazySection>
         <LazySection fallback={<div style={{ minHeight: "400px" }} />}>
           <FeedbackAndReviews />
@@ -145,16 +158,16 @@ export default function HomeClient() {
         <LazySection fallback={<div style={{ minHeight: "400px" }} />}>
           <LatestBlogs />
         </LazySection>
-        <LazySection fallback={<div style={{minHeight:"400px"}} />}>
+        <LazySection fallback={<div style={{ minHeight: "400px" }} />}>
           <FAQAccordion data={homeFaqData} />
         </LazySection>
-        
+
         {/* ── Placed students ticker (new) — sits right after PlacementSection ── */}
         <LazySection fallback={<div style={{ minHeight: "250px" }} />}>
           <OurStats />
         </LazySection>
-        
-        
+
+
       </main>
     </>
   );

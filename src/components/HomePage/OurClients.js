@@ -2,8 +2,13 @@
 
 import { Briefcase, Calendar, Globe2, Star, Users } from "lucide-react";
 import Image from "next/image";
+<<<<<<< HEAD
 import { useEffect, useState,useRef } from "react";
 import TrustBar from "./TrustUsBar";
+=======
+import { useEffect, useState, useRef } from "react";
+import SectionBackground from "../BackgroundCss/SectionBackground";
+>>>>>>> 77427a01948a681e097e9fb831489ae04d8cc6d2
 
 // Lightweight replacement for react-countup — no deps, animates once on view
 function useCountUp(end, duration = 1200) {
@@ -63,7 +68,7 @@ const growingClients = [
 ];
 
 // all clients 
-const allClients=[...premiumClients,...enterpriseClients,...growingClients]
+const allClients = [...premiumClients, ...enterpriseClients, ...growingClients]
 
 // stats data 
 const statsData = [
@@ -86,7 +91,7 @@ const statsData = [
     number: 50,
     text: "expert courses",
     Icon: Briefcase,
-    last:true
+    last: true
   },
 ];
 
@@ -181,8 +186,8 @@ const MarqueeRow = ({ logos = [], direction = "left", speed = "normal", shuffle 
 
   const speedMultiplier =
     speed === "slow" ? "40s" :
-    speed === "fast" ? "20s" :
-    "30s";
+      speed === "fast" ? "20s" :
+        "30s";
 
   const animationClass =
     direction === "right" ? "animate-marquee-reverse" : "animate-marquee";
@@ -195,8 +200,8 @@ const MarqueeRow = ({ logos = [], direction = "left", speed = "normal", shuffle 
     <div className="relative overflow-hidden">
       <div
         className={`flex gap-4 sm:gap-6 md:gap-8 ${animationClass}`}
-        style={{ 
-          width: "max-content", 
+        style={{
+          width: "max-content",
           animationDuration: speedMultiplier,
           animationIterationCount: "infinite",
           animationTimingFunction: "linear"
@@ -244,6 +249,7 @@ const MarqueeRow = ({ logos = [], direction = "left", speed = "normal", shuffle 
 
 const OurClients = () => {
   return (
+<<<<<<< HEAD
     <section
       className="sm:py-12 md:py-12 relative"
       style={{
@@ -288,10 +294,42 @@ const OurClients = () => {
               speed="slow" 
               shuffle={true} 
             />
+=======
+    <SectionBackground>
+      <section
+        className="py-10 sm:py-12 md:py-16 relative max-w-[1800px]"
+      >
+
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
+          {/* stats */}
+          <StatsBar statsData={statsData} />
+
+          <div className="text-center mb-10 sm:mb-14 md:mb-16">
+            <div className="relative z-10">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-slate-950 via-blue-900 to-slate-900 bg-clip-text text-transparent mb-2">
+                Our Clients
+              </h2>
+              <div className="w-20 h-1 mx-auto bg-gradient-to-r from-blue-500 to-blue-700 rounded-full mb-4"></div>
+              <p className="text-gray-600 text-sm sm:text-base">Trusted by industry leaders worldwide</p>
+            </div>
+>>>>>>> 77427a01948a681e097e9fb831489ae04d8cc6d2
           </div>
 
-          {/* Enterprise clients row */}
-          {/* <div className="relative">
+          <div className="space-y-8 sm:space-y-10 md:space-y-12">
+            {/* Premium clients row */}
+            <div className="relative">
+              <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-blue-50 to-transparent z-10 pointer-events-none"></div>
+              <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-blue-50 to-transparent z-10 pointer-events-none"></div>
+              <MarqueeRow
+                logos={allClients}
+                direction="left"
+                speed="slow"
+                shuffle={true}
+              />
+            </div>
+
+            {/* Enterprise clients row */}
+            {/* <div className="relative">
             <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-blue-50 to-transparent z-10 pointer-events-none"></div>
             <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-blue-50 to-transparent z-10 pointer-events-none"></div>
             <MarqueeRow 
@@ -302,8 +340,8 @@ const OurClients = () => {
             />
           </div> */}
 
-          {/* Growing clients row */}
-          {/* <div className="relative">
+            {/* Growing clients row */}
+            {/* <div className="relative">
             <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-blue-50 to-transparent z-10 pointer-events-none"></div>
             <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-blue-50 to-transparent z-10 pointer-events-none"></div>
             <MarqueeRow 
@@ -313,10 +351,16 @@ const OurClients = () => {
               shuffle={true} 
             />
           </div> */}
+          </div>
         </div>
+<<<<<<< HEAD
         
       </div>
     </section>
+=======
+      </section>
+    </SectionBackground>
+>>>>>>> 77427a01948a681e097e9fb831489ae04d8cc6d2
   );
 };
 
