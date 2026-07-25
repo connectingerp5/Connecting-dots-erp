@@ -4,6 +4,7 @@ import { Briefcase, Calendar, Globe2, Star, Users } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
 import SectionBackground from "../BackgroundCss/SectionBackground";
+import TrustBar from "./TrustBar";
 
 // Lightweight replacement for react-countup — no deps, animates once on view
 function useCountUp(end, duration = 1200) {

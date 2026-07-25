@@ -114,7 +114,8 @@ const FeedbackAndReviews = () => {
   }, [renderStars]);
 
   return (
-    <section className={styles.feedbackSection}>
+  <div>
+      <section className={styles.feedbackSection}>
       <div className="container">
         <div className="row justify-content-center mb-5">
           <div className="col-lg-8 text-center">
@@ -146,6 +147,7 @@ const FeedbackAndReviews = () => {
         </div>
       </div>
     </section>
+  </div>
   );
 };
 

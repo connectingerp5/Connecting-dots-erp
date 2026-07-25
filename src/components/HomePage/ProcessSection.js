@@ -22,6 +22,7 @@ import Image from "next/image";
 import { ClipboardEdit, Users, Target, MessagesSquare, TrendingUp, Briefcase } from "lucide-react";
 // import BackgroundAnimation from "@/components/Common/BackgroundAnimation";
 import { Barlow_Condensed } from "next/font/google";
+import SectionBackground from "../BackgroundCss/SectionBackground";
 
 
 const STEPS = [
@@ -229,206 +230,207 @@ export default function TrainingProcessSection() {
 
             <div className="max-w-[1800px] w-full mx-auto">
                 {/* ---------- circuit-timeline section ---------- */}
-                <section
-                    ref={rootRef}
-                    className="cd-process"
-                    aria-label="How Connecting Dots ERP works"
-                >
-                    {/* Section heading */}
-                    <div className={`cd-heading ${barlow.className}`}>
-                        <h2 className={`cd-heading-title ${barlow.className}`}>
-                            How it <span className="cd-heading-accent">works</span>
-                        </h2>
-                        <span className="cd-heading-underline" aria-hidden />
-                    </div>
+                <SectionBackground>
+                    <section
+                        ref={rootRef}
+                        className="cd-process"
+                        aria-label="How Connecting Dots ERP works"
+                    >
+                        {/* Section heading */}
+                        <div className={`cd-heading ${barlow.className}`}>
+                            <h2 className={`cd-heading-title ${barlow.className}`}>
+                                How it <span className="cd-heading-accent">works</span>
+                            </h2>
+                            <span className="cd-heading-underline" aria-hidden />
+                        </div>
 
-                    <div className="cd-desktop-shrink">
-                        <div
-                            ref={stageScalerRef}
-                            className="cd-stage-wrap"
-                            style={{ height: `${DESIGN_H * scale}px` }}
-                        >
-                            <div className="cd-stage" style={{ transform: `scale(${scale})` }}>
-                                <svg ref={svgRef} className="cd-circuit" viewBox="0 0 1536 1024" fill="none" aria-hidden>
-                                    <defs>
-                                        <radialGradient id="cd-hubGlow" cx="50%" cy="50%" r="50%">
-                                            <stop offset="0%" stopColor="#8b5cf6" stopOpacity=".35" />
-                                            <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0" />
-                                        </radialGradient>
-                                        <linearGradient id="cd-hubRing" x1="0" y1="0" x2="1" y2="1">
-                                            <stop offset="0%" stopColor="#8b2fd6" />
-                                            <stop offset="100%" stopColor="#2f6bf7" />
-                                        </linearGradient>
-                                    </defs>
+                        <div className="cd-desktop-shrink">
+                            <div
+                                ref={stageScalerRef}
+                                className="cd-stage-wrap"
+                                style={{ height: `${DESIGN_H * scale}px` }}
+                            >
+                                <div className="cd-stage" style={{ transform: `scale(${scale})` }}>
+                                    <svg ref={svgRef} className="cd-circuit" viewBox="0 0 1536 1024" fill="none" aria-hidden>
+                                        <defs>
+                                            <radialGradient id="cd-hubGlow" cx="50%" cy="50%" r="50%">
+                                                <stop offset="0%" stopColor="#8b5cf6" stopOpacity=".35" />
+                                                <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0" />
+                                            </radialGradient>
+                                            <linearGradient id="cd-hubRing" x1="0" y1="0" x2="1" y2="1">
+                                                <stop offset="0%" stopColor="#8b2fd6" />
+                                                <stop offset="100%" stopColor="#2f6bf7" />
+                                            </linearGradient>
+                                        </defs>
 
-                                    <g stroke="#cfcdec" strokeWidth={1.5} opacity=".7">
-                                        <path d="M60 950 h120 l40 40 h160" />
-                                        <path d="M40 990 h200 l30 -30 h120" />
-                                        <path d="M1210 300 l60 -60 h90" />
-                                        <path d="M1490 420 v80 l-30 30" />
-                                    </g>
-                                    <g fill="#cfcdec">
-                                        <circle cx="180" cy="950" r="4" /><circle cx="380" cy="990" r="4" />
-                                        <circle cx="240" cy="990" r="3" /><circle cx="1270" cy="240" r="4" />
-                                        <circle cx="1490" cy="420" r="4" />
-                                    </g>
-
-                                    <g stroke="#d7d5ee" strokeWidth={2} opacity=".8" fill="none">
-                                        <path d="M1050 1024 C 1150 940, 1330 980, 1536 880" />
-                                        <path d="M1100 1024 C 1200 960, 1380 1000, 1536 920" />
-                                        <path d="M1160 1024 C 1260 980, 1420 1020, 1536 960" />
-                                    </g>
-
-                                    {TRACES.map((d, i) => {
-                                        const dur = [3.4, 3.0, 2.4, 2.4, 3.0, 3.4][i];
-                                        const delay = -(i * 0.55);
-                                        return (
-                                            <g key={i} className="cd-trace" fill="none">
-                                                <path d={d} stroke={STEPS[i].color} strokeWidth={9} opacity={0.1} strokeLinecap="round" strokeLinejoin="round" />
-                                                <path d={d} stroke={STEPS[i].color} strokeWidth={2.5} opacity={0.3} strokeLinecap="round" strokeLinejoin="round" />
-                                                <path className="cd-hi" d={d} stroke={STEPS[i].color} strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" opacity={0} />
-                                                <path
-                                                    className="cd-flow"
-                                                    d={d}
-                                                    stroke={STEPS[i].color}
-                                                    strokeWidth={3.5}
-                                                    style={{ animationDelay: `${delay}s` }}
-                                                />
-                                                <circle className="cd-pulse" r={5.5} fill={STEPS[i].color} opacity={0.9}>
-                                                    <animateMotion keyPoints="1;0" keyTimes="0;1" calcMode="linear" dur={`${dur}s`} begin={`${delay}s`} repeatCount="indefinite" path={d} />
-                                                </circle>
-                                            </g>
-                                        );
-                                    })}
-                                    {TRACE_DOTS.map(([x, y, i], k) => (
-                                        <g key={k}>
-                                            <circle cx={x} cy={y} r={8} fill={STEPS[i].color} opacity={0.18} />
-                                            <circle cx={x} cy={y} r={4.5} fill="#fff" stroke={STEPS[i].color} strokeWidth={2.5} />
+                                        <g stroke="#cfcdec" strokeWidth={1.5} opacity=".7">
+                                            <path d="M60 950 h120 l40 40 h160" />
+                                            <path d="M40 990 h200 l30 -30 h120" />
+                                            <path d="M1210 300 l60 -60 h90" />
+                                            <path d="M1490 420 v80 l-30 30" />
                                         </g>
-                                    ))}
+                                        <g fill="#cfcdec">
+                                            <circle cx="180" cy="950" r="4" /><circle cx="380" cy="990" r="4" />
+                                            <circle cx="240" cy="990" r="3" /><circle cx="1270" cy="240" r="4" />
+                                            <circle cx="1490" cy="420" r="4" />
+                                        </g>
 
-                                    <g strokeWidth={1.5} opacity={0.5} fill="none" strokeLinejoin="round">
-                                        {COMPANIONS.map((t, k) => (
-                                            <path key={k} d={t.d} stroke={t.c} />
+                                        <g stroke="#d7d5ee" strokeWidth={2} opacity=".8" fill="none">
+                                            <path d="M1050 1024 C 1150 940, 1330 980, 1536 880" />
+                                            <path d="M1100 1024 C 1200 960, 1380 1000, 1536 920" />
+                                            <path d="M1160 1024 C 1260 980, 1420 1020, 1536 960" />
+                                        </g>
+
+                                        {TRACES.map((d, i) => {
+                                            const dur = [3.4, 3.0, 2.4, 2.4, 3.0, 3.4][i];
+                                            const delay = -(i * 0.55);
+                                            return (
+                                                <g key={i} className="cd-trace" fill="none">
+                                                    <path d={d} stroke={STEPS[i].color} strokeWidth={9} opacity={0.1} strokeLinecap="round" strokeLinejoin="round" />
+                                                    <path d={d} stroke={STEPS[i].color} strokeWidth={2.5} opacity={0.3} strokeLinecap="round" strokeLinejoin="round" />
+                                                    <path className="cd-hi" d={d} stroke={STEPS[i].color} strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" opacity={0} />
+                                                    <path
+                                                        className="cd-flow"
+                                                        d={d}
+                                                        stroke={STEPS[i].color}
+                                                        strokeWidth={3.5}
+                                                        style={{ animationDelay: `${delay}s` }}
+                                                    />
+                                                    <circle className="cd-pulse" r={5.5} fill={STEPS[i].color} opacity={0.9}>
+                                                        <animateMotion keyPoints="1;0" keyTimes="0;1" calcMode="linear" dur={`${dur}s`} begin={`${delay}s`} repeatCount="indefinite" path={d} />
+                                                    </circle>
+                                                </g>
+                                            );
+                                        })}
+                                        {TRACE_DOTS.map(([x, y, i], k) => (
+                                            <g key={k}>
+                                                <circle cx={x} cy={y} r={8} fill={STEPS[i].color} opacity={0.18} />
+                                                <circle cx={x} cy={y} r={4.5} fill="#fff" stroke={STEPS[i].color} strokeWidth={2.5} />
+                                            </g>
                                         ))}
-                                    </g>
-                                    <g opacity={0.55}>
-                                        {COMPANION_PADS.map(([x, y, c], k) => (
-                                            <circle key={k} cx={x} cy={y} r={3.5} fill={c} />
+
+                                        <g strokeWidth={1.5} opacity={0.5} fill="none" strokeLinejoin="round">
+                                            {COMPANIONS.map((t, k) => (
+                                                <path key={k} d={t.d} stroke={t.c} />
+                                            ))}
+                                        </g>
+                                        <g opacity={0.55}>
+                                            {COMPANION_PADS.map(([x, y, c], k) => (
+                                                <circle key={k} cx={x} cy={y} r={3.5} fill={c} />
+                                            ))}
+                                        </g>
+
+                                        <path d={`M${BUS_X} ${PORTS[0]} V${PORTS[5]}`} stroke="#8b5cf6" strokeWidth={4} strokeLinecap="round" opacity={0.85} />
+                                        {PORTS.map((y, i) => (
+                                            <circle key={i} cx={BUS_X} cy={y} r={4} fill="#fff" stroke={STEPS[i].color} strokeWidth={2.5} />
                                         ))}
-                                    </g>
+                                        <path d={`M${BUS_X} 476 H1040`} stroke="#6d28d9" strokeWidth={4} />
 
-                                    <path d={`M${BUS_X} ${PORTS[0]} V${PORTS[5]}`} stroke="#8b5cf6" strokeWidth={4} strokeLinecap="round" opacity={0.85} />
-                                    {PORTS.map((y, i) => (
-                                        <circle key={i} cx={BUS_X} cy={y} r={4} fill="#fff" stroke={STEPS[i].color} strokeWidth={2.5} />
-                                    ))}
-                                    <path d={`M${BUS_X} 476 H1040`} stroke="#6d28d9" strokeWidth={4} />
+                                        <circle className="cd-hubring" cx={HUB.x} cy={HUB.y} r={70} fill="url(#cd-hubGlow)" />
+                                        <circle cx={HUB.x} cy={HUB.y} r={44} fill="none" stroke="#b9a7f2" strokeWidth={1.5} strokeDasharray="3 7" className="cd-hubspin" />
+                                        <circle cx={HUB.x} cy={HUB.y} r={32} fill="#fff" stroke="#e4e1f6" strokeWidth={2} />
+                                        <circle cx={HUB.x} cy={HUB.y} r={20} fill="none" stroke="url(#cd-hubRing)" strokeWidth={10} />
+                                        <circle cx={HUB.x} cy={HUB.y} r={6} fill="#6d28d9" />
+                                        <path d={`M${HUB.x + 32} ${HUB.y} h54`} stroke="#2f6bf7" strokeWidth={3} strokeLinecap="round" />
+                                        <circle cx={HUB.x + 88} cy={HUB.y} r={5} fill="#2f6bf7" />
 
-                                    <circle className="cd-hubring" cx={HUB.x} cy={HUB.y} r={70} fill="url(#cd-hubGlow)" />
-                                    <circle cx={HUB.x} cy={HUB.y} r={44} fill="none" stroke="#b9a7f2" strokeWidth={1.5} strokeDasharray="3 7" className="cd-hubspin" />
-                                    <circle cx={HUB.x} cy={HUB.y} r={32} fill="#fff" stroke="#e4e1f6" strokeWidth={2} />
-                                    <circle cx={HUB.x} cy={HUB.y} r={20} fill="none" stroke="url(#cd-hubRing)" strokeWidth={10} />
-                                    <circle cx={HUB.x} cy={HUB.y} r={6} fill="#6d28d9" />
-                                    <path d={`M${HUB.x + 32} ${HUB.y} h54`} stroke="#2f6bf7" strokeWidth={3} strokeLinecap="round" />
-                                    <circle cx={HUB.x + 88} cy={HUB.y} r={5} fill="#2f6bf7" />
+                                        {ROW_Y.map((y, i) => (
+                                            <Chevrons key={i} y={y} color={STEPS[i].color} />
+                                        ))}
+                                    </svg>
 
-                                    {ROW_Y.map((y, i) => (
-                                        <Chevrons key={i} y={y} color={STEPS[i].color} />
-                                    ))}
-                                </svg>
+                                    <div className="cd-dots" aria-hidden>
+                                        {Array.from({ length: 12 }).map((_, i) => <i key={i} />)}
+                                    </div>
 
-                                <div className="cd-dots" aria-hidden>
-                                    {Array.from({ length: 12 }).map((_, i) => <i key={i} />)}
-                                </div>
-
-                                {STEPS.map((s, i) => (
-                                    <div
-                                        key={s.num}
-                                        className="cd-row"
-                                        onMouseEnter={() => setHot(i)}
-                                        onMouseLeave={() => setHot(null)}
-                                        style={
-                                            {
-                                                top: `${ROW_Y[i] - 58}px`,
-                                                "--c": s.color,
-                                                "--c1": s.grad[0],
-                                                "--c2": s.grad[1],
+                                    {STEPS.map((s, i) => (
+                                        <div
+                                            key={s.num}
+                                            className="cd-row"
+                                            onMouseEnter={() => setHot(i)}
+                                            onMouseLeave={() => setHot(null)}
+                                            style={
+                                                {
+                                                    top: `${ROW_Y[i] - 58}px`,
+                                                    "--c": s.color,
+                                                    "--c1": s.grad[0],
+                                                    "--c2": s.grad[1],
+                                                }
                                             }
-                                        }
-                                    >
-                                        <div className="cd-node"><span /></div>
-                                        <div className="cd-stem" />
-                                        <div className="cd-badge">{s.icon}</div>
-                                        <div className="cd-card">
-                                            <div className="cd-head">
-                                                <span className="cd-num">{s.num}</span>
-                                                <h3>{s.title}</h3>
+                                        >
+                                            <div className="cd-node"><span /></div>
+                                            <div className="cd-stem" />
+                                            <div className="cd-badge">{s.icon}</div>
+                                            <div className="cd-card">
+                                                <div className="cd-head">
+                                                    <span className="cd-num">{s.num}</span>
+                                                    <h3>{s.title}</h3>
+                                                </div>
+                                                <p>{s.desc}</p>
+                                                <div className="cd-cicon">{s.icon}</div>
                                             </div>
-                                            <p>{s.desc}</p>
-                                            <div className="cd-cicon">{s.icon}</div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
 
-                                <div className="cd-brand">
-                                    <Image
-                                        src="https://res.cloudinary.com/bropujss/image/upload/v1783687480/Connecting_Logo_New_skvsup_ohmdgr.webp"
-                                        alt="Connecting Dots ERP"
-                                        width={220}
-                                        height={220}
-                                        className="cd-mark-img"
-                                    />
-                                    <h2>
-                                        CONNECTING<br />DOTS <span className="cd-erp">ERP</span>
-                                    </h2>
-                                    <div className="cd-tag">
-                                        CONNECTING OPPORTUNITIES,<br />DELIVERING EXCELLENCE
+                                    <div className="cd-brand">
+                                        <Image
+                                            src="https://res.cloudinary.com/bropujss/image/upload/v1783687480/Connecting_Logo_New_skvsup_ohmdgr.webp"
+                                            alt="Connecting Dots ERP"
+                                            width={220}
+                                            height={220}
+                                            className="cd-mark-img"
+                                        />
+                                        <h2>
+                                            CONNECTING<br />DOTS <span className="cd-erp">ERP</span>
+                                        </h2>
+                                        <div className="cd-tag">
+                                            CONNECTING OPPORTUNITIES,<br />DELIVERING EXCELLENCE
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    {/* ---------- mobile stacked timeline (shown under 768px) ---------- */}
-                    {/* Brand/logo block intentionally omitted on mobile per request. */}
-                    <div className="cd-mobile">
-                        <div className="cd-m-timeline">
-                            <div className="cd-m-track" aria-hidden>
-                                <div
-                                    className="cd-m-track-fill"
-                                    style={{
-                                        clipPath: `inset(0 0 ${100 - (revealCount / STEPS.length) * 100}% 0)`,
-                                    }}
-                                />
-                            </div>
-                            <ol className="cd-m-list">
-                                {STEPS.map((s, i) => (
-                                    <li
-                                        key={s.num}
-                                        ref={(el) => {
-                                            mobileItemRefs.current[i] = el;
-                                            if (el) el.dataset.index = i;
+                        {/* ---------- mobile stacked timeline (shown under 768px) ---------- */}
+                        {/* Brand/logo block intentionally omitted on mobile per request. */}
+                        <div className="cd-mobile">
+                            <div className="cd-m-timeline">
+                                <div className="cd-m-track" aria-hidden>
+                                    <div
+                                        className="cd-m-track-fill"
+                                        style={{
+                                            clipPath: `inset(0 0 ${100 - (revealCount / STEPS.length) * 100}% 0)`,
                                         }}
-                                        className="cd-m-item"
-                                        style={{ "--c": s.color, "--c1": s.grad[0], "--c2": s.grad[1] }}
-                                    >
-                                        <div className="cd-m-badge">{s.icon}</div>
-                                        <div className="cd-m-card">
-                                            <div className="cd-head">
-                                                <span className="cd-num">{s.num}</span>
-                                                <h3>{s.title}</h3>
+                                    />
+                                </div>
+                                <ol className="cd-m-list">
+                                    {STEPS.map((s, i) => (
+                                        <li
+                                            key={s.num}
+                                            ref={(el) => {
+                                                mobileItemRefs.current[i] = el;
+                                                if (el) el.dataset.index = i;
+                                            }}
+                                            className="cd-m-item"
+                                            style={{ "--c": s.color, "--c1": s.grad[0], "--c2": s.grad[1] }}
+                                        >
+                                            <div className="cd-m-badge">{s.icon}</div>
+                                            <div className="cd-m-card">
+                                                <div className="cd-head">
+                                                    <span className="cd-num">{s.num}</span>
+                                                    <h3>{s.title}</h3>
+                                                </div>
+                                                <p>{s.desc}</p>
                                             </div>
-                                            <p>{s.desc}</p>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ol>
+                                        </li>
+                                    ))}
+                                </ol>
+                            </div>
                         </div>
-                    </div>
 
-                    <style jsx>{`
+                        <style jsx>{`
           .cd-process {
-            background: linear-gradient(135deg, #ececf9 0%, #e7e9f7 50%, #eceaf8 100%);
+            background:transparent;
             font-family: "Nunito", "Segoe UI", system-ui, -apple-system, sans-serif;
             overflow: hidden;
             padding-top: 8px;
@@ -673,7 +675,8 @@ export default function TrainingProcessSection() {
             .cd-m-item { transition: none; opacity: 1; transform: none; }
           }
                 `}</style>
-                </section>
+                    </section>
+                </SectionBackground>
             </div>
         </div>
     );
