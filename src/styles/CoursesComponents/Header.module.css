@@ -42,7 +42,8 @@
   gap: 3rem;
   padding: 88px 70px 104px;
   background-blend-mode: overlay;
-  background-color: rgba(249, 249, 249, 0.75);
+  /* background-color: rgba(249, 249, 249, 0.75); */
+  /* background-color: #000; */
   width: 100%;
   max-width: 1800px;
   min-height: 680px;
@@ -50,6 +51,9 @@
   margin: 0 auto;
   overflow: hidden;
   isolation: isolate;
+  background-image: url('/CoursesBackground.webp');
+  background-size: cover;
+  background-position: center;
 }
 
 .backgroundVideo {
@@ -90,7 +94,7 @@
 .leftSectionItDs h2 {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #000000;
+  color: #fff;
   margin-bottom: 0.5rem;
   text-align: justify;
 }
@@ -100,7 +104,7 @@
 }
 
 .leftSectionItDs p {
-  color: #000000;
+  color: #fff;
   margin-bottom: 1rem;
   text-align: justify;
 }
@@ -428,7 +432,7 @@
   color: #ff3300;
 }
 .dsHeaderSpan2 {
-  color: #000000;
+  color: #fff;
 }
 .dsHeaderSpan3 {
   color: #1e3a8a;
@@ -463,6 +467,7 @@
     margin-right: 0;
     box-sizing: border-box;
     justify-content: center;
+    background-image: url("/CoursesBackground.webp");
   }
   .leftSectionItDs,
   .rightSectionItDs {
@@ -534,6 +539,7 @@
     height: auto;
     padding: 0.75rem 0.75rem 1.75rem;
     margin-bottom: 0;
+    background-image: url("/CoursesBackground.webp");
   }
 
   .alumniLogosItDs {

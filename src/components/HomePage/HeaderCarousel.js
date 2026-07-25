@@ -35,7 +35,7 @@ const HeaderCarousel = () => {
 
   return (
     <div className="w-full max-w-[1800px] mx-auto overflow-hidden relative">
-      <div className="relative min-h-[560px] sm:min-h-[700px] md:min-h-[750px] lg:min-h-[800px] bg-white overflow-hidden">
+      <div className="relative min-h-[800px] sm:min-h-[700px] md:min-h-[750px] lg:min-h-[800px] bg-white overflow-hidden">
         <div className="w-full h-full">
           <CareerHeroSlide onOpenForm={toggleForm} />
         </div>

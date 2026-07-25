@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import dynamic from 'next/dynamic';
 import { countryCodes } from '@/utils/countryCodes';
 import styles from "@/styles/CoursesComponents/Header.module.css";
-
+import Image from "next/image";
 const Btnform = dynamic(() => import('@/components/HomePage/Btnform'), {
   ssr: false,
   loading: () => null
@@ -292,7 +292,7 @@ const DSHeader = ({ data }) => {
       {/* Removed <Head> component here as metadata is handled by page.js */}
 
       {/* 🔹 Background Video */}
-      <video
+      {/* <video
         className={styles.backgroundVideo}
         src={data.backgroundVideo}
         autoPlay
@@ -304,7 +304,7 @@ const DSHeader = ({ data }) => {
         importance="high"
         loading="eager"
         decoding="async"
-      />
+      /> */}
 
       <div className={styles.leftSectionItDs}>
         <h1>
@@ -322,7 +322,7 @@ const DSHeader = ({ data }) => {
           ))}
         </ul>
         <div className={styles.alumniItDs}>
-          <span>Find our Alumni at -</span>
+          <span class>Find our Alumni at -</span>
           <div className={styles.alumniLogosItDs}>
             {data.alumni.map((company, index) => (
               <img
