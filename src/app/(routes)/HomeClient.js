@@ -30,7 +30,7 @@ const TrainingProcessSection = dynamic(() => import('@/components/HomePage/Proce
 
 const OurClients = dynamic(() => import("@/components/HomePage/OurClients"), {
   ssr: false,
-  loading: () => <div style={{ minHeight: "200px" }} />,
+  loading: () => <div style={{ minHeight: "250px" }} />,
 });
 
 // ── NEW: compact placed-students ticker ──────────────────────────────────────
@@ -134,7 +134,7 @@ export default function HomeClient() {
         <LazySection fallback={<div style={{ height: "60px" }} />}>
           <Marquee />
         </LazySection>
-        <LazySection fallback={<div style={{ minHeight: "200px" }} />}>
+        <LazySection fallback={<div style={{ minHeight: "250px" }} />}>
           <SectionBackground>
             <OurClients />
           </SectionBackground>
@@ -158,14 +158,14 @@ export default function HomeClient() {
         <LazySection fallback={<div style={{ minHeight: "400px" }} />}>
           <LatestBlogs />
         </LazySection>
-        <LazySection fallback={<div style={{ minHeight: "400px" }} />}>
-          <FAQAccordion data={homeFaqData} />
-        </LazySection>
-
         {/* ── Placed students ticker (new) — sits right after PlacementSection ── */}
         <LazySection fallback={<div style={{ minHeight: "250px" }} />}>
           <OurStats />
         </LazySection>
+        <LazySection fallback={<div style={{ minHeight: "400px" }} />}>
+          <FAQAccordion data={homeFaqData} />
+        </LazySection>
+
 
 
       </main>

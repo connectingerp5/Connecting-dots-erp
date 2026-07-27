@@ -90,7 +90,7 @@ export default function CareerHeroSlide({ onOpenForm }) {
             priority
             fetchPriority="high"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1920px"
-            className="w-full -z-0 object-contain sm:object-cover object-bottom translate-y-[-2%]"
+            className="w-full -z-0 object-cover h-auto sm:object-cover object-bottom translate-y-[-18%]"
           />
 
           {/* ---------- MOBILE-ONLY: smooth white fade at bottom of image ---------- */}

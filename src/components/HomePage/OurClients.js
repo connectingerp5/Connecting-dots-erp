@@ -284,20 +284,6 @@ const OurClients = () => {
                   shuffle={true}
                 />
               </div>
-
-              <div className="space-y-8 sm:space-y-10 md:space-y-12">
-                {/* Premium clients row */}
-                <div className="relative">
-                  <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-blue-50 to-transparent z-10 pointer-events-none"></div>
-                  <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-blue-50 to-transparent z-10 pointer-events-none"></div>
-                  <MarqueeRow
-                    logos={allClients}
-                    direction="left"
-                    speed="slow"
-                    shuffle={true}
-                  />
-                </div>
-              </div>
             </div>
 
           </div>
