@@ -224,8 +224,7 @@ export default function TrainingProcessSection() {
     return (
         <div
             id="chevron-area"
-            className="chevron-root overflow-visible flex items-center justify-center relative left-1/2 -translate-x-1/2 w-[100vw] "
-            style={{ contain: "layout style paint" }}
+            className="overflow-visible flex items-center justify-center relative left-1/2 -translate-x-1/2 w-[100vw]"
         >
 
             <div className="max-w-[1800px] w-full mx-auto">

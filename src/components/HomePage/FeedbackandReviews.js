@@ -1,154 +1,315 @@
-"use client";
+import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { Star, Quote } from "lucide-react";
 
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import Image from "next/image";
-import styles from "@/styles/HomePage/FeedbackandReviews.module.css";
+const AUTO_MS = 3200;
+const GAP = 24; // px gap between cards
 
-const FeedbackAndReviews = () => {
-  const reviews = useMemo(() => [
-    {
-      name: "Niveath P",
-      review:
-        "I completed the SAP HCM course at Connecting Dots ERP in Mumbai, where expert instructors guided me through SAP complexities with clarity. The comprehensive, well-designed course covered all essential modules.",
-      image: "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784203724/review_image_3_ptk5th_tgirdk.webp",
-      rating: 5,
-    },
-    {
-      name: "Shweta Udainiya",
-      review:
-        "Connecting Dots Advancements offers top SAP training in Mumbai with expert coaches, flexible learning, and strong job support. I completed my SAP SD Course here, highly recommending it for a successful SAP career.",
-      image: "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784203666/review_image_1_plv1wu_yjudgs.webp",
-      rating: 5,
-    },
-    {
-      name: "Seshu Tamma",
-      review:
-        "In my opinion, Connecting Dots is Mumbai's best SAP training center, offering top-notch SAP Aruba courses with a comprehensive curriculum, expert instructors, and excellent placement assistance.",
-      image: "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784203579/review_image_2_kh1xcn_uiztqd.webp",
-      rating: 4,
-    },
-    {
-      name: "Shreyansh Gupta",
-      review:
-        "Connecting Dots Advancements offers top SAP training in Mumbai with expert coaches, flexible learning, and strong job support. I completed my SAP SD Course here, highly recommending it for a successful SAP career.",
-      image: "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784203620/review_image_4_vadjw2_vkf3qu.webp",
-      rating: 5,
-    },
-    {
-      name: "Sai Srujan",
-      review:
-        "I completed the SAP HCM course at Connecting Dots ERP in Mumbai, where expert instructors guided me through SAP complexities with clarity. The comprehensive, well-designed course covered all essential modules.",
-      image: "https://res.cloudinary.com/bropujss/image/upload/v1784203985/review_image_5_jjm78u_h8txiq.webp",
-      rating: 5,
-    },
-    {
-      name: "Seshu Tamma",
-      review:
-        "In my opinion, Connecting Dots is Mumbai's best SAP training center, offering top-notch SAP Aruba courses with a comprehensive curriculum, expert instructors, and excellent placement assistance.",
-      image: "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784203579/review_image_2_kh1xcn_uiztqd.webp",
-      rating: 5,
-    },
-  ], []);
+export default function TestimonialCarousel() {
+  const reviews = useMemo(
+    () => [
+      {
+        name: "Sai Srujan",
+        role: "SAP HCM Course",
+        review:
+          "I completed the SAP HCM course at Connecting Dots ERP in Mumbai, where expert instructors guided me through SAP complexities with clarity. The comprehensive, well-designed course covered all essential modules.",
+        image:
+          "https://res.cloudinary.com/bropujss/image/upload/v1784203985/review_image_5_jjm78u_h8txiq.webp",
+        rating: 3,
+      },
+      {
+        name: "Seshu Tamma",
+        role: "SAP Aruba Course",
+        review:
+          "In my opinion, Connecting Dots is Mumbai's best SAP training center, offering top-notch SAP Aruba courses with a comprehensive curriculum, expert instructors, and excellent placement assistance.",
+        image:
+          "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784203579/review_image_2_kh1xcn_uiztqd.webp",
+        rating: 5,
+      },
+      {
+        name: "Niveath P",
+        role: "SAP HCM Course",
+        review:
+          "I completed the SAP HCM course at Connecting Dots ERP in Mumbai, where expert instructors guided me through SAP complexities with clarity. The comprehensive, well-designed course covered all essential modules.",
+        image:
+          "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784203724/review_image_3_ptk5th_tgirdk.webp",
+        rating: 5,
+      },
+      {
+        name: "Shweta Udainiya",
+        role: "SAP SD Course",
+        review:
+          "Connecting Dots Advancements offers top SAP training in Mumbai with expert coaches, flexible learning, and strong job support. I completed my SAP SD Course here, highly recommending it for a successful SAP career.",
+        image:
+          "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784203666/review_image_1_plv1wu_yjudgs.webp",
+        rating: 5,
+      },
+      {
+        name: "Shreyansh Gupta",
+        role: "SAP SD Course",
+        review:
+          "Connecting Dots Advancements offers top SAP training in Mumbai with expert coaches, flexible learning, and strong job support. I completed my SAP SD Course here, highly recommending it for a successful SAP career.",
+        image:
+          "https://res.cloudinary.com/djdhtkjhn/image/upload/v1784203620/review_image_4_vadjw2_vkf3qu.webp",
+        rating: 5,
+      },
+    ],
+    []
+  );
 
-  const marqueeRef = useRef(null);
-  const [isPaused, setIsPaused] = useState(false);
+  const len = reviews.length;
+  const trackRef = useRef(null);
+  const cardRef = useRef(null);
+  const containerRef = useRef(null);
+  const timerRef = useRef(null);
 
-  // ✅ OPTIMIZED: Memoized event handlers
-  const handleMouseEnter = useCallback(() => {
-    setIsPaused(true);
-  }, []);
+  const [counter, setCounter] = useState(0);
+  const [step, setStep] = useState(0); // card width + gap, in px
+  const [paused, setPaused] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const dragStartX = useRef(0);
+  const dragDelta = useRef(0);
 
-  const handleMouseLeave = useCallback(() => {
-    setIsPaused(false);
+  // measure card width, responsively
+  const measure = useCallback(() => {
+    if (!cardRef.current) return;
+    const cardWidth = cardRef.current.getBoundingClientRect().width;
+    setStep(cardWidth + GAP);
   }, []);
 
   useEffect(() => {
-    const marquee = marqueeRef.current;
-    if (marquee) {
-      marquee.style.animationPlayState = isPaused ? "paused" : "running";
-    }
-  }, [isPaused]);
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (containerRef.current) ro.observe(containerRef.current);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [measure]);
 
-  // ✅ OPTIMIZED: Memoized star rendering for performance
-  const renderStars = useCallback((rating) => {
-    return Array.from({ length: 5 }).map((_, i) => (
-      <span
-        key={i}
-        className={i < rating ? styles.starFilled : styles.starEmpty}
-      >
-        ★
-      </span>
-    ));
+  const restartTimer = useCallback(() => {
+    clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setCounter((c) => c + 1);
+    }, AUTO_MS);
   }, []);
 
-  // ✅ OPTIMIZED: Memoized review card for rendering
-  const ReviewCard = useMemo(() => {
-    return ({ review, isDuplicate = false }) => (
-      <div className={styles.reviewCard}>
-        <div className={styles.reviewCardInner}>
-          <div className={styles.imageContainer}>
-            <Image
-              src={review.image}
-              alt={`${review.name}'s photo`}
-              width={120}
-              height={120}
-              className={styles.reviewImage}
-              loading="lazy"
-              placeholder="blur"
-              blurDataURL="data:image/jpeg,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAIAAgDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8VAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCwAA8A/9k="
-            />
-            <div className={styles.studentBadge}>Verified Student</div>
-            <div className={styles.imageBorder}></div>
-          </div>
-          <div className={styles.reviewContent}>
-            <p className={styles.reviewName}>{review.name}</p>
-            <div className={styles.starRating}>
-              {renderStars(review.rating)}
-            </div>
-            <p className={styles.reviewText}>"{review.review}"</p>
-          </div>
-          <div className={styles.quoteIcon}>"</div>
-        </div>
-      </div>
-    );
-  }, [renderStars]);
+  useEffect(() => {
+    if (!paused && !dragging) restartTimer();
+    else clearInterval(timerRef.current);
+    return () => clearInterval(timerRef.current);
+  }, [paused, dragging, restartTimer]);
+
+  const goTo = (i) => {
+    setCounter((c) => {
+      const currentMod = ((c % len) + len) % len;
+      let diff = i - currentMod;
+      if (diff <= 0) diff += len;
+      return c + diff;
+    });
+  };
+  const prev = () => setCounter((c) => c - 1);
+  const next = () => setCounter((c) => c + 1);
+
+  const activeIndex = ((counter % len) + len) % len;
+
+  // render a window of virtual cards, wide enough for the largest breakpoint + buffer
+  const windowStart = counter - 1;
+  const windowEnd = counter + 6;
+  const virtualIndices = [];
+  for (let v = windowStart; v <= windowEnd; v++) virtualIndices.push(v);
+
+  const translate = -(counter - windowStart) * step + dragDelta.current;
+
+  // drag / swipe handlers
+  const onPointerDown = (e) => {
+    setDragging(true);
+    dragStartX.current = e.clientX ?? e.touches?.[0]?.clientX ?? 0;
+    dragDelta.current = 0;
+    clearInterval(timerRef.current);
+  };
+  const onPointerMove = (e) => {
+    if (!dragging) return;
+    const x = e.clientX ?? e.touches?.[0]?.clientX ?? 0;
+    dragDelta.current = x - dragStartX.current;
+    if (trackRef.current) {
+      trackRef.current.style.transition = "none";
+      trackRef.current.style.transform = `translateX(${-(counter - windowStart) * step + dragDelta.current
+        }px)`;
+    }
+  };
+  const onPointerUp = () => {
+    if (!dragging) return;
+    setDragging(false);
+    const threshold = step * 0.2;
+    if (trackRef.current) trackRef.current.style.transition = "";
+    if (dragDelta.current > threshold) {
+      dragDelta.current = 0;
+      prev();
+    } else if (dragDelta.current < -threshold) {
+      dragDelta.current = 0;
+      next();
+    } else {
+      dragDelta.current = 0;
+      setCounter((c) => c); // snap back
+    }
+    restartTimer();
+  };
 
   return (
-  <div>
-      <section className={styles.feedbackSection}>
-      <div className="container">
-        <div className="row justify-content-center mb-5">
-          <div className="col-lg-8 text-center">
-            <h2 className={styles.sectionTitle}>What Our Students Say</h2>
-            <div className={styles.titleUnderline}></div>
-            <p className={styles.sectionSubtitle}>
-              Hear from our successful students about their learning experience
-              with Connecting Dots
-            </p>
-          </div>
-        </div>
-
-        <div className={styles.marqueeWrapper}>
+    <div className="w-screen flex justify-center items-center relative left-1/2 -translate-x-1/2">
+      <section
+        className="relative w-full py-16 sm:py-20 px-4 sm:px-6 overflow-hidden max-w-[1800px]"
+        style={{
+          background: "#eef1f6",
+          backgroundImage:
+            "radial-gradient(rgba(15,27,63,0.08) 1.4px, transparent 1.4px)",
+          backgroundSize: "22px 22px",
+        }}
+      >
+        <div className="max-w-6xl mx-auto text-center mb-10 sm:mb-14">
+          <h2 className="font-extrabold tracking-tight text-[1.9rem] leading-tight sm:text-[2.6rem] text-[#0f1b3f]">
+            What Our{" "}
+            <span
+              className="bg-clip-text text-transparent"
+              style={{
+                backgroundImage: "linear-gradient(90deg,#16255c 0%,#0f9c8d 100%)",
+              }}
+            >
+              Students
+            </span>{" "}
+            Say
+          </h2>
           <div
-            className={styles.marquee}
-            ref={marqueeRef}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-          >
-            {reviews.map((review, index) => (
-              <ReviewCard key={index} review={review} />
-            ))}
+            className="mx-auto mt-4 mb-5 h-[3px] w-16 rounded-full"
+            style={{
+              background: "linear-gradient(90deg,#2b3a8f,#12a5c9)",
+            }}
+          />
+          <p className="text-[#5b6272] text-[14px] sm:text-[16px] max-w-lg mx-auto leading-relaxed font-medium">
+            Hear from our successful students about their learning experience
+            with Connecting Dots
+          </p>
+        </div>
 
-            {/* Duplicate reviews for seamless infinite loop */}
-            {reviews.map((review, index) => (
-              <ReviewCard key={`duplicate-${index}`} review={review} isDuplicate={true} />
-            ))}
+        <div className="relative max-w-6xl mx-auto">
+          <div
+            ref={containerRef}
+            className="overflow-hidden select-none touch-pan-y"
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => {
+              setPaused(false);
+              onPointerUp();
+            }}
+            onMouseDown={onPointerDown}
+            onMouseMove={onPointerMove}
+            onMouseUp={onPointerUp}
+            onTouchStart={onPointerDown}
+            onTouchMove={onPointerMove}
+            onTouchEnd={onPointerUp}
+          >
+            <div
+              ref={trackRef}
+              className="flex"
+              style={{
+                gap: GAP,
+                transform: `translateX(${translate}px)`,
+                transition: dragging ? "none" : "transform 0.9s linear",
+              }}
+            >
+              {virtualIndices.map((v, i) => {
+                const idx = ((v % len) + len) % len;
+                const r = reviews[idx];
+                return (
+                  <div
+                    key={v}
+                    ref={i === 1 ? cardRef : null}
+                    className="shrink-0 w-[78vw] sm:w-[320px] md:w-[340px] lg:w-[360px] rounded-[22px] p-4 sm:p-7 flex flex-col justify-between"
+                    style={{
+                      background:
+                        "linear-gradient(155deg,#132352 0%,#0c1638 100%)",
+                      boxShadow: "0 18px 40px -12px rgba(15,27,63,0.45)",
+                      minHeight: 300,
+                    }}
+                  >
+                    <div className="flex items-center justify-between gap-3 mb-2 pb-4 border-b border-white/10">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div
+                          className="w-12 h-12 rounded-full p-[2.5px] shrink-0"
+                          style={{
+                            background: "linear-gradient(135deg,#7c5cff,#3b82f6)",
+                          }}
+                        >
+                          <img
+                            src={r.image}
+                            alt={r.name}
+                            className="w-full h-full rounded-full object-cover border-2 border-[#0c1638]"
+                            draggable={false}
+                          />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-white font-semibold text-[14.5px] truncate">
+                            {r.name}
+                          </p>
+                          <p className="text-[12.5px] font-medium text-white/50 truncate">
+                            {r.role}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex gap-1 shrink-0">
+                        {Array.from({ length: 5 }).map((_, s) => (
+                          <Star
+                            key={s}
+                            size={15}
+                            fill={s < r.rating ? "#fbbf24" : "none"}
+                            color="#fbbf24"
+                            strokeWidth={1.5}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="relative">
+                      <Quote
+                        size={30}
+                        color="rgba(255,255,255,0.14)"
+                        fill="rgba(255,255,255,0.14)"
+                        strokeWidth={0}
+                        className="absolute -top-1 right-0"
+                      />
+                      <p className="text-white/85 text-[14.5px] leading-relaxed font-medium pr-6">
+                        "{r.review}"
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-  </div>
-  );
-};
 
-export default FeedbackAndReviews;
+        {/* dots */}
+        <div className="flex justify-center gap-2 mt-6">
+          {reviews.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => {
+                goTo(i);
+                restartTimer();
+              }}
+              aria-label={`Show testimonial ${i + 1}`}
+              className="h-2 rounded-full transition-all duration-300"
+              style={{
+                width: i === activeIndex ? 24 : 8,
+                background:
+                  i === activeIndex
+                    ? "linear-gradient(90deg,#2b3a8f,#12a5c9)"
+                    : "#c7cce0",
+              }}
+            />
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
