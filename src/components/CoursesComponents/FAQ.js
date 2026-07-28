@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { Headphones, MessageCircle, Phone, Plus, Minus } from "lucide-react";
 import SectionBackground from "../BackgroundCss/SectionBackground";
+import Container from "../StandardContainer";
 
 const FAQ_DATA = [
   {
@@ -47,7 +48,8 @@ export default function FAQAccordion() {
   const [openIndex, setOpenIndex] = useState(0);
 
   return (
-    <section className="w-screen flex items-center justify-center relative left-1/2 -translate-x-1/2">
+    // <section className="w-screen flex items-center justify-center relative left-1/2 -translate-x-1/2">
+    <Container>
       <SectionBackground>
         <div className="faqOuter w-full flex items-center justify-center">
           <div className="faqWrap">
@@ -171,10 +173,10 @@ export default function FAQAccordion() {
 
             .faqWrap {
               width: 100%;
-              max-width: 1240px;
+              max-width: 1440px;
               display: grid;
-              grid-template-columns: minmax(0, 0.85fr) auto minmax(0, 1.15fr);
-              gap: 18px;
+              grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.3fr);
+              gap: 10px;
               align-items: center;
             }
 
@@ -224,7 +226,7 @@ export default function FAQAccordion() {
               font-size: 14px;
               line-height: 1.6;
               color: #475467;
-              max-width: 320px;
+              max-width: 400px;
               margin: 0 0 22px;
             }
 
@@ -234,7 +236,7 @@ export default function FAQAccordion() {
               border-radius: 14px;
               padding: 16px;
               width: 100%;
-              max-width: 280px;
+              max-width: 340px;
             }
 
             .faqHelpTop {
@@ -314,15 +316,27 @@ export default function FAQAccordion() {
               justify-content: center;
               align-items: center;
               align-self: stretch;
-              position:relative;
+              position: relative;
+              width: 220px;
+              overflow: visible;
             }
 
             .faqFigureImg {
-            // position:absolute;
-              // width: 2vw;
-              max-width: 30vw;
+              position: absolute;
+              left: -200px;
+              bottom: 10px;
+              width: auto;
+              max-width: 20vw;
               height: auto;
               object-fit: contain;
+              pointer-events: none;
+              z-index: 0;
+            }
+
+            .faqLeft,
+            .faqRight {
+              position: relative;
+              z-index: 1;
             }
 
             /* ---------- Right column ---------- */
@@ -447,7 +461,7 @@ export default function FAQAccordion() {
                 grid-template-areas:
                   "left center"
                   "right right";
-                gap: 20px;
+                gap: 14px;
               }
 
               .faqLeft {
@@ -457,6 +471,8 @@ export default function FAQAccordion() {
               .faqCenter {
                 grid-area: center;
                 align-self: center;
+                width: auto;
+                overflow: hidden;
               }
 
               .faqRight {
@@ -464,8 +480,11 @@ export default function FAQAccordion() {
               }
 
               .faqFigureImg {
-                width: 240px;
-                max-width: 40vw;
+                position: static;
+                left: auto;
+                bottom: auto;
+                width: auto;
+                max-width: 58vw;
               }
             }
 
@@ -488,8 +507,8 @@ export default function FAQAccordion() {
               }
 
               .faqFigureImg {
-                width: 220px;
-                max-width: 55vw;
+                width: auto;
+                max-width: 70vw;
               }
             }
 
@@ -517,10 +536,16 @@ export default function FAQAccordion() {
               .faqAnswer {
                 padding: 0 14px 14px 44px;
               }
+
+              .faqFigureImg {
+              width:auto;
+                max-width: 80vw;
+              }
             }
           `}</style>
         </div>
       </SectionBackground>
-    </section >
+    </Container>
+    // </section >
   );
 }

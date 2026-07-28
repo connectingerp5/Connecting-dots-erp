@@ -30,7 +30,7 @@ const popupLogoSrcSet = [
 const popupBackgroundImage =
   "https://res.cloudinary.com/duz9xipfm/image/upload/f_auto,q_auto:eco,w_520/v1763383745/c6dadb2c42a8ead53b163c770a60c334_1_g1pufv.avif";
 
-const PopupForm = ({
+const PopupForm = ({  
   onSubmitData,
   open,
   onClose,
