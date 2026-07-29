@@ -326,7 +326,7 @@ export default function FAQAccordion() {
               left: -200px;
               bottom: 10px;
               width: auto;
-              max-width: 20vw;
+              max-width: 25vw;
               height: auto;
               object-fit: contain;
               pointer-events: none;
