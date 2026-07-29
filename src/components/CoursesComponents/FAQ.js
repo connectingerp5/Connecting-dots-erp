@@ -162,7 +162,7 @@ export default function FAQAccordion() {
 
           <style jsx>{`
             .faqOuter {
-              background-image: url("https://res.cloudinary.com/djdhtkjhn/image/upload/v1785142207/FAQ_bg_l0qqya.png");
+              background-image: Transparent;
               background-size: cover;
               background-position: center;
               background-repeat: no-repeat;
