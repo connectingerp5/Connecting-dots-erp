@@ -327,6 +327,10 @@ const NAVBAR_EXTRA_CSS = `
 
   .cdErpNavbarRoot .drawer {
     display: none;
+    width: 100vw;
+    max-width: 100vw;
+    overflow-x: hidden;
+    box-sizing: border-box;
   }
 
   .cdErpNavbarRoot .drawer[data-open="true"] {
@@ -334,10 +338,14 @@ const NAVBAR_EXTRA_CSS = `
     flex-direction: column;
     position: fixed;
     inset: 0;
+    width: 100vw;
+    max-width: 100vw;
     z-index: 2147483000;
     overflow-y: auto;
+    overflow-x: hidden;
     background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
     padding: 16px;
+    box-sizing: border-box;
   }
 
   @media (min-width: 1181px) {
@@ -625,7 +633,11 @@ export default function Navbar2() {
                             ) : null,
                         )}
 
-                        <div id="nav-drawer" className="drawer" data-open={mobileOpen}>
+                        <div
+                            id="nav-drawer"
+                            className="drawer w-screen max-w-full overflow-x-hidden"
+                            data-open={mobileOpen}
+                        >
                             <div className="mb-2 flex items-center justify-between rounded-[20px] border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-3 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]">
                                 <Link href="/" className="flex items-center gap-3 text-decoration-none" onClick={() => setMobileOpen(false)}>
                                     <AnimatedLogo className="h-[44px] w-[44px] shrink-0" />
