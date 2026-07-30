@@ -30,13 +30,12 @@ const HRMegaMenu = dynamic(() => import("./HRMegaMenu"), {
 // Custom component definitions
 const Navbar = ({ expand, className, children, ref }) => (
   <nav
-    className={`${styles.navbar} ${
-      expand
+    className={`${styles.navbar} ${expand
         ? styles[
-            `navbarExpand${expand.charAt(0).toUpperCase() + expand.slice(1)}`
-          ]
+        `navbarExpand${expand.charAt(0).toUpperCase() + expand.slice(1)}`
+        ]
         : ""
-    } ${className || ""}`}
+      } ${className || ""}`}
     ref={ref}
   >
     {children}
@@ -45,9 +44,8 @@ const Navbar = ({ expand, className, children, ref }) => (
 
 const Container = ({ fluid, className, children }) => (
   <div
-    className={`${fluid ? styles.containerFluid : styles.container} ${
-      className || ""
-    }`}
+    className={`${fluid ? styles.containerFluid : styles.container} ${className || ""
+      }`}
   >
     {children}
   </div>
@@ -119,24 +117,24 @@ const Header = () => {
   }, [pathname]);
 
   // Enhanced scroll effect for smoother floating navbar transition
- useEffect(() => {
-  let ticking = false;
+  useEffect(() => {
+    let ticking = false;
 
-  const handleScroll = () => {
-    if (!ticking) {
-      requestAnimationFrame(() => {
-        const scrollY = window.scrollY;
-        setScrolled(scrollY > 50);
-        setFloatingNav(scrollY > 150);
-        ticking = false;
-      });
-      ticking = true;
-    }
-  };
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          setScrolled(scrollY > 50);
+          setFloatingNav(scrollY > 150);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
 
-  window.addEventListener("scroll", handleScroll, { passive: true });
-  return () => window.removeEventListener("scroll", handleScroll);
-}, []);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const closeSidebar = useCallback(() => {
     setIsSidebarVisible(false);
@@ -299,9 +297,8 @@ const Header = () => {
       <div className={styles.dropdownToggleWrapper}>
         <Link
           href="/sap-course-in-pune"
-          className={`${styles.navLink} ${styles.dropdownToggle} ${
-            activeLink === "dropdown2" ? styles.active : ""
-          }`}
+          className={`${styles.navLink} ${styles.dropdownToggle} ${activeLink === "dropdown2" ? styles.active : ""
+            }`}
           id="dropdownMenuButton2"
           onClick={(e) => {
             if (isMobile) {
@@ -313,7 +310,7 @@ const Header = () => {
           }}
           aria-expanded={
             (isMobile && mobileOpenDropdown === "dropdown2") ||
-            (!isMobile && isDropdownVisible.dropdown2)
+              (!isMobile && isDropdownVisible.dropdown2)
               ? "true"
               : "false"
           }
@@ -329,24 +326,23 @@ const Header = () => {
             aria-label="Toggle SAP menu"
           >
             <span
-              className={`${styles.arrow} ${
-                mobileOpenDropdown === "dropdown2"
+              className={`${styles.arrow} ${mobileOpenDropdown === "dropdown2"
                   ? styles.arrowUp
                   : styles.arrowDown
-              }`}
+                }`}
             ></span>
           </button>
         )}
       </div>
       {((isMobile && mobileOpenDropdown === "dropdown2") ||
         (!isMobile && isDropdownVisible.dropdown2)) && (
-        <ul
-          className={`${styles.dropdownMenu} ${styles.sapMegaMenu} ${styles.show}`}
-          aria-labelledby="dropdownMenuButton2"
-        >
-          <SAPMegaMenu onItemClick={handleNavClick} />
-        </ul>
-      )}
+          <ul
+            className={`${styles.dropdownMenu} ${styles.sapMegaMenu} ${styles.show}`}
+            aria-labelledby="dropdownMenuButton2"
+          >
+            <SAPMegaMenu onItemClick={handleNavClick} />
+          </ul>
+        )}
     </div>
   );
 
@@ -359,9 +355,8 @@ const Header = () => {
       <div className={styles.dropdownToggleWrapper}>
         <Link
           href="/it-course-with-ai-in-pune"
-          className={`${styles.navLink} ${styles.dropdownToggle} ${
-            activeLink === "dropdown3" ? styles.active : ""
-          }`}
+          className={`${styles.navLink} ${styles.dropdownToggle} ${activeLink === "dropdown3" ? styles.active : ""
+            }`}
           id="dropdownMenuButton3"
           onClick={(e) => {
             if (isMobile) {
@@ -373,7 +368,7 @@ const Header = () => {
           }}
           aria-expanded={
             (isMobile && mobileOpenDropdown === "dropdown3") ||
-            (!isMobile && isDropdownVisible.dropdown3)
+              (!isMobile && isDropdownVisible.dropdown3)
               ? "true"
               : "false"
           }
@@ -389,24 +384,23 @@ const Header = () => {
             aria-label="Toggle IT Courses menu"
           >
             <span
-              className={`${styles.arrow} ${
-                mobileOpenDropdown === "dropdown3"
+              className={`${styles.arrow} ${mobileOpenDropdown === "dropdown3"
                   ? styles.arrowUp
                   : styles.arrowDown
-              }`}
+                }`}
             ></span>
           </button>
         )}
       </div>
       {((isMobile && mobileOpenDropdown === "dropdown3") ||
         (!isMobile && isDropdownVisible.dropdown3)) && (
-        <ul
-          className={`${styles.dropdownMenu} ${styles.sapMegaMenu} ${styles.itMegaMenu} ${styles.show}`}
-          aria-labelledby="dropdownMenuButton3"
-        >
-          <ITMegaMenu onItemClick={handleNavClick} />
-        </ul>
-      )}
+          <ul
+            className={`${styles.dropdownMenu} ${styles.sapMegaMenu} ${styles.itMegaMenu} ${styles.show}`}
+            aria-labelledby="dropdownMenuButton3"
+          >
+            <ITMegaMenu onItemClick={handleNavClick} />
+          </ul>
+        )}
     </div>
   );
 
@@ -419,9 +413,8 @@ const Header = () => {
       <div className={styles.dropdownToggleWrapper}>
         <Link
           href="/hr-training-course-in-pune"
-          className={`${styles.navLink} ${styles.dropdownToggle} ${
-            activeLink === "dropdown6" ? styles.active : ""
-          }`}
+          className={`${styles.navLink} ${styles.dropdownToggle} ${activeLink === "dropdown6" ? styles.active : ""
+            }`}
           id="dropdownMenuButton6"
           onClick={(e) => {
             if (isMobile) {
@@ -433,7 +426,7 @@ const Header = () => {
           }}
           aria-expanded={
             (isMobile && mobileOpenDropdown === "dropdown6") ||
-            (!isMobile && isDropdownVisible.dropdown6)
+              (!isMobile && isDropdownVisible.dropdown6)
               ? "true"
               : "false"
           }
@@ -449,24 +442,23 @@ const Header = () => {
             aria-label="Toggle HR Courses menu"
           >
             <span
-              className={`${styles.arrow} ${
-                mobileOpenDropdown === "dropdown6"
+              className={`${styles.arrow} ${mobileOpenDropdown === "dropdown6"
                   ? styles.arrowUp
                   : styles.arrowDown
-              }`}
+                }`}
             ></span>
           </button>
         )}
       </div>
       {((isMobile && mobileOpenDropdown === "dropdown6") ||
         (!isMobile && isDropdownVisible.dropdown6)) && (
-        <ul
-          className={`${styles.dropdownMenu} ${styles.sapMegaMenu} ${styles.hrMegaMenu} ${styles.show}`}
-          aria-labelledby="dropdownMenuButton6"
-        >
-          <HRMegaMenu onItemClick={handleNavClick} />
-        </ul>
-      )}
+          <ul
+            className={`${styles.dropdownMenu} ${styles.sapMegaMenu} ${styles.hrMegaMenu} ${styles.show}`}
+            aria-labelledby="dropdownMenuButton6"
+          >
+            <HRMegaMenu onItemClick={handleNavClick} />
+          </ul>
+        )}
     </div>
   );
 
@@ -474,9 +466,8 @@ const Header = () => {
     <>
       <Navbar
         expand="lg"
-        className={`${styles.headerNav} ${scrolled ? styles.scrolled : ""} ${
-          floatingNav ? styles.floating : ""
-        } ${isTransitioning ? styles.transitioning : ""}`}
+        className={`${styles.headerNav} ${scrolled ? styles.scrolled : ""} ${floatingNav ? styles.floating : ""
+          } ${isTransitioning ? styles.transitioning : ""}`}
         ref={navbarRef}
       >
         <Container fluid className={styles.navContainer}>
@@ -499,9 +490,8 @@ const Header = () => {
 
           {/* Hamburger Button */}
           <Button
-            className={`${styles.navbarToggler} ${
-              isSidebarVisible ? styles.navbarTogglerOpen : ""
-            }`}
+            className={`${styles.navbarToggler} ${isSidebarVisible ? styles.navbarTogglerOpen : ""
+              }`}
             aria-controls="basic-navbar-nav"
             aria-expanded={isSidebarVisible ? "true" : "false"}
             aria-label="Toggle navigation"
@@ -517,9 +507,8 @@ const Header = () => {
 
             <div className={styles.navItem}>
               <Link
-                className={`${styles.navLink} ${
-                  activeLink === "placements" ? styles.active : ""
-                }`}
+                className={`${styles.navLink} ${activeLink === "placements" ? styles.active : ""
+                  }`}
                 href="/placements"
                 onClick={() => handleNavClick("placements")}
               >
@@ -528,9 +517,8 @@ const Header = () => {
             </div>
             <div className={styles.navItem}>
               <Link
-                className={`${styles.navLink} ${
-                  activeLink === "aboutus" ? styles.active : ""
-                }`}
+                className={`${styles.navLink} ${activeLink === "aboutus" ? styles.active : ""
+                  }`}
                 href="/aboutus"
                 onClick={() => handleNavClick("aboutus")}
               >
@@ -602,22 +590,20 @@ const Header = () => {
                 <Link
                   href="/placements"
                   onClick={() => handleNavClick("placements")}
-                  className={`${styles.mobileQuickLink} ${
-                    activeLink === "placements"
+                  className={`${styles.mobileQuickLink} ${activeLink === "placements"
                       ? styles.mobileQuickLinkActive
                       : ""
-                  }`}
+                    }`}
                 >
                   Placements
                 </Link>
                 <Link
                   href="/aboutus"
                   onClick={() => handleNavClick("aboutus")}
-                  className={`${styles.mobileQuickLink} ${
-                    activeLink === "aboutus"
+                  className={`${styles.mobileQuickLink} ${activeLink === "aboutus"
                       ? styles.mobileQuickLinkActive
                       : ""
-                  }`}
+                    }`}
                 >
                   About us
                 </Link>

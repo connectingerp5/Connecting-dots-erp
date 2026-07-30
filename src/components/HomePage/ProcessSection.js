@@ -1,29 +1,41 @@
 "use client";
 
 /**
- * TrainingProcessSection
- * — Outer wrapper (background, min-height) from the original chevron section.
- * — "— THE PROCESS / How it works." heading at the top.
- * — Inner content is the circuit-timeline "How it works" section, scaled
- *   down for desktop via a JS-measured, container-aware size.
- * — Step icons are lucide-react icons (ClipboardEdit, Users, Target,
- *   MessagesSquare, TrendingUp, Briefcase).
- * — Brand logo is loaded from Cloudinary (Connecting_Logo_New_skvsup_ohmdgr.webp).
- *   Since it's an external URL, add "res.cloudinary.com" to the
- *   images.domains (or remotePatterns) list in next.config.js, or next/image
- *   will refuse to optimize it.
- * — On mobile, the entire brand/logo block is hidden, and each step row
- *   fades/slides in the first time it scrolls into view, with the connector
- *   line filling in progressively alongside it.
+ * TrainingProcessSection — Tailwind conversion.
+ *
+ * Visual output, layout, colors, and behavior are unchanged from the
+ * original styled-jsx version. Two mechanical changes were made to make a
+ * clean Tailwind conversion possible:
+ *
+ * 1. Hover-highlight (which trace is "hot") and scroll-reveal state used to
+ *    be driven by imperative `classList.toggle` calls on refs. That's been
+ *    replaced with React state (`hoverIndex`, `isLive`, `revealedSteps`)
+ *    that drives conditional Tailwind classes instead — same visual result,
+ *    idiomatic Tailwind/React instead of manual DOM class manipulation.
+ * 2. The three `@keyframes` (cd-flowmove, cd-hubpulse, cd-hubspin) can't be
+ *    expressed as Tailwind utilities on their own — Tailwind's
+ *    `animate-[name_duration_timing_iteration]` syntax needs the keyframes
+ *    declared somewhere. Ideally that's `theme.extend.keyframes` in
+ *    tailwind.config.js; since that file isn't part of this component, the
+ *    three keyframes are declared in a small global <style> block instead.
+ *    That's the only non-Tailwind CSS left in the file.
+ *
+ * WIDTH CHANGE: the desktop diagram is a fixed-size SVG/HTML canvas
+ * (DESIGN_W x DESIGN_H) that gets uniformly scaled down to fit whatever
+ * width its wrapper measures via ResizeObserver — so narrowing the section
+ * is just a matter of narrowing that wrapper's max-width. Everything
+ * (lines, icons, text, the logo block) scales down together as a single
+ * transform, so it stays crisp and proportioned instead of reflowing or
+ * getting cramped. The desktop cap was reduced from 1180px to 960px so the
+ * whole diagram renders smaller and reads more clearly instead of
+ * stretching edge-to-edge.
  */
 
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ClipboardEdit, Users, Target, MessagesSquare, TrendingUp, Briefcase } from "lucide-react";
-// import BackgroundAnimation from "@/components/Common/BackgroundAnimation";
-import { Barlow_Condensed } from "next/font/google";
-import SectionBackground from "../BackgroundCss/SectionBackground";
-
+import AmbientBlueBackground from "../BackgroundCss/AnimatedBlueBg";
+import Container from "../StandardContainer";
 
 const STEPS = [
     {
@@ -76,11 +88,6 @@ const STEPS = [
     },
 ];
 
-const barlow = Barlow_Condensed({
-    subsets: ["latin"],
-    weight: ["700", "800"],
-});
-
 const ROW_Y = [118, 266, 414, 562, 710, 858];
 const HUB = { x: 1070, y: 476 };
 
@@ -132,31 +139,36 @@ function Chevrons({ y, color }) {
     );
 }
 
+// Desktop cap: how wide the diagram's wrapper is allowed to grow. Lower
+// this to shrink the whole diagram further; raise it to let it grow larger
+// on wide screens.
+const DESKTOP_MAX_WIDTH = 960;
+
 export default function TrainingProcessSection() {
     const rootRef = useRef(null);
-    const svgRef = useRef(null);
     const mobileItemRefs = useRef([]);
     const stageScalerRef = useRef(null);
 
-    // Desktop diagram width (design canvas is 1536 wide).
     const DESIGN_W = 1536;
     const DESIGN_H = 1024;
-    // Sensible default so nothing flashes at full size before the first
-    // measurement lands (matches the ~1180px cap used below).
-    const [scale, setScale] = useState(1180 / DESIGN_W);
+    const [scale, setScale] = useState(DESKTOP_MAX_WIDTH / DESIGN_W);
 
-    // Mobile progress line: how many step rows have been scrolled into view.
-    const [revealCount, setRevealCount] = useState(0);
+    // Whether the section is on/near screen — gates all SVG animation.
+    const [isLive, setIsLive] = useState(false);
+    // Which trace (0-5) is currently hovered, or null.
+    const [hoverIndex, setHoverIndex] = useState(null);
+    // Which mobile step rows have scrolled into view.
+    const [revealedSteps, setRevealedSteps] = useState(() => new Set());
 
     useEffect(() => {
         const el = rootRef.current;
         if (!el) return;
         if (typeof IntersectionObserver === "undefined") {
-            el.classList.add("cd-live");
+            setIsLive(true);
             return;
         }
         const io = new IntersectionObserver(
-            ([e]) => el.classList.toggle("cd-live", e.isIntersecting),
+            ([e]) => setIsLive(e.isIntersecting),
             { rootMargin: "100px" }
         );
         io.observe(el);
@@ -164,9 +176,7 @@ export default function TrainingProcessSection() {
     }, []);
 
     // Measure the scaler's actual rendered width and scale the fixed-size
-    // diagram to fit it exactly — robust regardless of parent layout
-    // (flex/grid ancestors can break CSS container-query sizing, so we
-    // measure directly instead of relying on cqw units).
+    // diagram to fit it exactly.
     useEffect(() => {
         const el = stageScalerRef.current;
         if (!el) return;
@@ -187,21 +197,18 @@ export default function TrainingProcessSection() {
         return () => ro.disconnect();
     }, []);
 
-    // Mobile step rows: reveal one-by-one as each scrolls into view, and grow
-    // the connecting progress line to match.
+    // Mobile step rows: reveal one-by-one as each scrolls into view.
     useEffect(() => {
         if (typeof IntersectionObserver === "undefined") {
-            mobileItemRefs.current.forEach((el) => el && el.classList.add("cd-m-visible"));
-            setRevealCount(STEPS.length);
+            setRevealedSteps(new Set(STEPS.map((_, i) => i)));
             return;
         }
         const io = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
-                        entry.target.classList.add("cd-m-visible");
                         const idx = Number(entry.target.dataset.index);
-                        setRevealCount((prev) => Math.max(prev, idx + 1));
+                        setRevealedSteps((prev) => new Set(prev).add(idx));
                         io.unobserve(entry.target);
                     }
                 });
@@ -212,45 +219,50 @@ export default function TrainingProcessSection() {
         return () => io.disconnect();
     }, []);
 
-    const setHot = (i) => {
-        const svg = svgRef.current;
-        if (!svg) return;
-        svg.classList.toggle("cd-hovering", i !== null);
-        svg.querySelectorAll(".cd-trace").forEach((t, k) => {
-            t.classList.toggle("cd-hot", k === i);
-        });
-    };
+    const revealCount = revealedSteps.size;
 
     return (
-        <div
-            id="chevron-area"
-            className="overflow-visible flex items-center justify-center relative left-1/2 -translate-x-1/2 w-[100vw]"
-        >
-
-            <div className="max-w-[1800px] w-full mx-auto">
-                {/* ---------- circuit-timeline section ---------- */}
-                <SectionBackground>
+        <Container>
+            <AmbientBlueBackground>
+                <div
+                    className="overflow-visible flex items-center justify-center relative left-1/2 -translate-x-1/2 w-[100vw]"
+                >
                     <section
                         ref={rootRef}
-                        className="cd-process"
+                        className="overflow-hidden pt-2"
+                        style={{ fontFamily: '"Nunito", "Segoe UI", system-ui, -apple-system, sans-serif' }}
                         aria-label="How Connecting Dots ERP works"
                     >
                         {/* Section heading */}
-                        <div className={`cd-heading ${barlow.className}`}>
-                            <h2 className={`cd-heading-title ${barlow.className}`}>
-                                How it <span className="cd-heading-accent">works</span>
+                        <div className="max-w-[960px] mx-auto text-center px-5 pt-7 pb-1 md:px-10 md:pt-10 md:pb-2">
+                            <h2
+                                className="mt-2.5 font-extrabold text-[26px] md:text-[40px] leading-[1.1] text-[#101426]"
+                                style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}
+                            >
+                                How it <span className="text-[#2b5cff]">works</span>
                             </h2>
-                            <span className="cd-heading-underline" aria-hidden />
+                            <span
+                                className="block w-[72px] h-[4px] rounded-[2px] bg-[#2b5cff] mx-auto mt-4"
+                                aria-hidden
+                            />
                         </div>
 
-                        <div className="cd-desktop-shrink">
+                        <div className="max-w-[960px] mx-auto hidden md:block">
                             <div
                                 ref={stageScalerRef}
-                                className="cd-stage-wrap"
+                                className="relative w-full overflow-hidden"
                                 style={{ height: `${DESIGN_H * scale}px` }}
                             >
-                                <div className="cd-stage" style={{ transform: `scale(${scale})` }}>
-                                    <svg ref={svgRef} className="cd-circuit" viewBox="0 0 1536 1024" fill="none" aria-hidden>
+                                <div
+                                    className="relative w-[1536px] h-[1024px] origin-top-left"
+                                    style={{ transform: `scale(${scale})` }}
+                                >
+                                    <svg
+                                        className="absolute inset-0 pointer-events-none"
+                                        viewBox="0 0 1536 1024"
+                                        fill="none"
+                                        aria-hidden
+                                    >
                                         <defs>
                                             <radialGradient id="cd-hubGlow" cx="50%" cy="50%" r="50%">
                                                 <stop offset="0%" stopColor="#8b5cf6" stopOpacity=".35" />
@@ -283,19 +295,37 @@ export default function TrainingProcessSection() {
                                         {TRACES.map((d, i) => {
                                             const dur = [3.4, 3.0, 2.4, 2.4, 3.0, 3.4][i];
                                             const delay = -(i * 0.55);
+                                            const isHot = hoverIndex === i;
+                                            const traceOpacityClass =
+                                                hoverIndex === null ? "opacity-100" : isHot ? "opacity-100" : "opacity-[0.35]";
                                             return (
-                                                <g key={i} className="cd-trace" fill="none">
+                                                <g key={i} className={`transition-opacity duration-200 ${traceOpacityClass}`} fill="none">
                                                     <path d={d} stroke={STEPS[i].color} strokeWidth={9} opacity={0.1} strokeLinecap="round" strokeLinejoin="round" />
                                                     <path d={d} stroke={STEPS[i].color} strokeWidth={2.5} opacity={0.3} strokeLinecap="round" strokeLinejoin="round" />
-                                                    <path className="cd-hi" d={d} stroke={STEPS[i].color} strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" opacity={0} />
                                                     <path
-                                                        className="cd-flow"
+                                                        d={d}
+                                                        stroke={STEPS[i].color}
+                                                        strokeWidth={4}
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        className={`transition-opacity duration-200 ${isHot ? "opacity-[0.55]" : "opacity-0"}`}
+                                                    />
+                                                    <path
                                                         d={d}
                                                         stroke={STEPS[i].color}
                                                         strokeWidth={3.5}
+                                                        strokeDasharray="14 226"
+                                                        strokeLinecap="round"
+                                                        className={`motion-reduce:[animation:none] animate-[cd-flowmove_3.2s_linear_infinite] ${isLive ? "[animation-play-state:running]" : "[animation-play-state:paused]"
+                                                            }`}
                                                         style={{ animationDelay: `${delay}s` }}
                                                     />
-                                                    <circle className="cd-pulse" r={5.5} fill={STEPS[i].color} opacity={0.9}>
+                                                    <circle
+                                                        r={5.5}
+                                                        fill={STEPS[i].color}
+                                                        opacity={0.9}
+                                                        className={isLive ? "visible" : "invisible"}
+                                                    >
                                                         <animateMotion keyPoints="1;0" keyTimes="0;1" calcMode="linear" dur={`${dur}s`} begin={`${delay}s`} repeatCount="indefinite" path={d} />
                                                     </circle>
                                                 </g>
@@ -325,8 +355,16 @@ export default function TrainingProcessSection() {
                                         ))}
                                         <path d={`M${BUS_X} 476 H1040`} stroke="#6d28d9" strokeWidth={4} />
 
-                                        <circle className="cd-hubring" cx={HUB.x} cy={HUB.y} r={70} fill="url(#cd-hubGlow)" />
-                                        <circle cx={HUB.x} cy={HUB.y} r={44} fill="none" stroke="#b9a7f2" strokeWidth={1.5} strokeDasharray="3 7" className="cd-hubspin" />
+                                        <circle
+                                            cx={HUB.x}
+                                            cy={HUB.y}
+                                            r={70}
+                                            fill="url(#cd-hubGlow)"
+                                            className={`origin-[1070px_476px] motion-reduce:[animation:none] animate-[cd-hubpulse_2.4s_ease-in-out_infinite] ${isLive ? "[animation-play-state:running]" : "[animation-play-state:paused]"
+                                                }`}
+                                        />
+                                        <circle cx={HUB.x} cy={HUB.y} r={44} fill="none" stroke="#b9a7f2" strokeWidth={1.5} strokeDasharray="3 7" className={`origin-[1070px_476px] motion-reduce:[animation:none] animate-[cd-hubspin_14s_linear_infinite] ${isLive ? "[animation-play-state:running]" : "[animation-play-state:paused]"
+                                            }`} />
                                         <circle cx={HUB.x} cy={HUB.y} r={32} fill="#fff" stroke="#e4e1f6" strokeWidth={2} />
                                         <circle cx={HUB.x} cy={HUB.y} r={20} fill="none" stroke="url(#cd-hubRing)" strokeWidth={10} />
                                         <circle cx={HUB.x} cy={HUB.y} r={6} fill="#6d28d9" />
@@ -338,51 +376,60 @@ export default function TrainingProcessSection() {
                                         ))}
                                     </svg>
 
-                                    <div className="cd-dots" aria-hidden>
-                                        {Array.from({ length: 12 }).map((_, i) => <i key={i} />)}
+                                    <div className="absolute top-[34px] right-[250px] grid grid-cols-4 gap-4" aria-hidden>
+                                        {Array.from({ length: 12 }).map((_, i) => (
+                                            <i key={i} className="w-1.5 h-1.5 rounded-full bg-[#c9c6ea] block" />
+                                        ))}
                                     </div>
 
                                     {STEPS.map((s, i) => (
                                         <div
                                             key={s.num}
-                                            className="cd-row"
-                                            onMouseEnter={() => setHot(i)}
-                                            onMouseLeave={() => setHot(null)}
-                                            style={
-                                                {
-                                                    top: `${ROW_Y[i] - 58}px`,
-                                                    "--c": s.color,
-                                                    "--c1": s.grad[0],
-                                                    "--c2": s.grad[1],
-                                                }
-                                            }
+                                            className="group absolute left-10 w-[640px] h-[116px] cursor-default"
+                                            onMouseEnter={() => setHoverIndex(i)}
+                                            onMouseLeave={() => setHoverIndex(null)}
+                                            style={{ top: `${ROW_Y[i] - 58}px` }}
                                         >
-                                            <div className="cd-node"><span /></div>
-                                            <div className="cd-stem" />
-                                            <div className="cd-badge">{s.icon}</div>
-                                            <div className="cd-card">
-                                                <div className="cd-head">
-                                                    <span className="cd-num">{s.num}</span>
-                                                    <h3>{s.title}</h3>
+                                            <div className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white shadow-[0_4px_12px_rgba(80,60,180,0.18)] flex items-center justify-center">
+                                                <span className="w-4 h-4 rounded-full bg-white block" style={{ border: `5px solid ${s.color}` }} />
+                                            </div>
+                                            <div className="absolute left-11 top-1/2 -translate-y-1/2 w-12 h-[3px]" style={{ background: s.color }} />
+                                            <div
+                                                className="absolute left-[82px] top-1/2 -translate-y-1/2 w-[98px] h-[98px] rounded-full flex items-center justify-center z-[3] shadow-[0_0_0_8px_#fff,0_10px_26px_rgba(80,60,180,0.28)] transition-transform duration-[250ms] ease-in-out group-hover:[transform:translateY(-50%)_scale(1.07)] text-white [&>svg]:w-11 [&>svg]:h-11"
+                                                style={{ background: `linear-gradient(135deg, ${s.grad[0]}, ${s.grad[1]})` }}
+                                            >
+                                                {s.icon}
+                                            </div>
+                                            <div className="absolute left-[118px] top-0 right-0 h-[116px] bg-white rounded-[26px] shadow-[0_14px_34px_rgba(90,70,190,0.13),0_2px_6px_rgba(90,70,190,0.06)] pt-[18px] pr-[88px] pb-4 pl-[84px] flex flex-col justify-center transition-transform duration-[250ms] ease group-hover:-translate-y-1 relative after:content-[''] after:absolute after:inset-0 after:rounded-[26px] after:shadow-[0_22px_44px_rgba(90,70,190,0.2),0_4px_10px_rgba(90,70,190,0.08)] after:opacity-0 after:transition-opacity after:duration-[250ms] group-hover:after:opacity-100 after:pointer-events-none">
+                                                <div className="flex items-baseline gap-3.5 mb-1.5">
+                                                    <span className="text-[26px] font-extrabold tracking-[0.5px]" style={{ color: s.color }}>
+                                                        {s.num}
+                                                    </span>
+                                                    <h3 className="text-[21px] font-extrabold text-[#1e2340] m-0">{s.title}</h3>
                                                 </div>
-                                                <p>{s.desc}</p>
-                                                <div className="cd-cicon">{s.icon}</div>
+                                                <p className="text-[15px] leading-[1.45] text-[#5b6178] max-w-[400px] m-0">{s.desc}</p>
+                                                <div className="absolute right-[26px] top-1/2 -translate-y-1/2 [&>svg]:w-[42px] [&>svg]:h-[42px]" style={{ color: s.color }}>
+                                                    {s.icon}
+                                                </div>
                                             </div>
                                         </div>
                                     ))}
 
-                                    <div className="cd-brand">
+                                    <div className="absolute left-[1150px] top-[340px] w-[320px] text-center">
                                         <Image
                                             src="https://res.cloudinary.com/bropujss/image/upload/v1783687480/Connecting_Logo_New_skvsup_ohmdgr.webp"
                                             alt="Connecting Dots ERP"
                                             width={220}
                                             height={220}
-                                            className="cd-mark-img"
+                                            className="w-[190px] h-[190px] mx-auto mb-[26px] block object-contain"
                                         />
-                                        <h2>
-                                            CONNECTING<br />DOTS <span className="cd-erp">ERP</span>
+                                        <h2 className="text-[36px] leading-[1.15] font-black text-[#101426] tracking-[0.5px] m-0">
+                                            CONNECTING<br />DOTS{" "}
+                                            <span className="bg-gradient-to-r from-[#7b2ff7] to-[#2f6bf7] bg-clip-text text-transparent">
+                                                ERP
+                                            </span>
                                         </h2>
-                                        <div className="cd-tag">
+                                        <div className="mt-3.5 text-[12.5px] font-bold tracking-[2.6px] text-[#3a4060]">
                                             CONNECTING OPPORTUNITIES,<br />DELIVERING EXCELLENCE
                                         </div>
                                     </div>
@@ -392,291 +439,71 @@ export default function TrainingProcessSection() {
 
                         {/* ---------- mobile stacked timeline (shown under 768px) ---------- */}
                         {/* Brand/logo block intentionally omitted on mobile per request. */}
-                        <div className="cd-mobile">
-                            <div className="cd-m-timeline">
-                                <div className="cd-m-track" aria-hidden>
+                        <div className="block md:hidden px-5 pt-6 pb-12">
+                            <div className="relative">
+                                <div className="absolute left-[31px] top-2 bottom-2 w-[3px] rounded-[2px] bg-[linear-gradient(180deg,#8b2fd6,#2f6bf7,#10b981,#f97316,#ec2f79,#7c3aed)] opacity-[0.18] overflow-hidden" aria-hidden>
                                     <div
-                                        className="cd-m-track-fill"
+                                        className="absolute inset-0 bg-[linear-gradient(180deg,#8b2fd6,#2f6bf7,#10b981,#f97316,#ec2f79,#7c3aed)] transition-[clip-path] duration-[600ms] ease motion-reduce:transition-none"
                                         style={{
                                             clipPath: `inset(0 0 ${100 - (revealCount / STEPS.length) * 100}% 0)`,
                                         }}
                                     />
                                 </div>
-                                <ol className="cd-m-list">
-                                    {STEPS.map((s, i) => (
-                                        <li
-                                            key={s.num}
-                                            ref={(el) => {
-                                                mobileItemRefs.current[i] = el;
-                                                if (el) el.dataset.index = i;
-                                            }}
-                                            className="cd-m-item"
-                                            style={{ "--c": s.color, "--c1": s.grad[0], "--c2": s.grad[1] }}
-                                        >
-                                            <div className="cd-m-badge">{s.icon}</div>
-                                            <div className="cd-m-card">
-                                                <div className="cd-head">
-                                                    <span className="cd-num">{s.num}</span>
-                                                    <h3>{s.title}</h3>
+                                <ol className="list-none m-0 p-0 relative">
+                                    {STEPS.map((s, i) => {
+                                        const isVisible = revealedSteps.has(i);
+                                        return (
+                                            <li
+                                                key={s.num}
+                                                ref={(el) => {
+                                                    mobileItemRefs.current[i] = el;
+                                                    if (el) el.dataset.index = i;
+                                                }}
+                                                className={`relative flex gap-4 items-start pb-[26px] transition-[opacity,transform] duration-500 ease motion-reduce:transition-none motion-reduce:opacity-100 motion-reduce:translate-x-0 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-6"
+                                                    }`}
+                                            >
+                                                <div
+                                                    className="flex-none w-16 h-16 rounded-full shadow-[0_0_0_5px_#fff,0_8px_18px_rgba(80,60,180,0.25)] flex items-center justify-center relative z-[1] text-white [&>svg]:w-[30px] [&>svg]:h-[30px]"
+                                                    style={{ background: `linear-gradient(135deg, ${s.grad[0]}, ${s.grad[1]})` }}
+                                                >
+                                                    {s.icon}
                                                 </div>
-                                                <p>{s.desc}</p>
-                                            </div>
-                                        </li>
-                                    ))}
+                                                <div className="flex-1 bg-white rounded-[18px] shadow-[0_10px_24px_rgba(90,70,190,0.12)] px-4 py-3.5">
+                                                    <div className="flex items-baseline gap-3.5 mb-1.5">
+                                                        <span className="text-[19px] font-extrabold tracking-[0.5px]" style={{ color: s.color }}>
+                                                            {s.num}
+                                                        </span>
+                                                        <h3 className="text-[16.5px] font-extrabold text-[#1e2340] m-0">{s.title}</h3>
+                                                    </div>
+                                                    <p className="text-[13.5px] leading-[1.45] text-[#5b6178] m-0">{s.desc}</p>
+                                                </div>
+                                            </li>
+                                        );
+                                    })}
                                 </ol>
                             </div>
                         </div>
-
-                        <style jsx>{`
-          .cd-process {
-            background:transparent;
-            font-family: "Nunito", "Segoe UI", system-ui, -apple-system, sans-serif;
-            overflow: hidden;
-            padding-top: 8px;
-          }
-
-          /* ---- section heading ---- */
-        .cd-heading {
-                max-width: 1180px;
-                margin: 0 auto;
-                text-align: center;
-                padding: 40px 40px 8px;
-        }
-        .cd-heading-title {
-                margin: 0;
-                font-weight: 800;
-                font-size: 40px;
-                line-height: 1.15;
-                color: #0f172a;
-        }
-        .cd-heading-accent {
-                color: #2b5cff;
-        }
-        .cd-heading-underline {
-                display: block;
-                width: 72px;
-                height: 4px;
-                border-radius: 2px;
-                background: #2b5cff;
-                margin: 16px auto 0;
-        }
-        .cd-heading-label {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: #2b5cff;
-        }
-          .cd-heading-dash {
-            width: 22px;
-            height: 2px;
-            background: #2b5cff;
-            display: inline-block;
-          }
-          .cd-heading-title {
-            margin: 10px 0 0;
-            font-family: Georgia, "Times New Roman", serif;
-            font-weight: 800;
-            font-size: 40px;
-            line-height: 1.1;
-            color: #101426;
-          }
-
-          /* ---- desktop size cap (shrinks the whole stage proportionally) ---- */
-          .cd-desktop-shrink {
-            max-width: 1180px;
-            margin: 0 auto;
-          }
-
-          .cd-stage-wrap {
-            position: relative;
-            width: 100%;
-            overflow: hidden;
-          }
-          .cd-stage {
-            position: relative;
-            width: 1536px;
-            height: 1024px;
-            transform-origin: top left;
-          }
-
-          .cd-circuit { position: absolute; inset: 0; pointer-events: none; }
-
-          .cd-circuit :global(.cd-flow) {
-            stroke-dasharray: 14 226;
-            stroke-linecap: round;
-            animation: cd-flowmove 3.2s linear infinite;
-            animation-play-state: paused;
-          }
-          .cd-live .cd-circuit :global(.cd-flow) { animation-play-state: running; }
-
-          .cd-circuit :global(.cd-trace) { transition: opacity 0.2s linear; }
-          .cd-circuit.cd-hovering :global(.cd-trace) { opacity: 0.35; }
-          .cd-circuit.cd-hovering :global(.cd-trace.cd-hot) { opacity: 1; }
-          .cd-circuit :global(.cd-hi) { transition: opacity 0.2s linear; }
-          .cd-circuit :global(.cd-trace.cd-hot .cd-hi) { opacity: 0.55; }
-          .cd-circuit :global(.cd-pulse) { visibility: hidden; }
-          .cd-live .cd-circuit :global(.cd-pulse) { visibility: visible; }
-          @keyframes cd-flowmove {
-            to { stroke-dashoffset: 240; }
-          }
-          .cd-circuit :global(.cd-hubring) {
-            animation: cd-hubpulse 2.4s ease-in-out infinite;
-            animation-play-state: paused;
-            transform-origin: 1070px 476px;
-          }
-          .cd-live .cd-circuit :global(.cd-hubring) { animation-play-state: running; }
-          @keyframes cd-hubpulse {
-            0%, 100% { opacity: 0.35; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(1.12); }
-          }
-          .cd-circuit :global(.cd-hubspin) {
-            animation: cd-hubspin 14s linear infinite;
-            animation-play-state: paused;
-            transform-origin: 1070px 476px;
-          }
-          .cd-live .cd-circuit :global(.cd-hubspin) { animation-play-state: running; }
-          @keyframes cd-hubspin { to { transform: rotate(360deg); } }
-          @media (prefers-reduced-motion: reduce) {
-            .cd-circuit :global(.cd-flow),
-            .cd-circuit :global(.cd-hubring) { animation: none; }
-          }
-
-          .cd-dots {
-            position: absolute; top: 34px; right: 250px;
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
-          }
-          .cd-dots i { width: 6px; height: 6px; border-radius: 50%; background: #c9c6ea; display: block; }
-
-          .cd-row { position: absolute; left: 40px; width: 640px; height: 116px; cursor: default; }
-          .cd-node {
-            position: absolute; left: 8px; top: 50%; transform: translateY(-50%);
-            width: 36px; height: 36px; border-radius: 50%;
-            background: #fff; box-shadow: 0 4px 12px rgba(80, 60, 180, 0.18);
-            display: flex; align-items: center; justify-content: center;
-          }
-          .cd-node span {
-            width: 16px; height: 16px; border-radius: 50%;
-            border: 5px solid var(--c); background: #fff; display: block;
-          }
-          .cd-stem {
-            position: absolute; left: 44px; top: 50%; width: 48px; height: 3px;
-            background: var(--c); transform: translateY(-50%);
-          }
-          .cd-badge {
-            position: absolute; left: 82px; top: 50%; transform: translateY(-50%);
-            width: 98px; height: 98px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--c1), var(--c2));
-            box-shadow: 0 0 0 8px #fff, 0 10px 26px rgba(80, 60, 180, 0.28);
-            display: flex; align-items: center; justify-content: center; z-index: 3;
-          }
-          .cd-badge :global(svg) { width: 44px; height: 44px; stroke: #fff; }
-          .cd-card {
-            position: absolute; left: 118px; top: 0; right: 0; height: 116px;
-            background: #fff; border-radius: 26px;
-            box-shadow: 0 14px 34px rgba(90, 70, 190, 0.13), 0 2px 6px rgba(90, 70, 190, 0.06);
-            padding: 18px 88px 16px 84px;
-            display: flex; flex-direction: column; justify-content: center;
-            transition: transform 0.25s ease;
-          }
-          .cd-card::after {
-            content: ""; position: absolute; inset: 0; border-radius: 26px;
-            box-shadow: 0 22px 44px rgba(90, 70, 190, 0.2), 0 4px 10px rgba(90, 70, 190, 0.08);
-            opacity: 0; transition: opacity 0.25s ease; pointer-events: none;
-          }
-          .cd-row:hover .cd-card { transform: translateY(-4px); }
-          .cd-row:hover .cd-card::after { opacity: 1; }
-          .cd-badge { transition: transform 0.25s ease; }
-          .cd-row:hover .cd-badge { transform: translateY(-50%) scale(1.07); }
-          .cd-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 6px; }
-          .cd-num { font-size: 26px; font-weight: 800; color: var(--c); letter-spacing: 0.5px; }
-          .cd-head h3 { font-size: 21px; font-weight: 800; color: #1e2340; margin: 0; }
-          .cd-card p { font-size: 15px; line-height: 1.45; color: #5b6178; max-width: 400px; margin: 0; }
-          .cd-cicon { position: absolute; right: 26px; top: 50%; transform: translateY(-50%); }
-          .cd-cicon :global(svg) { width: 42px; height: 42px; stroke: var(--c); }
-
-          .cd-brand { position: absolute; left: 1150px; top: 340px; width: 320px; text-align: center; }
-          .cd-brand :global(.cd-mark-img) { width: 190px; height: 190px; margin: 0 auto 26px; display: block; object-fit: contain; }
-          .cd-brand h2 {
-            font-size: 36px; line-height: 1.15; font-weight: 900;
-            color: #101426; letter-spacing: 0.5px; margin: 0;
-          }
-          .cd-erp {
-            background: linear-gradient(90deg, #7b2ff7, #2f6bf7);
-            -webkit-background-clip: text; background-clip: text; color: transparent;
-          }
-          .cd-tag {
-            margin-top: 14px; font-size: 12.5px; font-weight: 700;
-            letter-spacing: 2.6px; color: #3a4060;
-          }
-
-          /* ---- mobile stacked timeline ---- */
-          .cd-mobile { display: none; }
-          @media (max-width: 768px) {
-            .cd-desktop-shrink { display: none; }
-            .cd-heading { padding: 28px 20px 4px; }
-            .cd-heading-title { font-size: 26px; }
-            .cd-mobile { display: block; padding: 24px 20px 48px; }
-            .cd-m-timeline { position: relative; }
-            .cd-m-list {
-              list-style: none; margin: 0; padding: 0;
-              position: relative;
-            }
-            /* Base (unfilled) track — always visible, faint, marks the full path. */
-            .cd-m-track {
-              position: absolute; left: 31px; top: 8px; bottom: 8px;
-              width: 3px; border-radius: 2px;
-              background: linear-gradient(180deg, #8b2fd6, #2f6bf7, #10b981, #f97316, #ec2f79, #7c3aed);
-              opacity: 0.18;
-              overflow: hidden;
-            }
-            /* Progress fill — same gradient, same position, revealed from the
-               top down via clip-path as steps scroll into view, so segments
-               "load in" one at a time instead of showing the whole line at once. */
-            .cd-m-track-fill {
-              position: absolute; inset: 0;
-              background: linear-gradient(180deg, #8b2fd6, #2f6bf7, #10b981, #f97316, #ec2f79, #7c3aed);
-              transition: clip-path 0.6s ease;
-            }
-            .cd-m-item {
-              position: relative; display: flex; gap: 16px; align-items: flex-start;
-              padding: 0 0 26px 0;
-              opacity: 0;
-              transform: translateX(-24px);
-              transition: opacity 0.5s ease, transform 0.5s ease;
-            }
-            .cd-m-item.cd-m-visible {
-              opacity: 1;
-              transform: translateX(0);
-            }
-            .cd-m-badge {
-              flex: none; width: 64px; height: 64px; border-radius: 50%;
-              background: linear-gradient(135deg, var(--c1), var(--c2));
-              box-shadow: 0 0 0 5px #fff, 0 8px 18px rgba(80, 60, 180, 0.25);
-              display: flex; align-items: center; justify-content: center;
-              position: relative; z-index: 1;
-            }
-            .cd-m-badge :global(svg) { width: 30px; height: 30px; stroke: #fff; }
-            .cd-m-card {
-              flex: 1; background: #fff; border-radius: 18px;
-              box-shadow: 0 10px 24px rgba(90, 70, 190, 0.12);
-              padding: 14px 16px;
-            }
-            .cd-m-card .cd-num { font-size: 19px; }
-            .cd-m-card h3 { font-size: 16.5px; }
-            .cd-m-card p { font-size: 13.5px; max-width: none; }
-          }
-          @media (max-width: 768px) and (prefers-reduced-motion: reduce) {
-            .cd-m-track-fill { transition: none; }
-            .cd-m-item { transition: none; opacity: 1; transform: none; }
-          }
-                `}</style>
                     </section>
-                </SectionBackground>
-            </div>
-        </div>
+                </div>
+            </AmbientBlueBackground>
+
+            {/* Only the three @keyframes live here — Tailwind's animate-[...]
+                utility needs them declared somewhere, and there's no
+                tailwind.config.js available in this context to add them to
+                theme.extend.keyframes. Move them there in the real project
+                and delete this block. */}
+            <style jsx global>{`
+                @keyframes cd-flowmove {
+                    to { stroke-dashoffset: 240; }
+                }
+                @keyframes cd-hubpulse {
+                    0%, 100% { opacity: 0.35; transform: scale(1); }
+                    50% { opacity: 0.7; transform: scale(1.12); }
+                }
+                @keyframes cd-hubspin {
+                    to { transform: rotate(360deg); }
+                }
+            `}</style>
+        </Container>
     );
 }
