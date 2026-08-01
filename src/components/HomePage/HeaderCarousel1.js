@@ -19,86 +19,6 @@ const StarIcon = ({ className }) => (
   </svg>
 );
 
-/* ---------- Layered parallax blob background (mobile only) ----------
-   Purely decorative, absolute + pointer-events-none, sits behind the
-   mobile content (z-0) so it never interferes with layout or clicks.
-   Different sizes/durations per blob so they drift out of sync. */
-const ParallaxBlobs = () => (
-  <div
-    aria-hidden="true"
-    className="pointer-events-none absolute inset-0 z-0 overflow-hidden sm:hidden"
-  >
-    <span className="blob blob-a" />
-    <span className="blob blob-b" />
-    <span className="blob blob-c" />
-    {/* <span className="blob blob-d" /> */}
-
-    <style jsx>{`
-      .blob {
-        position: absolute;
-        border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%;
-        filter: blur(2px);
-        will-change: transform;
-      }
-      .blob-a {
-        width: 220px;
-        height: 220px;
-        top: -50px;
-        left: -50px;
-        background: #bfdbfe80;
-        animation: blobFloatA 9s ease-in-out infinite;
-      }
-      .blob-b {
-        width: 170px;
-        height: 170px;
-        top: 8%;
-        right: -55px;
-        background: #ddd6fe80;
-        animation: blobFloatB 11s ease-in-out infinite;
-      }
-      .blob-c {
-        width: 190px;
-        height: 190px;
-        bottom: -60px;
-        left: 6%;
-        background: #fbcfe880;
-        animation: blobFloatC 8s ease-in-out infinite;
-      }
-      .blob-d {
-        width: 150px;
-        height: 150px;
-        bottom: -30px;
-        right: 10%;
-        background: #c4b5fd80;
-        animation: blobFloatD 10s ease-in-out infinite;
-      }
-
-      @keyframes blobFloatA {
-        0%, 100% { transform: translate(0, 0) scale(1); }
-        50% { transform: translate(18px, 22px) scale(1.06); }
-      }
-      @keyframes blobFloatB {
-        0%, 100% { transform: translate(0, 0) scale(1); }
-        50% { transform: translate(-16px, 18px) scale(1.08); }
-      }
-      @keyframes blobFloatC {
-        0%, 100% { transform: translate(0, 0) scale(1); }
-        50% { transform: translate(14px, -16px) scale(1.05); }
-      }
-      @keyframes blobFloatD {
-        0%, 100% { transform: translate(0, 0) scale(1); }
-        50% { transform: translate(-14px, -14px) scale(1.07); }
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        .blob {
-          animation: none !important;
-        }
-      }
-    `}</style>
-  </div>
-);
-
 const barlow = Barlow_Condensed({
   subsets: ["latin"],
   weight: ["700", "800"],
@@ -115,7 +35,6 @@ export default function CareerHeroSlide({ onOpenForm }) {
         fill the background instead, content sits in normal flow above.
       ================================================================ */}
       <div className="relative sm:hidden bg-[#eaf5ff]">
-        <ParallaxBlobs />
 
         <div className="relative z-10 px-4 pt-8 pb-8 xs:px-5 xs:pt-10">
           <div className="inline-flex max-w-full items-center gap-2 rounded-full bg-white/90 px-3 py-1.5 xs:px-3.5 xs:py-2 shadow-sm ring-1 ring-purple-100 backdrop-blur-sm">
@@ -128,17 +47,12 @@ export default function CareerHeroSlide({ onOpenForm }) {
           <h1
             className={`${barlow.className} mt-5 text-[30px] xs:text-[36px] leading-[0.95] xs:leading-[0.9] font-extrabold uppercase tracking-[0.05em] text-[#1b3a6d]`}
           >
-            From <span className="font-normal">&#x22;</span>Just applying&#x22;
-            <br />
-            <span>to</span>
+            From <span className="font-normal">&#x22;</span>Just applying<span className="font-normal">&#x22;</span> to
             <br />
             <span className="bg-gradient-to-r from-[#ff9a3d] via-[#ff5b7b] to-[#b17dff] bg-clip-text text-transparent">
-              <span className="font-normal">&#x22;</span>just got hired&#x22;
+              <span className="font-normal">&#x22;</span>just got hired<span className="font-normal">&#x22;</span>
             </span>
             <br />
-            <span className="bg-gradient-to-r from-purple-400 to-blue-600 text-transparent bg-clip-text">
-              TRAINING
-            </span>
           </h1>
 
           <p className="mt-4 text-[14px] xs:text-[15px] leading-relaxed text-gray-700">
@@ -158,8 +72,16 @@ export default function CareerHeroSlide({ onOpenForm }) {
       {/* ================================================================
         DESKTOP (sm+) — UNCHANGED: image with text overlaid on top of it.
       ================================================================ */}
-      <div className="relative hidden w-full overflow-hidden sm:block sm:aspect-[16/9] lg:aspect-[14/9] xl:aspect-[2.4/1]">
-        <Image
+      <div className="relative hidden w-full overflow-hidden sm:block sm:aspect-[16/9] lg:aspect-[14/9] xl:aspect-[2.4/1]" 
+      style={
+        {
+          backgroundImage:"url('https://res.cloudinary.com/djdhtkjhn/image/upload/v1785573435/RoboWidth_mduj2r.png')",
+          backgroundPosition:"center",
+          backgroundSize:"cover"
+        }
+      }
+      >
+        {/* <Image
           src={heroBackgroundImage}
           alt="Stairs graphic showing SAP, AI, IT and HR training path"
           fill
@@ -167,7 +89,7 @@ export default function CareerHeroSlide({ onOpenForm }) {
           fetchPriority="high"
           sizes="(max-width: 1024px) 100vw, 1920px"
           className="object-cover object-left"
-        />
+        /> */}
 
         <div className="absolute inset-0 z-10 mx-auto flex max-w-[1400px] items-center px-5 sm:px-8 lg:px-10">
           <div className="grid w-full grid-cols-1 items-center gap-6 lg:grid-cols-12 lg:gap-8">
@@ -180,16 +102,14 @@ export default function CareerHeroSlide({ onOpenForm }) {
               </div>
 
               <h1
-                className={`${barlow.className} text-[36px] lg:text-[58px] xl:text-[65px] leading-[0.9] font-extrabold uppercase tracking-[0.05em] text-[#1b3a6d] heroHeading`}
-              >
-                From <span className="font-normal">&#x22;</span>Just applying&#x22;
-                <br />
-                <span>to</span>
-                <br />
-                <span className="bg-gradient-to-r from-blue-500 to-blue-800 bg-clip-text text-transparent">
-                  <span className="font-normal">&#x22;</span>just got hired&#x22;
-                </span>
-                <br />
+  className={`${barlow.className} text-[36px] lg:text-[58px] xl:text-[65px] leading-[0.9] font-extrabold uppercase tracking-[0.05em] text-[#1b3a6d] heroHeading`}
+>
+  From <span className="font-normal">&#34;</span>Just applying<span className="font-normal">&#34;</span> to
+  <br />
+
+  <span className="gradientText">
+    <span className="font-normal">&#34;</span>just got hired<span className="font-normal">&#34;</span>
+  </span>
               </h1>
 
               <style jsx>{`
@@ -197,6 +117,8 @@ export default function CareerHeroSlide({ onOpenForm }) {
                   position: relative;
                   display: inline-block;
                 }
+
+                /* Underline */
                 .heroHeading::after {
                   content: "";
                   position: absolute;
@@ -211,6 +133,47 @@ export default function CareerHeroSlide({ onOpenForm }) {
                     #ff5e62 50%,
                     #b16cea 100%
                   );
+                }
+
+                /* Animated Gradient Text */
+                .gradientText {
+                  display: inline-block;
+                  font-weight: 800;
+                  line-height: inherit;
+
+                  background: linear-gradient(
+                    90deg,
+                    #FF3B5C,
+                    #E11D48,
+                    #C026D3,
+                    #8B5CF6,
+                    #6D28D9,
+                    #FF3B5C
+                  );
+
+                  background-size: 300% 100%;
+                  background-position: 0% 50%;
+
+                  -webkit-background-clip: text;
+                  background-clip: text;
+                  color: transparent;
+                  -webkit-text-fill-color: transparent;
+
+                  animation: gradientFlow 4s ease-in-out infinite;
+                }
+
+                @keyframes gradientFlow {
+                  0% {
+                    background-position: 0% 50%;
+                  }
+
+                  50% {
+                    background-position: 100% 50%;
+                  }
+
+                  100% {
+                    background-position: 0% 50%;
+                  }
                 }
               `}</style>
 
