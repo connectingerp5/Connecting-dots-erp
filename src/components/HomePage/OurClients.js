@@ -129,49 +129,6 @@ function Stat({ number, text, Icon }) {
   );
 }
 
-function StatsBar({ statsData }) {
-  return (
-    <div className="w-[70%] mx-auto flex flex-wrap items-center justify-between gap-5 py-3 px-5 rounded-lg mb-5 bg-white shadow-sm">
-      {statsData.map((stat) => (
-        <div key={stat.text} className="flex items-center gap-4">
-          <Stat {...stat} />
-        </div>
-      ))}
-
-      {/* Google rating — pulled out of the loop, shown once */}
-      <div className="flex items-center gap-2.5 border-l border-gray-200 pl-5">
-        <div className="flex flex-col items-start">
-          <span className="text-base font-semibold text-blue-600 leading-none">
-            4.5
-          </span>
-          <img
-            src="https://res.cloudinary.com/bropujss/image/upload/v1784781687/GoogleremoveBG_kzwuip.avif"
-            alt="Google rating"
-            width={36}
-            height={20}
-            loading="lazy"
-            className="mt-1"
-          />
-        </div>
-        <div className="flex flex-col items-start gap-0.5">
-          <div className="flex gap-0.5">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Star key={i} fill="#A16207" stroke="#A16207" size={10} />
-            ))}
-          </div>
-          <span className="text-[9px] font-medium uppercase text-gray-400">
-            Google Rating
-          </span>
-        </div>
-      </div>
-
-      <button className="py-1 px-3 text-xs rounded-md bg-blue-500 font-medium text-white uppercase">
-        Book Demo
-      </button>
-    </div>
-  );
-}
-
 const MarqueeRow = ({ logos = [], direction = "left", speed = "normal", shuffle = false }) => {
   const [logosToUse, setLogosToUse] = useState(() => Array.isArray(logos) ? logos : []);
 
@@ -257,7 +214,7 @@ const OurClients = () => {
           }}
         >
 
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative my-2 md:my-0 lg:my-0 xl:my-0">
             <div className="text-center mb-4 sm:mb-14 md:mb-16">
               <div className="relative z-8">
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-slate-950 via-blue-900 to-slate-900 bg-clip-text text-transparent mb-2">

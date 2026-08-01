@@ -131,6 +131,8 @@ const getLocationMatches = (value, suggestions) => {
   return [...filtered.slice(0, 9), OTHER_LOCATION];
 };
 
+const SCROLL_SHOW_THRESHOLD = 500;
+
 function Stickyform() {
   // --- ALL HOOKS MUST BE DECLARED AT THE TOP LEVEL ---
   const [formData, setFormData] = useState({
@@ -146,6 +148,7 @@ function Stickyform() {
   const [showPopup, setShowPopup] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
   const [isFormVisible, setIsFormVisible] = useState(true); // State to control visibility based on scroll/path
+  const [hasScrolledPastThreshold, setHasScrolledPastThreshold] = useState(false); // Only show after 800px of scroll
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [activeSuggestion, setActiveSuggestion] = useState(-1);
@@ -171,6 +174,27 @@ function Stickyform() {
       footerRef.current = footerElement;
     }
   }, []); // Empty dependency array means it runs once on mount
+
+  // Effect to reveal the form only once the page has been scrolled past
+  // SCROLL_SHOW_THRESHOLD (800px). Before that, it stays hidden regardless
+  // of the other visibility rules.
+  useEffect(() => {
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setHasScrolledPastThreshold(window.scrollY > SCROLL_SHOW_THRESHOLD);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    handleScroll(); // check initial scroll position on mount
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     if (!isFormVisible || isMobileView || locationSuggestions.length > 0) {
@@ -517,12 +541,14 @@ function Stickyform() {
 
   // --- FINAL RENDER LOGIC ---
   // Component returns null if it's an admin path (check happens after all hooks)
-  // Otherwise, it renders the form if visible based on scroll/resize state
+  // Otherwise, it renders the form if visible based on scroll/resize state,
+  // and only once the page has been scrolled past SCROLL_SHOW_THRESHOLD.
   return (
     <>
-      {/* Only render the form container if not mobile AND form is visible */}
-      {!isMobileView && isFormVisible && (
-        <div className={styles.stickyformContainer}>
+      {/* Only render the form container if not mobile, form is visible,
+          AND the user has scrolled past the threshold */}
+      {!isMobileView && isFormVisible && hasScrolledPastThreshold && (
+        <div className={`${styles.stickyformContainer} transition-all duration-300 ease-in-out`}>
           {/* Form */}
           <form
             onSubmit={handleSubmit}

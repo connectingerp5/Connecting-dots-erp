@@ -105,7 +105,7 @@ const barlow = Barlow_Condensed({
   display: "swap",
 });
 
-const heroBackgroundImage = "/new.png";
+const heroBackgroundImage = "/RoboWidth.png";
 
 export default function CareerHeroSlide({ onOpenForm }) {
   return (

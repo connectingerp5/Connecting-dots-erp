@@ -122,7 +122,7 @@ const LazySection = ({ children, fallback, rootMargin = "350px", intrinsicSize }
 export default function HomeClient() {
   return (
     <>
-      <main className="flex-col justify-center">
+      <main className="flex-col justify-center overflow-y-hidden">
         <h1 className="visually-hidden">
           Job-Oriented Training That Gets You Hired
         </h1>

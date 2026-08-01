@@ -590,6 +590,15 @@ export default function PopularCourses() {
 
         <ToastContainer position="bottom-right" autoClose={5000} />
       </section>
+      <section  className="w-[80%] mx-auto grid grid-cols-3 my-8">
+        <div className="w-auto h-atuo bg-red-500">
+          <div className="w-full h-[200px] flex items-center justify-start px-3"
+            style={{backgroundImage:"url('/SAPFICO.png')", backgroundPosition:"left", backgroundSize:"cover"}}
+          >
+            {/* <h5 className="font-semibold text-xl uppercase px-2 py-5 text-[#1166ec]">sap <br/><span className="text-black">Fico</span></h5> */}
+          </div>
+          </div>
+      </section>
     </SectionBackground>
   );
 }
