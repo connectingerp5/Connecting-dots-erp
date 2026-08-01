@@ -8,6 +8,7 @@ import faqdata from "../../../public/Jsonfolder/faqdata.json";
 import WhyChooseSection from "@/components/HomePage/WhyChooseSection";
 import WhatWeOffer from "../../components/HomePage/WhatWeOffer"
 import SectionBackground from "@/components/BackgroundCss/SectionBackground";
+import RegistrationForm from "@/components/PopupForm2";
 
 const Marquee = dynamic(() => import("@/components/HomePage/Marquee2"), {
   ssr: false,
@@ -165,8 +166,6 @@ export default function HomeClient() {
         <LazySection fallback={<div style={{ minHeight: "400px" }} />}>
           <FAQAccordion data={homeFaqData} />
         </LazySection>
-
-
 
       </main>
     </>

@@ -13,6 +13,7 @@ import ServerPing from "@/components/ServerPing";
 import ConditionalAuthProvider from "@/app/conditionalprovider";
 import ClientLayoutWrapper from "@/components/ClientLayoutWrapper";
 import BackgroundAnimation from "@/components/Common/BackgroundAnimation"; // Import the new background animation component
+import Navbar2 from "@/components/Common/Navbar2";
 // --- Font Setup ---
 const lato = Lato({
   weight: ["400", "700"],
@@ -85,11 +86,12 @@ export default function RootLayout({ children }) {
 
         {/* Optional Server Ping */}
         {process.env.NEXT_PUBLIC_ENABLE_PING === "true" && <ServerPing />}
-          {/* <BackgroundAnimation />  */}
+        {/* <BackgroundAnimation />  */}
         {/* Static Components */}
         <CallAdvisorsStrip />
+        <Navbar2 />
         <Marquee />
-        <Navbar />
+        {/* <Navbar /> */}
 
         {/* Client-Side Wrapper */}
         <ConditionalAuthProvider>
@@ -101,6 +103,7 @@ export default function RootLayout({ children }) {
         <div className="app-footer">
           <Footer />
         </div>
+
 
         {/* Google Tag Manager */}
         <Script
