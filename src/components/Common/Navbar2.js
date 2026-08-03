@@ -311,6 +311,11 @@ const TONE = {
 
 const NAVBAR_EXTRA_CSS = `
 
+.cdErpNavbarRoot{
+overflow-x: hidden;
+display:flex; justify-content:center;
+align-items:center;
+}
   .cdErpNavbarRoot .caret {
     left: var(--caret, 220px);
   }
@@ -329,17 +334,6 @@ const NAVBAR_EXTRA_CSS = `
 
   /* ============================================================
      MOBILE DRAWER — SIZE / OVERFLOW CONTROL
-     This block (closed state) previously forced "width: 100vw" on
-     an element that ALSO gets "position: fixed; inset: 0" the
-     moment it opens (see the [data-open="true"] rule below).
-     100vw counts the OS scrollbar on some mobile browsers, so it
-     can render a few pixels WIDER than the real viewport — that
-     extra sliver is what was causing the sideways/horizontal
-     overflow on mobile. Using "100%" here (and removing the
-     redundant "w-screen" utility class from the JSX drawer div)
-     fixes that: "inset: 0" on the open state already pins the
-     drawer to the exact visible viewport, so we don't need an
-     explicit 100vw width at all.
      ============================================================ */
   .cdErpNavbarRoot .drawer {
     display: none;
@@ -361,8 +355,6 @@ const NAVBAR_EXTRA_CSS = `
     overflow-y: auto;
     overflow-x: hidden;
     background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
-    /* DRAWER INNER PADDING: raise/lower "14px" to add/remove
-       breathing room around every row inside the open mobile menu. */
     padding: 14px;
     box-sizing: border-box;
   }
@@ -382,9 +374,6 @@ const NAVBAR_EXTRA_CSS = `
   }
 `;
 
-// How long we wait, after the cursor leaves a trigger or panel, before
-// actually closing the menu. This is what gives the user time to travel
-// diagonally from the nav item down into the dropdown panel.
 const CLOSE_DELAY = 500;
 
 function MegaPanel({ menu, id, onNavigate, onEnter, onLeave }) {
@@ -523,8 +512,6 @@ export default function Navbar2() {
         };
     }, [placeCaret]);
 
-    // Close any open dropdown whenever the bar variant switches (static <-> pill),
-    // since the open panel belongs to whichever bar was active when it opened.
     useEffect(() => {
         setOpen(null);
     }, [scrolled]);
@@ -554,9 +541,6 @@ export default function Navbar2() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    // Close the mobile drawer if the viewport grows back into the desktop
-    // breakpoint (resize or rotate) while it's open, so it never gets stuck
-    // open behind the desktop nav.
     useEffect(() => {
         const mq = window.matchMedia("(min-width: 1024px)");
         const handleChange = (e) => {
@@ -569,16 +553,6 @@ export default function Navbar2() {
         return () => mq.removeEventListener("change", handleChange);
     }, []);
 
-    // Hover-intent open/close: entering EITHER the trigger <li> or the panel
-    // itself cancels any pending close. Leaving either one schedules a close
-    // after CLOSE_DELAY, which gives the cursor time to travel from the button
-    // down into the panel (they aren't DOM siblings, so a shared timer -
-    // rather than bounding-box math - is what makes this reliable).
-    //
-    // NOTE: hoverOpen/hoverClose are shared by BOTH bars below (full + pill).
-    // That's intentional and is what makes the dropdowns open on hover for
-    // the shrunk/pill nav items too, exactly like the full bar — each bar's
-    // <li> wires up the same two callbacks, just against its own "open" index.
     const hoverOpen = useCallback((i) => {
         if (closeTimer.current) {
             clearTimeout(closeTimer.current);
@@ -603,44 +577,37 @@ export default function Navbar2() {
 
     // ================================================================
     // FULL (non-scrolled) BAR
-    // Kept as its own function, separate from the pill bar below, so you
-    // can freely change one bar's spacing/sizing without ever touching
-    // the other — even though both currently use the same Tailwind
-    // classes/values, they no longer share a single ternary-based JSX
-    // block like the old renderBar(variant) did.
     // ================================================================
     const renderFullBar = () => (
-        <div className="relative w-full max-w-full" ref={fullBarRef}>
+        <div className="w-full" ref={fullBarRef}>
             <nav
-                // WIDTH / GAP CONTROL (full bar): "justify-evenly" spreads the
-                // logo / nav-list / Enquire button across the full nav width
-                // with equal space around each — this is what centers the nav
-                // items now that the <ul> below no longer uses "flex-1".
-                // "px-3 sm:px-4 lg:px-5" is this bar's own left/right padding.
-                className="flex items-center justify-evenly overflow-hidden border-b border-slate-200 bg-gradient-to-b from-white via-slate-50 to-blue-50/80 px-3 py-1 sm:px-4 lg:px-5"
+                // ============================================================
+                // FULL BAR HEIGHT CONTROL
+                // Overall height comes from THIS py value plus the logo size
+                // and nav-item/CTA py below — not a fixed height property.
+                // To adjust, tune in this order:
+                //   1. This "py-0.5" (nav's own vertical padding) — biggest lever
+                //   2. Logo classes just below ("h-8 sm:h-12")
+                //   3. Nav item "py-1" and CTA "py-1" further down
+                //   4. Burger button "h-[30px] w-[30px]" if it looks oversized
+                // ============================================================
+                className="flex items-center justify-evenly overflow-hidden border-b border-slate-200 bg-gradient-to-b from-white via-slate-50 to-blue-50/80 px-3 sm:px-4 lg:px-5 relative"
                 aria-label="Main"
             >
-                <Link href="/" className="flex shrink-0 items-center box-border px-2 py-1 text-decoration-none">
-                    {/* LOGO SIZE CONTROL: sized responsively so it doesn't push the
-                        burger button off-screen on small phones (this — a fixed,
-                        non-shrinking logo width — was the main cause of the mobile
-                        horizontal overflow). Desktop keeps the larger h-16/w-28 size
-                        you set; it only shrinks below the sm breakpoint. */}
-                    <AnimatedLogo className="h-6 w-6 shrink-0 transition-all duration-300 sm:h-[26px] sm:w-[26px]" />
+                <Link href="/" className="flex shrink-0 items-center box-border px-2 py-0.5 text-decoration-none w-48">
+                    {/* LOGO SIZE CONTROL — lever #2 above */}
+                    <AnimatedLogo className="h-5 w-5 shrink-0 transition-all duration-300 sm:h-[22px] sm:w-[22px]" />
                     <Image
                         src="https://res.cloudinary.com/bropujss/image/upload/v1783687070/logo_rju9sa_scdui4.webp"
                         alt="Connecting Dots ERP Logo"
-                        width={150}
+                        width={10}
                         height={120}
                         loading="lazy"
-                        sizes="(max-width: 640px) 80px, 150px"
-                        className="h-10 w-auto shrink-0 object-contain sm:h-16 sm:w-28"
+                        sizes="(max-width: 640px) 100px, 150px"
+                        className="h-12  w-[10vw] shrink-0 object-contain sm:h-12 sm:w-24"
                     />
                 </Link>
 
-                {/* NAV ITEMS — inter-item gap control: "gap-4" spaces the SAP / IT /
-                    HR / Placements / About us items apart. Raise/lower it to widen
-                    or tighten that spacing. */}
                 <ul className="desktop-nav flex items-center justify-center gap-4">
                     {NAV_ITEMS.map((item, i) =>
                         item.menu ? (
@@ -652,7 +619,8 @@ export default function Navbar2() {
                             >
                                 <button
                                     type="button"
-                                    className="relative mx-1 flex items-center gap-1.5 rounded-[10px] px-2.5 py-1.5 text-[14.5px] font-semibold text-slate-700 transition-colors duration-200 hover:text-blue-700"
+                                    // Lever #3: py-1
+                                    className="relative mx-1 flex items-center gap-1.5 whitespace-nowrap rounded-[10px] px-2.5 py-1 text-[14.5px] font-semibold text-slate-700 transition-colors duration-200 hover:text-blue-700"
                                     data-tab={i}
                                     data-open={open === i}
                                     aria-expanded={open === i}
@@ -660,13 +628,13 @@ export default function Navbar2() {
                                     onClick={() => setOpen(open === i ? null : i)}
                                 >
                                     {item.label}
-                                    <ChevronDown className={`h-[14px] w-[14px] text-slate-400 transition-transform duration-300 ${open === i ? "rotate-180 text-blue-700" : ""}`} />
+                                    <ChevronDown className={`h-[14px] w-[14px] shrink-0 text-slate-400 transition-transform duration-300 ${open === i ? "rotate-180 text-blue-700" : ""}`} />
                                     <span className={`absolute bottom-[-6px] left-2 right-2 h-1 rounded-b-full bg-gradient-to-r from-blue-700 via-blue-500 to-blue-400 transition-opacity duration-200 ${open === i ? "opacity-100" : "opacity-0"}`} aria-hidden="true" />
                                 </button>
                             </li>
                         ) : (
                             <li key={item.label} className="relative flex items-center" onMouseEnter={() => hoverOpen(null)}>
-                                <Link href={item.href || "/"} className="relative mx-1 flex items-center rounded-[10px] px-2.5 py-1.5 text-[14.5px] font-semibold text-slate-700 transition-colors duration-200 hover:text-blue-700">
+                                <Link href={item.href || "/"} className="relative mx-1 flex items-center whitespace-nowrap rounded-[10px] px-2.5 py-1 text-[14.5px] font-semibold text-slate-700 transition-colors duration-200 hover:text-blue-700">
                                     {item.label}
                                 </Link>
                             </li>
@@ -674,17 +642,15 @@ export default function Navbar2() {
                     )}
                 </ul>
 
-                {/* GAP TO CTA: "ml-4" adds extra breathing room on top of whatever
-                    "justify-evenly" already gives this button. Set to ml-0 if the
-                    evenly-spread layout alone gives you enough gap. */}
-                <Link href={ENQUIRE_HREF} className="desktop-cta ml-4 inline-flex shrink-0 items-center gap-1.5 rounded-[11px] bg-gradient-to-b from-blue-600 to-blue-700 px-3.5 py-1.5 text-[13px] font-semibold text-white shadow-[0_1px_0_rgba(255,255,255,0.45)_inset,_0_-2px_0_rgba(23,54,140,0.5)_inset,_0_12px_22px_-10px_rgba(37,99,235,0.6)] transition-transform duration-150 hover:-translate-y-0.5">
+                <Link href={ENQUIRE_HREF} className="desktop-cta ml-4 inline-flex shrink-0 items-center gap-1.5 rounded-[11px] bg-gradient-to-b from-blue-600 to-blue-700 px-3.5 py-1 text-[13px] font-semibold text-white shadow-[0_1px_0_rgba(255,255,255,0.45)_inset,_0_-2px_0_rgba(23,54,140,0.5)_inset,_0_12px_22px_-10px_rgba(37,99,235,0.6)] transition-transform duration-150 hover:-translate-y-0.5">
                     <PhoneIcon />
                     Enquire Now
                 </Link>
 
                 <button
                     type="button"
-                    className="burger ml-auto grid h-[34px] w-[34px] shrink-0 place-items-center rounded-[12px] border border-slate-200 bg-gradient-to-b from-white to-blue-50 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]"
+                    // Lever #4: 30px — bump back to 34px if it looks too small
+                    className="burger ml-auto grid h-[30px] w-[30px] shrink-0 place-items-center rounded-[12px] border border-slate-200 bg-gradient-to-b from-white to-blue-50 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]"
                     data-open={mobileOpen}
                     aria-expanded={mobileOpen}
                     aria-controls="nav-drawer"
@@ -704,7 +670,15 @@ export default function Navbar2() {
                     <div
                         key={item.label}
                         id={`mega-full-${i}`}
-                        className={`pointer-events-none absolute left-0 right-0 top-full z-[2147483000] pt-1 opacity-0 transition-all duration-200 ${open === i ? "pointer-events-auto visible opacity-100 translate-y-0" : "invisible opacity-0 -translate-y-2"}`}
+                        // BUG-1 FIX: gate on "!scrolled" so this panel can never show
+                        // while the pill bar is the visible one (they share `open`).
+                        // BUG-3 FIX: pointer-events-none/auto now live ONLY in their
+                        // own branch, never both at once — avoids the Tailwind
+                        // cascade-order conflict that made clicks unreliable.
+                        className={`absolute left-0 right-0 top-full z-[2147483000] pt-1 transition-all duration-200 ${open === i && !scrolled
+                            ? "pointer-events-auto visible opacity-100 translate-y-0"
+                            : "pointer-events-none invisible opacity-0 -translate-y-2"
+                            }`}
                         data-panel={i}
                         data-open={open === i}
                         aria-labelledby={`mega-full-${i}-t`}
@@ -724,24 +698,14 @@ export default function Navbar2() {
 
     // ================================================================
     // PILL / SHRUNK BAR (shows once the page is scrolled)
-    // Deliberately its OWN function/JSX rather than a branch of the full
-    // bar's markup, so its width, roundness, and spacing can be tuned
-    // independently from the full bar above. Same hover-to-open dropdown
-    // logic is wired up here too (hoverOpen/hoverClose), which is why the
-    // mega menus open on hover for these shrunk nav items as well.
     // ================================================================
     const renderPillBar = () => (
-        // PILL WIDTH CONTROL: unchanged — still max-w-[800px]
-        <div className="relative mx-auto w-full max-w-[1000px] rounded-8xl" ref={pillBarRef}>
+        <div className="relative mx-auto w-full max-w-[1000px] px-auto rounded-8xl" ref={pillBarRef}>
             <nav
-                // COMPACT PASS: py-1 → py-0.5, px-6/sm:px-3 → px-4/sm:px-2
-                // This is what actually shrinks the pill's visual height/tightness
-                // to match the reference — container size itself is untouched.
                 className="flex items-center justify-evenly overflow-hidden rounded-[26px] border border-white/90 bg-gradient-to-b from-white via-slate-50 to-blue-50/90 px-4 py-0.5 shadow-[0_1px_0_rgba(255,255,255,0.95)_inset,_0_20px_40px_-20px_rgba(30,64,175,0.26),_0_2px_6px_rgba(30,64,175,0.07)] sm:px-2"
                 aria-label="Main"
             >
                 <Link href="/" className="flex shrink-0 items-center box-border py-0.5 text-decoration-none">
-                    {/* Logo shrunk to match reference proportions */}
                     <AnimatedLogo className="h-5 w-5 shrink-0 transition-all duration-300 sm:h-[22px] sm:w-[22px]" />
                     <Image
                         src="https://res.cloudinary.com/bropujss/image/upload/v1783687070/logo_rju9sa_scdui4.webp"
@@ -749,13 +713,11 @@ export default function Navbar2() {
                         width={150}
                         height={120}
                         loading="lazy"
-                        sizes="(max-width: 500px) 70px, 130px"
-                        className="h-8 w-7 shrink-0 object-contain sm:h-12 sm:w-20"
+                        sizes="(max-width: 500px) 100px, 130px"
+                        className="h-20 w-50 shrink-0 object-contain sm:h-12 sm:w-20"
                     />
                 </Link>
 
-                {/* Tighter gap between nav items — gap-4 → gap-2 */}
-                {/* Add shrink-0 so items don't get squeezed by the flex container */}
                 <ul className="desktop-nav flex items-center justify-center gap-2 shrink-0">
                     {NAV_ITEMS.map((item, i) =>
                         item.menu ? (
@@ -815,7 +777,13 @@ export default function Navbar2() {
                     <div
                         key={item.label}
                         id={`mega-pill-${i}`}
-                        className={`pointer-events-none absolute left-0 right-0 top-full z-[2147483000] pt-1 opacity-0 transition-all duration-200 ${open === i ? "pointer-events-auto visible opacity-100 translate-y-0" : "invisible opacity-0 -translate-y-2"}`}
+                        // BUG-1 FIX: gate on "scrolled" so this panel can never show
+                        // while the full bar is the visible one.
+                        // BUG-3 FIX: same pointer-events branch split as full bar.
+                        className={`absolute left-0 right-0 top-full z-[2147483000] pt-1 transition-all duration-200 ${open === i && scrolled
+                            ? "pointer-events-auto visible opacity-100 translate-y-0"
+                            : "pointer-events-none invisible opacity-0 -translate-y-2"
+                            }`}
                         data-panel={i}
                         data-open={open === i}
                         aria-labelledby={`mega-pill-${i}-t`}
@@ -834,148 +802,108 @@ export default function Navbar2() {
     );
 
     return (
-        // Single root carrying cdErpNavbarRoot so every ".cdErpNavbarRoot .drawer"
-        // / ".cdErpNavbarRoot .burger" etc. descendant selector below actually
-        // matches. (Putting this class directly on the drawer div itself, as a
-        // previous version did, broke the selector and made the drawer render
-        // as a plain visible block regardless of mobileOpen.)
-        <Container>
-            <div className="cdErpNavbarRoot box-border">
-                <style>{NAVBAR_EXTRA_CSS}</style>
+        // <Container >
+        <div className="cdErpNavbarRoot box-border w-[100vw] absolute left-0 z-80 flex items-center justify-center ">
+            <style>{NAVBAR_EXTRA_CSS}</style>
 
-                {/* Navbar 1: the normal bar. No fixed/sticky positioning at all - it
-                 lives in the document flow like any other section and scrolls
-                 away naturally once the user scrolls past it.
-                 CONTAINER WIDTH: this outer <Container className="... px-6"> is the
-                 one that sets the FULL (non-scrolled) navbar's overall width via
-                 Container's own max-width, left untouched here on purpose. */}
-                <Container className="isolate relative z-[60] px-6">
-                    {renderFullBar()}
-                </Container>
+            <Container className="">
+                {renderFullBar()}
+            </Container>
 
-                {/* Navbar 2: the shrunk pill bar. Always position:fixed, but hidden
-                 (opacity + pointer-events) until the page has been scrolled past
-                 the point where Navbar 1 would have scrolled out of view. Once
-                 visible it overlays the page content, staying pinned to the top
-                 for the rest of the scroll.
-                 PILL WIDTH: the real width control for the scrolled/pill state is
-                 the "max-w-[1400px]" inside renderPillBar() above - this outer
-                 <Container> is just the full-width positioning shell. */}
-                <Container
-                    className={`isolate fixed inset-x-0 top-0 z-[2147483000] pt-2 transition-all duration-300 ${scrolled ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"
-                        }`}
-                >
-                    {renderPillBar()}
-                </Container>
+            <Container
+                className={`isolate fixed inset-x-0 top-0 z-[2147483000] pt-2 transition-all duration-300 ${scrolled ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"
+                    }`}
+            >
+                {renderPillBar()}
+            </Container>
 
-                {/* ================================================================
-                    MOBILE DRAWER — WIDTH / OVERFLOW FIX
-                    Removed the "w-screen" utility (== width:100vw) that was stacking
-                    with the CSS rule above and could render wider than the real
-                    viewport on mobile browsers, plus the contradictory
-                    "overflow-x-visible" utility that fought the CSS's
-                    "overflow-x: hidden". This div now just relies on "inset: 0"
-                    (set in NAVBAR_EXTRA_CSS when open) to size itself exactly to the
-                    viewport, so there's nothing left that can push it wider and
-                    create the sideways scroll. */}
-                <div id="nav-drawer" className="drawer pointer-events-auto w-full max-w-full" data-open={mobileOpen}>
-                    {/* DRAWER HEADER SPACING: "p-2.5" pads the logo/close-button row;
-                        "mb-2" is the gap beneath it before the menu list starts. */}
-                    <div className="mb-2 flex items-center justify-between rounded-[16px] p-2.5">
-                        <Link href="/" className="flex items-center gap-2 text-decoration-none" onClick={() => setMobileOpen(false)}>
-                            <AnimatedLogo className="h-[36px] w-[36px] shrink-0" />
-                            <Image
-                                src="https://res.cloudinary.com/bropujss/image/upload/v1783687070/logo_rju9sa_scdui4.webp"
-                                alt="Connecting Dots ERP Logo"
-                                width={130}
-                                height={100}
-                                loading="lazy"
-                                sizes="130px"
-                                className="h-[36px] w-auto shrink-0 object-contain"
-                            />
-                        </Link>
-
-                        <button
-                            type="button"
-                            aria-label="Close menu"
-                            onClick={() => setMobileOpen(false)}
-                            className="grid h-[32px] w-[32px] shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]"
-                        >
-                            <CloseIcon />
-                        </button>
-                    </div>
-
-                    {/* TOP-LEVEL ROW SPACING: "gap-1.5" controls the vertical space
-                        between "SAP S/4 HANA", "IT Courses with AI", "HR Courses",
-                        "Placements", "About us" rows in the mobile menu. */}
-                    <ul className="flex flex-col gap-1.5 p-0">
-                        {NAV_ITEMS.map((item, i) => (
-                            <li key={item.label}>
-                                {item.menu ? (
-                                    <>
-                                        <button
-                                            type="button"
-                                            className="flex w-full items-center justify-between rounded-[12px] border border-slate-200 bg-gradient-to-b from-white to-slate-50 px-3.5 py-3 text-[14.5px] font-semibold text-slate-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]"
-                                            data-open={section === i}
-                                            aria-expanded={section === i}
-                                            onClick={() => setSection(section === i ? null : i)}
-                                        >
-                                            {item.label}
-                                            <ChevronDown className={`h-[14px] w-[14px] text-slate-400 transition-transform duration-300 ${section === i ? "rotate-180 text-blue-700" : ""}`} />
-                                        </button>
-
-                                        {section === i && (
-                                            // ACCORDION PANEL SPACING: "p-2.5" pads this expanded
-                                            // panel; each column below uses "mb-2.5" for vertical
-                                            // separation between e.g. "SAP Functional" and
-                                            // "SAP Technical" groups.
-                                            <div className="mt-1.5 max-w-full overflow-hidden rounded-[14px] border border-slate-200 bg-slate-50 p-2.5 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]">
-                                                {item.menu.columns.map((col) => (
-                                                    <div key={col.title} className="mb-2.5 last:mb-0">
-                                                        <div className="mb-1.5 flex items-center gap-2">
-                                                            <span className={`grid h-[30px] w-[30px] place-items-center rounded-[10px] ${TONE[col.icon]}`}>
-                                                                <ColIcon name={col.icon} />
-                                                            </span>
-                                                            <span className="text-[13.5px] font-bold text-slate-800">{col.title}</span>
-                                                        </div>
-
-                                                        {/* LINK ROW SPACING: "gap-1.5" between individual course
-                                                            links inside a mobile accordion column. */}
-                                                        <ul className="flex flex-col gap-1.5 p-0">
-                                                            {col.links.map((l) => (
-                                                                <li key={l.label}>
-                                                                    <Link href={l.href} className="flex items-center justify-between rounded-[10px] border border-slate-200 bg-white px-2.5 py-2 text-[13.5px] font-semibold text-slate-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]" onClick={() => setMobileOpen(false)}>
-                                                                        <span className="truncate">{l.label}</span>
-                                                                        <ChevronRight className="h-3.5 w-3.5 shrink-0 text-slate-500" />
-                                                                    </Link>
-                                                                </li>
-                                                            ))}
-                                                        </ul>
-                                                    </div>
-                                                ))}
-
-                                                <Link href={item.menu.promo.ctaHref} className="mt-1.5 inline-flex w-full items-center justify-center gap-1.5 rounded-[10px] border border-blue-200 bg-gradient-to-b from-white to-slate-50 px-3 py-2 text-[12px] font-semibold text-blue-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]" onClick={() => setMobileOpen(false)}>
-                                                    {item.menu.promo.ctaLabel}
-                                                    <ArrowRight />
-                                                </Link>
-                                            </div>
-                                        )}
-                                    </>
-                                ) : (
-                                    <Link href={item.href || "/"} className="flex w-full items-center rounded-[12px] border border-slate-200 bg-gradient-to-b from-white to-slate-50 px-3.5 py-3 text-[14.5px] font-semibold text-slate-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]" onClick={() => setMobileOpen(false)}>
-                                        {item.label}
-                                    </Link>
-                                )}
-                            </li>
-                        ))}
-                    </ul>
-
-                    <Link href={ENQUIRE_HREF} className="mt-2.5 inline-flex w-full items-center justify-center gap-2 rounded-[14px] bg-gradient-to-b from-blue-600 to-blue-700 px-3.5 py-3 text-[13.5px] font-semibold text-white shadow-[0_1px_0_rgba(255,255,255,0.45)_inset,_0_-2px_0_rgba(23,54,140,0.5)_inset,_0_12px_22px_-10px_rgba(37,99,235,0.6)]" onClick={() => setMobileOpen(false)}>
-                        <PhoneIcon />
-                        Enquire Now
+            <div id="nav-drawer" className="drawer pointer-events-auto w-full max-w-full" data-open={mobileOpen}>
+                <div className="mb-2 flex items-center justify-between rounded-[16px] p-2.5">
+                    <Link href="/" className="flex items-center gap-2 text-decoration-none" onClick={() => setMobileOpen(false)}>
+                        <AnimatedLogo className="h-[36px] w-[36px] shrink-0" />
+                        <Image
+                            src="https://res.cloudinary.com/bropujss/image/upload/v1783687070/logo_rju9sa_scdui4.webp"
+                            alt="Connecting Dots ERP Logo"
+                            width={130}
+                            height={100}
+                            loading="lazy"
+                            sizes="130px"
+                            className="h-[36px] w-auto shrink-0 object-contain"
+                        />
                     </Link>
+
+                    <button
+                        type="button"
+                        aria-label="Close menu"
+                        onClick={() => setMobileOpen(false)}
+                        className="grid h-[32px] w-[32px] shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]"
+                    >
+                        <CloseIcon />
+                    </button>
                 </div>
+
+                <ul className="flex flex-col gap-1.5 p-0">
+                    {NAV_ITEMS.map((item, i) => (
+                        <li key={item.label}>
+                            {item.menu ? (
+                                <>
+                                    <button
+                                        type="button"
+                                        className="flex w-full items-center justify-between rounded-[12px] border border-slate-200 bg-gradient-to-b from-white to-slate-50 px-3.5 py-3 text-[14.5px] font-semibold text-slate-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]"
+                                        data-open={section === i}
+                                        aria-expanded={section === i}
+                                        onClick={() => setSection(section === i ? null : i)}
+                                    >
+                                        {item.label}
+                                        <ChevronDown className={`h-[14px] w-[14px] text-slate-400 transition-transform duration-300 ${section === i ? "rotate-180 text-blue-700" : ""}`} />
+                                    </button>
+
+                                    {section === i && (
+                                        <div className="mt-1.5 max-w-full overflow-hidden rounded-[14px] border border-slate-200 bg-slate-50 p-2.5 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]">
+                                            {item.menu.columns.map((col) => (
+                                                <div key={col.title} className="mb-2.5 last:mb-0">
+                                                    <div className="mb-1.5 flex items-center gap-2">
+                                                        <span className={`grid h-[30px] w-[30px] place-items-center rounded-[10px] ${TONE[col.icon]}`}>
+                                                            <ColIcon name={col.icon} />
+                                                        </span>
+                                                        <span className="text-[13.5px] font-bold text-slate-800">{col.title}</span>
+                                                    </div>
+
+                                                    <ul className="flex flex-col gap-1.5 p-0">
+                                                        {col.links.map((l) => (
+                                                            <li key={l.label}>
+                                                                <Link href={l.href} className="flex items-center justify-between rounded-[10px] border border-slate-200 bg-white px-2.5 py-2 text-[13.5px] font-semibold text-slate-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]" onClick={() => setMobileOpen(false)}>
+                                                                    <span className="truncate">{l.label}</span>
+                                                                    <ChevronRight className="h-3.5 w-3.5 shrink-0 text-slate-500" />
+                                                                </Link>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            ))}
+
+                                            <Link href={item.menu.promo.ctaHref} className="mt-1.5 inline-flex w-full items-center justify-center gap-1.5 rounded-[10px] border border-blue-200 bg-gradient-to-b from-white to-slate-50 px-3 py-2 text-[12px] font-semibold text-blue-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]" onClick={() => setMobileOpen(false)}>
+                                                {item.menu.promo.ctaLabel}
+                                                <ArrowRight />
+                                            </Link>
+                                        </div>
+                                    )}
+                                </>
+                            ) : (
+                                <Link href={item.href || "/"} className="flex w-full items-center rounded-[12px] border border-slate-200 bg-gradient-to-b from-white to-slate-50 px-3.5 py-3 text-[14.5px] font-semibold text-slate-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]" onClick={() => setMobileOpen(false)}>
+                                    {item.label}
+                                </Link>
+                            )}
+                        </li>
+                    ))}
+                </ul>
+
+                <Link href={ENQUIRE_HREF} className="mt-2.5 inline-flex w-full items-center justify-center gap-2 rounded-[14px] bg-gradient-to-b from-blue-600 to-blue-700 px-3.5 py-3 text-[13.5px] font-semibold text-white shadow-[0_1px_0_rgba(255,255,255,0.45)_inset,_0_-2px_0_rgba(23,54,140,0.5)_inset,_0_12px_22px_-10px_rgba(37,99,235,0.6)]" onClick={() => setMobileOpen(false)}>
+                    <PhoneIcon />
+                    Enquire Now
+                </Link>
             </div>
-        </Container>
+        </div>
+        // </Container>
     );
 }
