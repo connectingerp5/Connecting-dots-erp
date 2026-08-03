@@ -25,15 +25,20 @@ function seededRandom(seed) {
 // actual asset filenames in /public.
 const COURSE_META = [
   { key: "fico", title: "sap", subtitle: "Fico", img: "/SAPFICO.png", duration: "2-4 Months",from:'#f8fafe', to:"#f4f6fd",card:"#DBEAFE",head:"#1166ec" },
-  { key: "sd", title: "sap", subtitle: "SD", img: "/sapsd.png", duration: "2-4 Months", from:"#fdefd9", to:"#fdefd8", card:"#fef5e6",head:"#fdc53b" },
   { key: "ai", title: "AI", subtitle: "COURSES", img: "/ai.png", duration: "2-4 Months", from:"#f0ecfb", to:"#f0ecfb",card:"#dfccfd", head:"#8b40f4" },
-  { key: "data", title: "DATA", subtitle: "ANALYTICS", img: "/dataanalytics.png", duration: "2-4 Months", from:"#d6ead8", to:"#d6ead8", card:"#e7f3eb",head:"#5ed0a0" },
   { key: "hr", title: "HR", subtitle: "MANAGEMENT", img: "/hrmanagement.png", duration: "2-4 Months", from:"#fce4ec", to:"#fce4ec", card:"#fee7ed",head:"#fa4c79" },
+  { key: "data", title: "DATA", subtitle: "ANALYTICS", img: "/dataanalytics.png", duration: "2-4 Months", from:"#d6ead8", to:"#d6ead8", card:"#e7f3eb",head:"#5ed0a0" },
   { key: "py", title: "PYTHON", subtitle: "PROGRAMMING", img: "/python.png", duration: "2-4 Months", from:"#d0ddf9", to:"#d0ddf9", card:"#dfe8fc",head:"#003a8e" },
+  { key: "sd", title: "sap", subtitle: "SD", img: "/sapsd.png", duration: "2-4 Months", from:"#fdefd9", to:"#fdefd8", card:"#fef5e6",head:"#fdc53b" },
 ];
 
 // How often the seats / timer data refreshes.
 const RESET_INTERVAL_MS = 60 * 60 * 1000; // 1 hour
+
+// Autoplay tuning (mobile / tablet carousel only)
+const AUTOPLAY_INTERVAL_MS = 4000; // how often it advances
+const AUTOPLAY_RESUME_DELAY_MS = 6000; // how long to pause after manual interaction
+const DESKTOP_BREAKPOINT = "(min-width: 1440px)"; // matches the 3x3 grid breakpoint below
 
 function getHourBucket() {
   return Math.floor(Date.now() / RESET_INTERVAL_MS);
@@ -184,9 +189,20 @@ export default function PopularCourses() {
   const [hourBucket, setHourBucket] = useState(getHourBucket());
   const [courses, setCourses] = useState(() => buildCourses(getHourBucket()));
 
-  // ---- mobile carousel state ----
+  // ---- mobile/tablet carousel state ----
   const trackRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  // ---- autoplay state (mobile/tablet only, desktop grid never autoplays) ----
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const resumeTimeoutRef = useRef(null);
+  // Mirrors activeIndex so the autoplay interval always reads the latest
+  // value without needing to restart the interval on every index change.
+  const activeIndexRef = useRef(0);
+  useEffect(() => {
+    activeIndexRef.current = activeIndex;
+  }, [activeIndex]);
 
   useEffect(() => {
     // Every minute, check whether we've crossed into a new hour bucket.
@@ -204,6 +220,16 @@ export default function PopularCourses() {
     return () => clearInterval(check);
   }, []);
 
+  // Track whether we're at the desktop 3x3 grid breakpoint — autoplay
+  // and the carousel controls are irrelevant there.
+  useEffect(() => {
+    const mq = window.matchMedia(DESKTOP_BREAKPOINT);
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
   const scrollToIndex = (index) => {
     const track = trackRef.current;
     if (!track) return;
@@ -215,8 +241,41 @@ export default function PopularCourses() {
     setActiveIndex(clamped);
   };
 
-  const handlePrev = () => scrollToIndex(activeIndex - 1);
-  const handleNext = () => scrollToIndex(activeIndex + 1);
+  // Same as scrollToIndex but wraps around, used by autoplay so it
+  // loops back to the first card after the last one.
+  const scrollToIndexLooping = (index) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const wrapped = (index + courses.length) % courses.length;
+    const slide = track.children[wrapped];
+    if (slide) {
+      track.scrollTo({ left: slide.offsetLeft, behavior: "smooth" });
+    }
+    setActiveIndex(wrapped);
+  };
+
+  // Pausing on manual interaction, then auto-resuming after a delay,
+  // keeps autoplay from fighting the user mid-swipe/click.
+  const pauseAutoplay = () => {
+    setIsPaused(true);
+    if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+    resumeTimeoutRef.current = setTimeout(() => setIsPaused(false), AUTOPLAY_RESUME_DELAY_MS);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+    };
+  }, []);
+
+  const handlePrev = () => {
+    pauseAutoplay();
+    scrollToIndex(activeIndex - 1);
+  };
+  const handleNext = () => {
+    pauseAutoplay();
+    scrollToIndex(activeIndex + 1);
+  };
 
   // Keep activeIndex in sync if the user swipes the carousel manually.
   // Uses a single card's width (not the container's) so this stays correct
@@ -224,15 +283,50 @@ export default function PopularCourses() {
   const handleScroll = () => {
     const track = trackRef.current;
     if (!track) return;
-    const firstCard = track.children[0];
-    const step = firstCard ? firstCard.offsetWidth : track.clientWidth;
+    const first = track.children[0];
+    const second = track.children[1];
+    // Distance between two consecutive cards' offsetLeft includes the
+    // gap between them, unlike a single card's offsetWidth — using just
+    // offsetWidth under-counts the step and causes index drift.
+    const step = first && second ? second.offsetLeft - first.offsetLeft : first ? first.offsetWidth : track.clientWidth;
     if (!step) return;
     const idx = Math.round(track.scrollLeft / step);
     setActiveIndex((prev) => (prev === idx ? prev : idx));
   };
 
+  // Auto-scroll: mobile + tablet carousel only. Desktop (>=1440px) is a
+  // static grid and never autoplays. Pauses while the user is interacting
+  // and whenever the tab isn't visible.
+  useEffect(() => {
+    if (isDesktop || isPaused) return;
+    if (typeof document !== "undefined" && document.hidden) return;
+
+    const id = setInterval(() => {
+      // Read the latest index from the ref (not the closed-over `activeIndex`)
+      // and let scrollToIndexLooping do the single state update — advancing
+      // by exactly one card per tick.
+      const next = activeIndexRef.current + 1;
+      scrollToIndexLooping(next);
+    }, AUTOPLAY_INTERVAL_MS);
+
+    return () => clearInterval(id);
+  }, [isDesktop, isPaused, courses.length]);
+
+  // Also pause/resume autoplay when the browser tab is hidden/shown.
+  useEffect(() => {
+    const onVisibility = () => {
+      if (document.hidden) {
+        setIsPaused(true);
+      } else {
+        setIsPaused(false);
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, []);
+
   return (
-    <AmbientBlueBackground>
+    <AmbientBlueBackground className="max-w-[1800px] mx-auto">
       <section
         className="relative w-full max-w-[1800px] mx-auto overflow-hidden py-16"
       >
@@ -250,13 +344,16 @@ export default function PopularCourses() {
 
           {/*
             Breakpoints:
-            - below 768px (mobile): 1 card per view, carousel
-            - 768px–1439px (tablet / normal laptop): 2 cards per view, carousel
-            - 1440px and up: static 3x3 grid, no carousel
+            - below 768px (mobile): 1 card per view, carousel, autoplay
+            - 768px–1439px (tablet / normal laptop): 2 cards per view, carousel, autoplay
+            - 1440px and up: static 3x3 grid, no carousel, no autoplay
           */}
           <div
             ref={trackRef}
             onScroll={handleScroll}
+            onTouchStart={pauseAutoplay}
+            onMouseDown={pauseAutoplay}
+            onWheel={pauseAutoplay}
             className="no-scrollbar flex items-stretch min-[1440px]:grid min-[1440px]:grid-cols-3 min-[1440px]:items-stretch gap-4 my-8 overflow-x-auto min-[1440px]:overflow-visible snap-x snap-mandatory scroll-smooth"
           >
             {courses.map((course) => (

@@ -93,8 +93,10 @@ export default function AmbientBlueBackground({
         .abg-decoC { width: 220px; height: 220px; top: 30px; right: 14%; border-width: 14px; opacity: 0.4; }
 
         .abg-content {
+          max-width:"1800px";
           position: relative;
           z-index: 2;
+          overflow:"hidden";
         }
 
         @media (prefers-reduced-motion: reduce) {
