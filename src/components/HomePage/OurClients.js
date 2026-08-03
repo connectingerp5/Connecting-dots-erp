@@ -214,7 +214,7 @@ const OurClients = () => {
           }}
         >
 
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative my-2 md:my-0 lg:my-0 xl:my-0">
+          <div className="container w-full mx-auto px-0 md:px-4 lg:px-8 relative my-2 md:my-0 lg:my-0 xl:my-0">
             <div className="text-center mb-4 sm:mb-14 md:mb-16">
               <div className="relative z-8">
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-slate-950 via-blue-900 to-slate-900 bg-clip-text text-transparent mb-2">
@@ -225,7 +225,7 @@ const OurClients = () => {
               </div>
             </div>
 
-            <div className="w-[90%] mx-auto pb-8 mt-8">
+            <div className="w-full md:w-[90%] lg:w-[90%] xl:w-[90%] mx-auto pb-8 mt-8">
               <TrustBar />
             </div>
 

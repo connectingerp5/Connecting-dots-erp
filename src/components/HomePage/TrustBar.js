@@ -56,6 +56,7 @@ const Star = (
     <path d="m12 2 2.9 6.6 7.1.7-5.4 4.8 1.6 7L12 17.5 5.8 21l1.6-7L2 9.3l7.1-.7L12 2z" />
   </svg>
 );
+
 const GoogleIcon = ({ className = "w-5 h-5" }) => (
   <svg
     viewBox="-3 0 262 262"
@@ -90,10 +91,11 @@ export default function TrustBar() {
           {ITEMS.map((it, i) => (
             <li key={i} className={styles.item} style={{ "--tint": it.tint }}>
               <span className={styles.iconWell}>
-                <span className={styles.iconDisc}>
-                  {it.icon}
-                </span>
+                <span className={styles.iconDisc}>{it.icon}</span>
               </span>
+
+              <span className={`md:hidden lg:hidden xl:hidden ${styles.divider}`} aria-hidden="true"></span>
+
               <span className={styles.text}>
                 <span className={styles.value}>{it.value}</span>
                 <span className={styles.label}>{it.label}</span>
@@ -102,28 +104,27 @@ export default function TrustBar() {
           ))}
 
           <li className={`${styles.item} ${styles.rating}`}>
-            <span className={`${styles.text} flex flex-row items-center gap-3`}>
-              {/* Left */}
-              <span className="flex flex-col">
-                <span className={styles.value}>4.8/5</span>
-
-                <span
-                  className={styles.stars}
-                  aria-label="4.8 out of 5 stars on Google"
-                >
-                  {Star}
-                  {Star}
-                  {Star}
-                  {Star}
-                  {Star}
-                </span>
+            {/* Left: value + stars, stacked */}
+            <span className={styles.ratingLeft}>
+              <span className={styles.value}>4.8/5</span>
+              <span
+                className={styles.stars}
+                aria-label="4.8 out of 5 stars on Google"
+              >
+                {Star}
+                {Star}
+                {Star}
+                {Star}
+                {Star}
               </span>
+            </span>
 
-              {/* Right */}
-              <span className="flex flex-col items-center">
-                <GoogleIcon className="w-5 h-5" />
-                <span className={styles.gLabel}>GOOGLE RATING</span>
-              </span>
+            {/* Center: pipe */}
+            <span className={` md:hidden lg:hidden xl:hidden ${styles.divider}`} aria-hidden="true"></span>
+
+            {/* Right: Google icon only, centered */}
+            <span className={styles.ratingRight}>
+              <GoogleIcon className="w-8 h-8 md:w-8 md:h-8 lg:w-8 lg:h-8 xl:w-8 xl:h-8" />
             </span>
           </li>
 

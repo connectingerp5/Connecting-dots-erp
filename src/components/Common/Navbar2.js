@@ -179,7 +179,7 @@ const ENQUIRE_HREF = "/contactus";
 const stroke = {
     fill: "none",
     stroke: "currentColor",
-    strokeWidth: 1.85,
+    strokeWidth: 1.50,
     strokeLinecap: "round",
     strokeLinejoin: "round",
 };
@@ -312,10 +312,12 @@ const TONE = {
 const NAVBAR_EXTRA_CSS = `
 
 .cdErpNavbarRoot{
-overflow-x: hidden;
-display:flex; justify-content:center;
-align-items:center;
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
+
   .cdErpNavbarRoot .caret {
     left: var(--caret, 220px);
   }
@@ -579,7 +581,7 @@ export default function Navbar2() {
     // FULL (non-scrolled) BAR
     // ================================================================
     const renderFullBar = () => (
-        <div className="w-full" ref={fullBarRef}>
+        <div className="relative w-full max-w-full" ref={fullBarRef}>
             <nav
                 // ============================================================
                 // FULL BAR HEIGHT CONTROL
@@ -591,20 +593,20 @@ export default function Navbar2() {
                 //   3. Nav item "py-1" and CTA "py-1" further down
                 //   4. Burger button "h-[30px] w-[30px]" if it looks oversized
                 // ============================================================
-                className="flex items-center justify-evenly overflow-hidden border-b border-slate-200 bg-gradient-to-b from-white via-slate-50 to-blue-50/80 px-3 sm:px-4 lg:px-5 relative"
+                className="flex items-center justify-evenly overflow-hidden border-b border-slate-200 bg-gradient-to-b from-white via-slate-50 to-blue-50/80 px-3 py-0.5 sm:px-4 lg:px-5"
                 aria-label="Main"
             >
-                <Link href="/" className="flex shrink-0 items-center box-border px-2 py-0.5 text-decoration-none w-48">
+                <Link href="/" className="flex shrink-0 items-center box-border px-2 py-0.5 text-decoration-none">
                     {/* LOGO SIZE CONTROL — lever #2 above */}
                     <AnimatedLogo className="h-5 w-5 shrink-0 transition-all duration-300 sm:h-[22px] sm:w-[22px]" />
                     <Image
                         src="https://res.cloudinary.com/bropujss/image/upload/v1783687070/logo_rju9sa_scdui4.webp"
                         alt="Connecting Dots ERP Logo"
-                        width={10}
+                        width={150}
                         height={120}
                         loading="lazy"
-                        sizes="(max-width: 640px) 100px, 150px"
-                        className="h-12  w-[10vw] shrink-0 object-contain sm:h-12 sm:w-24"
+                        sizes="(max-width: 640px) 80px, 150px"
+                        className="h-8 w-auto shrink-0 object-contain sm:h-12 sm:w-24"
                     />
                 </Link>
 
@@ -700,7 +702,7 @@ export default function Navbar2() {
     // PILL / SHRUNK BAR (shows once the page is scrolled)
     // ================================================================
     const renderPillBar = () => (
-        <div className="relative mx-auto w-full max-w-[1000px] px-auto rounded-8xl" ref={pillBarRef}>
+        <div className="relative mx-auto w-full max-w-[1000px] px-6 rounded-8xl" ref={pillBarRef}>
             <nav
                 className="flex items-center justify-evenly overflow-hidden rounded-[26px] border border-white/90 bg-gradient-to-b from-white via-slate-50 to-blue-50/90 px-4 py-0.5 shadow-[0_1px_0_rgba(255,255,255,0.95)_inset,_0_20px_40px_-20px_rgba(30,64,175,0.26),_0_2px_6px_rgba(30,64,175,0.07)] sm:px-2"
                 aria-label="Main"
@@ -802,108 +804,108 @@ export default function Navbar2() {
     );
 
     return (
-        // <Container >
-        <div className="cdErpNavbarRoot box-border w-[100vw] absolute left-0 z-80 flex items-center justify-center ">
-            <style>{NAVBAR_EXTRA_CSS}</style>
+        <Container >
+            <div className="cdErpNavbarRoot box-border ">
+                <style>{NAVBAR_EXTRA_CSS}</style>
 
-            <Container className="">
-                {renderFullBar()}
-            </Container>
+                <Container className="isolate relative z-[60]">
+                    {renderFullBar()}
+                </Container>
 
-            <Container
-                className={`isolate fixed inset-x-0 top-0 z-[2147483000] pt-2 transition-all duration-300 ${scrolled ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"
-                    }`}
-            >
-                {renderPillBar()}
-            </Container>
+                <Container
+                    className={`isolate fixed inset-x-0 top-0 z-[2147483000] pt-2 transition-all duration-300 ${scrolled ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"
+                        }`}
+                >
+                    {renderPillBar()}
+                </Container>
 
-            <div id="nav-drawer" className="drawer pointer-events-auto w-full max-w-full" data-open={mobileOpen}>
-                <div className="mb-2 flex items-center justify-between rounded-[16px] p-2.5">
-                    <Link href="/" className="flex items-center gap-2 text-decoration-none" onClick={() => setMobileOpen(false)}>
-                        <AnimatedLogo className="h-[36px] w-[36px] shrink-0" />
-                        <Image
-                            src="https://res.cloudinary.com/bropujss/image/upload/v1783687070/logo_rju9sa_scdui4.webp"
-                            alt="Connecting Dots ERP Logo"
-                            width={130}
-                            height={100}
-                            loading="lazy"
-                            sizes="130px"
-                            className="h-[36px] w-auto shrink-0 object-contain"
-                        />
-                    </Link>
+                <div id="nav-drawer" className="drawer pointer-events-auto w-full max-w-full" data-open={mobileOpen}>
+                    <div className="mb-2 flex items-center justify-between rounded-[16px] p-2.5">
+                        <Link href="/" className="flex items-center gap-2 text-decoration-none" onClick={() => setMobileOpen(false)}>
+                            <AnimatedLogo className="h-[36px] w-[36px] shrink-0" />
+                            <Image
+                                src="https://res.cloudinary.com/bropujss/image/upload/v1783687070/logo_rju9sa_scdui4.webp"
+                                alt="Connecting Dots ERP Logo"
+                                width={130}
+                                height={100}
+                                loading="lazy"
+                                sizes="130px"
+                                className="h-[36px] w-auto shrink-0 object-contain"
+                            />
+                        </Link>
 
-                    <button
-                        type="button"
-                        aria-label="Close menu"
-                        onClick={() => setMobileOpen(false)}
-                        className="grid h-[32px] w-[32px] shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]"
-                    >
-                        <CloseIcon />
-                    </button>
-                </div>
+                        <button
+                            type="button"
+                            aria-label="Close menu"
+                            onClick={() => setMobileOpen(false)}
+                            className="grid h-[32px] w-[32px] shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]"
+                        >
+                            <CloseIcon />
+                        </button>
+                    </div>
 
-                <ul className="flex flex-col gap-1.5 p-0">
-                    {NAV_ITEMS.map((item, i) => (
-                        <li key={item.label}>
-                            {item.menu ? (
-                                <>
-                                    <button
-                                        type="button"
-                                        className="flex w-full items-center justify-between rounded-[12px] border border-slate-200 bg-gradient-to-b from-white to-slate-50 px-3.5 py-3 text-[14.5px] font-semibold text-slate-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]"
-                                        data-open={section === i}
-                                        aria-expanded={section === i}
-                                        onClick={() => setSection(section === i ? null : i)}
-                                    >
-                                        {item.label}
-                                        <ChevronDown className={`h-[14px] w-[14px] text-slate-400 transition-transform duration-300 ${section === i ? "rotate-180 text-blue-700" : ""}`} />
-                                    </button>
+                    <ul className="flex flex-col gap-1.5 p-0">
+                        {NAV_ITEMS.map((item, i) => (
+                            <li key={item.label}>
+                                {item.menu ? (
+                                    <>
+                                        <button
+                                            type="button"
+                                            className="flex w-full items-center justify-between rounded-[12px] border border-slate-200 bg-gradient-to-b from-white to-slate-50 px-3.5 py-3 text-[14.5px] font-semibold text-slate-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]"
+                                            data-open={section === i}
+                                            aria-expanded={section === i}
+                                            onClick={() => setSection(section === i ? null : i)}
+                                        >
+                                            {item.label}
+                                            <ChevronDown className={`h-[14px] w-[14px] text-slate-400 transition-transform duration-300 ${section === i ? "rotate-180 text-blue-700" : ""}`} />
+                                        </button>
 
-                                    {section === i && (
-                                        <div className="mt-1.5 max-w-full overflow-hidden rounded-[14px] border border-slate-200 bg-slate-50 p-2.5 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]">
-                                            {item.menu.columns.map((col) => (
-                                                <div key={col.title} className="mb-2.5 last:mb-0">
-                                                    <div className="mb-1.5 flex items-center gap-2">
-                                                        <span className={`grid h-[30px] w-[30px] place-items-center rounded-[10px] ${TONE[col.icon]}`}>
-                                                            <ColIcon name={col.icon} />
-                                                        </span>
-                                                        <span className="text-[13.5px] font-bold text-slate-800">{col.title}</span>
+                                        {section === i && (
+                                            <div className="mt-1.5 max-w-full overflow-hidden rounded-[14px] border border-slate-200 bg-slate-50 p-2.5 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]">
+                                                {item.menu.columns.map((col) => (
+                                                    <div key={col.title} className="mb-2.5 last:mb-0">
+                                                        <div className="mb-1.5 flex items-center gap-2">
+                                                            <span className={`grid h-[30px] w-[30px] place-items-center rounded-[10px] ${TONE[col.icon]}`}>
+                                                                <ColIcon name={col.icon} />
+                                                            </span>
+                                                            <span className="text-[13.5px] font-bold text-slate-800">{col.title}</span>
+                                                        </div>
+
+                                                        <ul className="flex flex-col gap-1.5 p-0">
+                                                            {col.links.map((l) => (
+                                                                <li key={l.label}>
+                                                                    <Link href={l.href} className="flex items-center justify-between rounded-[10px] border border-slate-200 bg-white px-2.5 py-2 text-[13.5px] font-semibold text-slate-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]" onClick={() => setMobileOpen(false)}>
+                                                                        <span className="truncate">{l.label}</span>
+                                                                        <ChevronRight className="h-3.5 w-3.5 shrink-0 text-slate-500" />
+                                                                    </Link>
+                                                                </li>
+                                                            ))}
+                                                        </ul>
                                                     </div>
+                                                ))}
 
-                                                    <ul className="flex flex-col gap-1.5 p-0">
-                                                        {col.links.map((l) => (
-                                                            <li key={l.label}>
-                                                                <Link href={l.href} className="flex items-center justify-between rounded-[10px] border border-slate-200 bg-white px-2.5 py-2 text-[13.5px] font-semibold text-slate-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]" onClick={() => setMobileOpen(false)}>
-                                                                    <span className="truncate">{l.label}</span>
-                                                                    <ChevronRight className="h-3.5 w-3.5 shrink-0 text-slate-500" />
-                                                                </Link>
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                </div>
-                                            ))}
+                                                <Link href={item.menu.promo.ctaHref} className="mt-1.5 inline-flex w-full items-center justify-center gap-1.5 rounded-[10px] border border-blue-200 bg-gradient-to-b from-white to-slate-50 px-3 py-2 text-[12px] font-semibold text-blue-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]" onClick={() => setMobileOpen(false)}>
+                                                    {item.menu.promo.ctaLabel}
+                                                    <ArrowRight />
+                                                </Link>
+                                            </div>
+                                        )}
+                                    </>
+                                ) : (
+                                    <Link href={item.href || "/"} className="flex w-full items-center rounded-[12px] border border-slate-200 bg-gradient-to-b from-white to-slate-50 px-3.5 py-3 text-[14.5px] font-semibold text-slate-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]" onClick={() => setMobileOpen(false)}>
+                                        {item.label}
+                                    </Link>
+                                )}
+                            </li>
+                        ))}
+                    </ul>
 
-                                            <Link href={item.menu.promo.ctaHref} className="mt-1.5 inline-flex w-full items-center justify-center gap-1.5 rounded-[10px] border border-blue-200 bg-gradient-to-b from-white to-slate-50 px-3 py-2 text-[12px] font-semibold text-blue-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]" onClick={() => setMobileOpen(false)}>
-                                                {item.menu.promo.ctaLabel}
-                                                <ArrowRight />
-                                            </Link>
-                                        </div>
-                                    )}
-                                </>
-                            ) : (
-                                <Link href={item.href || "/"} className="flex w-full items-center rounded-[12px] border border-slate-200 bg-gradient-to-b from-white to-slate-50 px-3.5 py-3 text-[14.5px] font-semibold text-slate-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]" onClick={() => setMobileOpen(false)}>
-                                    {item.label}
-                                </Link>
-                            )}
-                        </li>
-                    ))}
-                </ul>
-
-                <Link href={ENQUIRE_HREF} className="mt-2.5 inline-flex w-full items-center justify-center gap-2 rounded-[14px] bg-gradient-to-b from-blue-600 to-blue-700 px-3.5 py-3 text-[13.5px] font-semibold text-white shadow-[0_1px_0_rgba(255,255,255,0.45)_inset,_0_-2px_0_rgba(23,54,140,0.5)_inset,_0_12px_22px_-10px_rgba(37,99,235,0.6)]" onClick={() => setMobileOpen(false)}>
-                    <PhoneIcon />
-                    Enquire Now
-                </Link>
+                    <Link href={ENQUIRE_HREF} className="mt-2.5 inline-flex w-full items-center justify-center gap-2 rounded-[14px] bg-gradient-to-b from-blue-600 to-blue-700 px-3.5 py-3 text-[13.5px] font-semibold text-white shadow-[0_1px_0_rgba(255,255,255,0.45)_inset,_0_-2px_0_rgba(23,54,140,0.5)_inset,_0_12px_22px_-10px_rgba(37,99,235,0.6)]" onClick={() => setMobileOpen(false)}>
+                        <PhoneIcon />
+                        Enquire Now
+                    </Link>
+                </div>
             </div>
-        </div>
-        // </Container>
+        </Container>
     );
 }
