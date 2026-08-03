@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import AmbientBlueBackground from "../BackgroundCss/AnimatedBlueBg";
-import { AlarmClock, Calendar } from "lucide-react";
+import { AlarmClock, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 
 // star icon
 const Star = (
@@ -24,15 +25,20 @@ function seededRandom(seed) {
 // actual asset filenames in /public.
 const COURSE_META = [
   { key: "fico", title: "sap", subtitle: "Fico", img: "/SAPFICO.png", duration: "2-4 Months",from:'#f8fafe', to:"#f4f6fd",card:"#DBEAFE",head:"#1166ec" },
-  { key: "sd", title: "sap", subtitle: "SD", img: "/sapsd.png", duration: "2-4 Months", from:"#fdefd9", to:"#fdefd8", card:"#fef5e6",head:"#fdc53b" },
   { key: "ai", title: "AI", subtitle: "COURSES", img: "/ai.png", duration: "2-4 Months", from:"#f0ecfb", to:"#f0ecfb",card:"#dfccfd", head:"#8b40f4" },
-  { key: "data", title: "DATA", subtitle: "ANALYTICS", img: "/dataanalytics.png", duration: "2-4 Months", from:"#d6ead8", to:"#d6ead8", card:"#e7f3eb",head:"#5ed0a0" },
   { key: "hr", title: "HR", subtitle: "MANAGEMENT", img: "/hrmanagement.png", duration: "2-4 Months", from:"#fce4ec", to:"#fce4ec", card:"#fee7ed",head:"#fa4c79" },
+  { key: "data", title: "DATA", subtitle: "ANALYTICS", img: "/dataanalytics.png", duration: "2-4 Months", from:"#d6ead8", to:"#d6ead8", card:"#e7f3eb",head:"#5ed0a0" },
   { key: "py", title: "PYTHON", subtitle: "PROGRAMMING", img: "/python.png", duration: "2-4 Months", from:"#d0ddf9", to:"#d0ddf9", card:"#dfe8fc",head:"#003a8e" },
+  { key: "sd", title: "sap", subtitle: "SD", img: "/sapsd.png", duration: "2-4 Months", from:"#fdefd9", to:"#fdefd8", card:"#fef5e6",head:"#fdc53b" },
 ];
 
 // How often the seats / timer data refreshes.
 const RESET_INTERVAL_MS = 60 * 60 * 1000; // 1 hour
+
+// Autoplay tuning (mobile / tablet carousel only)
+const AUTOPLAY_INTERVAL_MS = 4000; // how often it advances
+const AUTOPLAY_RESUME_DELAY_MS = 6000; // how long to pause after manual interaction
+const DESKTOP_BREAKPOINT = "(min-width: 1440px)"; // matches the 3x3 grid breakpoint below
 
 function getHourBucket() {
   return Math.floor(Date.now() / RESET_INTERVAL_MS);
@@ -66,6 +72,7 @@ function buildCourses(hourBucket) {
 }
 
 function CourseCard({ course }) {
+  const router = useRouter();
   const [timeLeft, setTimeLeft] = useState({
     days: "00",
     hours: "00",
@@ -98,81 +105,104 @@ function CourseCard({ course }) {
   // Only show the "Hurry Up" badge when seats are below 5.
   const showHurryUp = course.seats < 5;
 
-  return (
-    <>
-      {/* Card */}
-      <div className={`w-fit relative flex justify-between flex-wrap h-auto border-2 border-gray-300 rounded-xl overflow-hidden p-3 box-border`}
-        style={{ backgroundImage: `linear-gradient(to right, ${course.from}, ${course.to})` }}
-      >
-        <div className="w-full ">
-          {showHurryUp && (
-            <div className="bg-red-200 text-red-600 w-fit flex justify-start items-center gap-2 py-1 px-2 rounded-md">
-              <AlarmClock size={20} />
-              <p className="text-sm">Hurry Up</p>
-            </div>
-          )}
-        </div>
-        <div className="w-fit rounded-md p-1 bg-white absolute right-3 top-3 text-xs text-[#0765f0]">{course.seats} seats left</div>
-        <div className="w-[40%] p-2 my-3 box-border">
-          <h5 className="font-semibold relative text-2xl uppercase" style={{color:`${course.head}`}}>{course.title} <span className="text-black">{course.subtitle}</span></h5>
-          <p className=" text-[14px] my-4">Lorem ipsum taheb hj ljkdonn</p>
-          <span className="flex justify-start gap-2 items-center">
-            <span
-              className="flex gap-0.5"
-              aria-label="4.8 out of 5 stars on Google"
-            >
-              {Star}
-              {Star}
-              {Star}
-              {Star}
-              {Star}
-            </span>
-            <span className="text-sm font-sans font-semibold">4.8/5</span>
-          </span>
-        </div>
-        <div className="w-[60%] h-[200px] flex flex-col items-start py-8 justify-start px-3"
-          style={{ backgroundImage: `url('${course.img}')`, backgroundPosition: "center", backgroundSize: "cover", backgroundRepeat: 'no-repeat' }}
-        >
-        </div>
-        <div className="w-full -mt-6 flex justify-between ">
-          <div className="w-[32%] rounded-md p-2 leading-6"
-            style={{backgroundColor:`${course.card}`}}
-          >
-            <div className="flex justify-start items-center text-blue-800 gap-2 box-border">
-              <Calendar size={14} /><p className="text-xs">Duration</p>
-            </div>
-            <p className="text-[12px] pl-6">{course.duration}</p>
-          </div>
-          <div className="w-[65%] p-2 box-border  rounded-md flex items-center justify-between"
-            style={{backgroundColor:`${course.card}`}}
-          >
-            <div className="w-[50px] h-[50px] flex flex-col rounded-md bg-white items-center justify-around">
-              <p className="text-xl text-red-500">{timeLeft.days}</p>
-              <p className="text-xs">DAYS</p>
-            </div>
-            <div className="w-[50px] h-[50px] flex flex-col rounded-md bg-white items-center justify-around">
-              <p className="text-xl text-red-500">{timeLeft.hours}</p>
-              <p className="text-xs">HRS</p>
-            </div>
-            <div className="w-[50px] h-[50px] flex flex-col rounded-md bg-white items-center justify-around">
-              <p className="text-xl text-red-500">{timeLeft.minutes}</p>
-              <p className="text-xs">MINS</p>
-            </div>
-            <div className="w-[50px] h-[50px] flex flex-col rounded-md bg-white items-center justify-around">
-              <p className="text-xl text-red-500">{timeLeft.seconds}</p>
-              <p className="text-xs">SECS</p>
-            </div>
-          </div>
-        </div>
+  const goToCourse = () => {
+    // Adjust this route to wherever each course's detail page lives.
+    router.push(`/courses/${course.key}`);
+  };
 
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={goToCourse}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") goToCourse();
+      }}
+      className="group w-full h-full relative flex flex-wrap content-between justify-between border-2 border-gray-300 rounded-xl overflow-hidden p-3 box-border cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2b5cff]"
+      style={{ backgroundImage: `linear-gradient(to right, ${course.from}, ${course.to})` }}
+    >
+      <div className="w-full ">
+        {showHurryUp && (
+          <div className="bg-red-200 text-red-600 w-fit flex justify-start items-center gap-2 py-1 px-2 rounded-md">
+            <AlarmClock size={20} />
+            <p className="text-sm">Hurry Up</p>
+          </div>
+        )}
       </div>
-    </>
+      <div className="w-fit rounded-md p-1 bg-white absolute right-3 top-3 text-xs text-[#0765f0]">{course.seats} seats left</div>
+      <div className="w-[40%] p-2 my-3 box-border relative">
+        <h5 className="font-semibold text-2xl uppercase" style={{color:`${course.head}`}}>{course.title} <span className="text-black">{course.subtitle}</span></h5>
+        <p className=" text-[14px] my-4">Lorem ipsum taheb hj ljkdonn</p>
+        <span className="flex justify-start gap-2 items-center">
+          <span
+            className="flex gap-0.5"
+            aria-label="4.8 out of 5 stars on Google"
+          >
+            {Star}
+            {Star}
+            {Star}
+            {Star}
+            {Star}
+          </span>
+          <span className="text-sm font-sans font-semibold">4.8/5</span>
+        </span>
+      </div>
+      <div className="w-[60%] h-[200px] flex flex-col items-start py-8 justify-start px-3 transition-transform duration-500 ease-out "
+        style={{ backgroundImage: `url('${course.img}')`, backgroundPosition: "center", backgroundSize: "cover", backgroundRepeat: 'no-repeat' }}
+      >
+      </div>
+      <div className="w-full -mt-6 flex flex-col sm:flex-row gap-2 sm:gap-2 justify-between">
+        <div className="w-full sm:w-[32%] rounded-md p-2 leading-6"
+          style={{backgroundColor:`${course.card}`}}
+        >
+          <div className="flex justify-start items-center text-blue-800 gap-2 box-border">
+            <Calendar size={14} /><p className="text-xs">Duration</p>
+          </div>
+          <p className="text-[12px] pl-6">{course.duration}</p>
+        </div>
+        <div className="w-full sm:w-[65%] p-2 box-border rounded-md grid grid-cols-4 gap-1.5 sm:flex sm:items-center sm:justify-between sm:gap-0"
+          style={{backgroundColor:`${course.card}`}}
+        >
+          <div className="aspect-square sm:w-[50px] sm:h-[50px] sm:aspect-auto flex flex-col rounded-md sm:rounded-tr-none rounded-tr-md sm:rounded-br-none rounded-br-md bg-white items-center justify-center sm:justify-around">
+            <p className="text-base sm:text-xl text-red-500">{timeLeft.days}</p>
+            <p className="text-[10px] sm:text-xs">DAYS</p>
+          </div>
+          <div className="aspect-square sm:w-[50px] sm:h-[50px] sm:aspect-auto flex flex-col sm:rounded-none rounded-md bg-white items-center justify-center sm:justify-around">
+            <p className="text-base sm:text-xl text-red-500">{timeLeft.hours}</p>
+            <p className="text-[10px] sm:text-xs">HRS</p>
+          </div>
+          <div className="aspect-square sm:w-[50px] sm:h-[50px] sm:aspect-auto flex flex-col sm:rounded-none rounded-md bg-white items-center justify-center sm:justify-around">
+            <p className="text-base sm:text-xl text-red-500">{timeLeft.minutes}</p>
+            <p className="text-[10px] sm:text-xs">MINS</p>
+          </div>
+          <div className="aspect-square sm:w-[50px] sm:h-[50px] sm:aspect-auto flex flex-col rounded-md sm:rounded-tl-none sm:rounded-bl-none rounded-tl-md rounded-bl-md  bg-white items-center justify-center sm:justify-around">
+            <p className="text-base sm:text-xl text-red-500">{timeLeft.seconds}</p>
+            <p className="text-[10px] sm:text-xs">SECS</p>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
 
 export default function PopularCourses() {
   const [hourBucket, setHourBucket] = useState(getHourBucket());
   const [courses, setCourses] = useState(() => buildCourses(getHourBucket()));
+
+  // ---- mobile/tablet carousel state ----
+  const trackRef = useRef(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  // ---- autoplay state (mobile/tablet only, desktop grid never autoplays) ----
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const resumeTimeoutRef = useRef(null);
+  // Mirrors activeIndex so the autoplay interval always reads the latest
+  // value without needing to restart the interval on every index change.
+  const activeIndexRef = useRef(0);
+  useEffect(() => {
+    activeIndexRef.current = activeIndex;
+  }, [activeIndex]);
 
   useEffect(() => {
     // Every minute, check whether we've crossed into a new hour bucket.
@@ -190,8 +220,113 @@ export default function PopularCourses() {
     return () => clearInterval(check);
   }, []);
 
+  // Track whether we're at the desktop 3x3 grid breakpoint — autoplay
+  // and the carousel controls are irrelevant there.
+  useEffect(() => {
+    const mq = window.matchMedia(DESKTOP_BREAKPOINT);
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  const scrollToIndex = (index) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const clamped = Math.max(0, Math.min(index, courses.length - 1));
+    const slide = track.children[clamped];
+    if (slide) {
+      track.scrollTo({ left: slide.offsetLeft, behavior: "smooth" });
+    }
+    setActiveIndex(clamped);
+  };
+
+  // Same as scrollToIndex but wraps around, used by autoplay so it
+  // loops back to the first card after the last one.
+  const scrollToIndexLooping = (index) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const wrapped = (index + courses.length) % courses.length;
+    const slide = track.children[wrapped];
+    if (slide) {
+      track.scrollTo({ left: slide.offsetLeft, behavior: "smooth" });
+    }
+    setActiveIndex(wrapped);
+  };
+
+  // Pausing on manual interaction, then auto-resuming after a delay,
+  // keeps autoplay from fighting the user mid-swipe/click.
+  const pauseAutoplay = () => {
+    setIsPaused(true);
+    if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+    resumeTimeoutRef.current = setTimeout(() => setIsPaused(false), AUTOPLAY_RESUME_DELAY_MS);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+    };
+  }, []);
+
+  const handlePrev = () => {
+    pauseAutoplay();
+    scrollToIndex(activeIndex - 1);
+  };
+  const handleNext = () => {
+    pauseAutoplay();
+    scrollToIndex(activeIndex + 1);
+  };
+
+  // Keep activeIndex in sync if the user swipes the carousel manually.
+  // Uses a single card's width (not the container's) so this stays correct
+  // whether 1 card (mobile) or 2 cards (tablet/laptop) are visible per view.
+  const handleScroll = () => {
+    const track = trackRef.current;
+    if (!track) return;
+    const first = track.children[0];
+    const second = track.children[1];
+    // Distance between two consecutive cards' offsetLeft includes the
+    // gap between them, unlike a single card's offsetWidth — using just
+    // offsetWidth under-counts the step and causes index drift.
+    const step = first && second ? second.offsetLeft - first.offsetLeft : first ? first.offsetWidth : track.clientWidth;
+    if (!step) return;
+    const idx = Math.round(track.scrollLeft / step);
+    setActiveIndex((prev) => (prev === idx ? prev : idx));
+  };
+
+  // Auto-scroll: mobile + tablet carousel only. Desktop (>=1440px) is a
+  // static grid and never autoplays. Pauses while the user is interacting
+  // and whenever the tab isn't visible.
+  useEffect(() => {
+    if (isDesktop || isPaused) return;
+    if (typeof document !== "undefined" && document.hidden) return;
+
+    const id = setInterval(() => {
+      // Read the latest index from the ref (not the closed-over `activeIndex`)
+      // and let scrollToIndexLooping do the single state update — advancing
+      // by exactly one card per tick.
+      const next = activeIndexRef.current + 1;
+      scrollToIndexLooping(next);
+    }, AUTOPLAY_INTERVAL_MS);
+
+    return () => clearInterval(id);
+  }, [isDesktop, isPaused, courses.length]);
+
+  // Also pause/resume autoplay when the browser tab is hidden/shown.
+  useEffect(() => {
+    const onVisibility = () => {
+      if (document.hidden) {
+        setIsPaused(true);
+      } else {
+        setIsPaused(false);
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, []);
+
   return (
-    <AmbientBlueBackground>
+    <AmbientBlueBackground className="max-w-[1800px] mx-auto">
       <section
         className="relative w-full max-w-[1800px] mx-auto overflow-hidden py-16"
       >
@@ -207,10 +342,62 @@ export default function PopularCourses() {
             <p className="mt-4 text-gray-500">Start your learning journey with our in-demand courses</p>
           </div>
 
-          <div className="w-full mx-auto grid grid-cols-3 gap-4 my-8 ">
+          {/*
+            Breakpoints:
+            - below 768px (mobile): 1 card per view, carousel, autoplay
+            - 768px–1439px (tablet / normal laptop): 2 cards per view, carousel, autoplay
+            - 1440px and up: static 3x3 grid, no carousel, no autoplay
+          */}
+          <div
+            ref={trackRef}
+            onScroll={handleScroll}
+            onTouchStart={pauseAutoplay}
+            onMouseDown={pauseAutoplay}
+            onWheel={pauseAutoplay}
+            className="no-scrollbar flex items-stretch min-[1440px]:grid min-[1440px]:grid-cols-3 min-[1440px]:items-stretch gap-4 my-8 overflow-x-auto min-[1440px]:overflow-visible snap-x snap-mandatory scroll-smooth"
+          >
             {courses.map((course) => (
-              <CourseCard key={course.key} course={course} />
+              <div
+                key={course.key}
+                className="w-full md:w-[calc(50%-8px)] min-[1440px]:w-auto h-auto flex-none snap-center min-[1440px]:contents"
+              >
+                <CourseCard course={course} />
+              </div>
             ))}
+          </div>
+
+          {/* Prev / Next arrows — shown until the 3x3 grid kicks in at 1440px */}
+          <div className="flex min-[1440px]:hidden items-center justify-center gap-6 -mt-2 mb-4">
+            <button
+              type="button"
+              onClick={handlePrev}
+              aria-label="Previous course"
+              disabled={activeIndex === 0}
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-300 shadow disabled:opacity-40 transition"
+            >
+              <ChevronLeft size={20} className="text-[#13235b]" />
+            </button>
+
+            <div className="flex items-center gap-1.5">
+              {courses.map((course, i) => (
+                <span
+                  key={course.key}
+                  className={`h-1.5 rounded-full transition-all ${
+                    i === activeIndex ? "w-4 bg-[#2b5cff]" : "w-1.5 bg-gray-300"
+                  }`}
+                />
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={handleNext}
+              aria-label="Next course"
+              disabled={activeIndex === courses.length - 1}
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-300 shadow disabled:opacity-40 transition"
+            >
+              <ChevronRight size={20} className="text-[#13235b]" />
+            </button>
           </div>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
@@ -230,6 +417,16 @@ export default function PopularCourses() {
         </div>
 
       </section>
+
+      <style jsx>{`
+        .no-scrollbar {
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </AmbientBlueBackground>
   );
 }
