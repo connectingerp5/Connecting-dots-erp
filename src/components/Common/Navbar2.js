@@ -804,11 +804,11 @@ export default function Navbar2() {
     );
 
     return (
-        <Container >
+        <Container className="sticky top-0 z-[2147483000]">
             <div className="cdErpNavbarRoot box-border ">
                 <style>{NAVBAR_EXTRA_CSS}</style>
 
-                <Container className="isolate relative z-[60]">
+                <Container className={`isolate relative z-[60] ${scrolled ? "hidden" : ""}`}>
                     {renderFullBar()}
                 </Container>
 
