@@ -6,6 +6,7 @@ import { Headphones, MessageCircle, Phone, Plus, Minus } from "lucide-react";
 import SectionBackground from "../BackgroundCss/SectionBackground";
 import Container from "../StandardContainer";
 
+
 const FAQ_DATA = [
   {
     question: "What is SAP and why do companies use it?",
@@ -44,11 +45,11 @@ const FAQ_DATA = [
   },
 ];
 
-export default function FAQAccordion() {
+export default function FAQAccordion({ homeFaqData }) {
   const [openIndex, setOpenIndex] = useState(0);
 
+
   return (
-    // <section className="w-screen flex items-center justify-center relative left-1/2 -translate-x-1/2">
     <Container>
       <SectionBackground>
         <div className="faqOuter w-full flex items-center justify-center">
@@ -546,6 +547,5 @@ export default function FAQAccordion() {
         </div>
       </SectionBackground>
     </Container>
-    // </section >
   );
 }

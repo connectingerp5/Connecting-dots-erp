@@ -91,7 +91,6 @@ export default function RootLayout({ children }) {
         <CallAdvisorsStrip />
         <Navbar2 />
         <Marquee />
-        {/* <Navbar /> */}
 
         {/* Client-Side Wrapper */}
         <ConditionalAuthProvider>
