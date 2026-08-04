@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import styles from "@/styles/Common/Marquee.module.css";
+import styles from "@/styles/Common/Marque.module.css";
 
 // Helper function to get the ordinal suffix (st, nd, rd, th)
 const getOrdinalSuffix = (day) => {
@@ -124,8 +124,7 @@ const Marquee = () => {
         </div>
       </div>
     </div>
-  );  
+  );
 };
 
 export default Marquee;
- 

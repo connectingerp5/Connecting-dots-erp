@@ -1,6 +1,6 @@
 "use client";
 
-import styles from "@/styles/Common/CallAdvisorsStrip.module.css";
+import Container from "./Container";
 
 const Icon = ({ path, viewBox = "0 0 24 24" }) => (
   <svg
@@ -35,31 +35,31 @@ const SOCIAL_LINKS = [
     href: "https://www.facebook.com/connectingdotshrcourse",
     label: "Facebook",
     icon: ICONS.facebook,
-    hoverClass: styles.facebookHover,
+    hoverClass: "hover:text-[#2563eb]",
   },
   {
     href: "https://wa.me/919004002941",
     label: "WhatsApp",
     icon: ICONS.whatsapp,
-    hoverClass: styles.whatsappHover,
+    hoverClass: "hover:text-[#22c55e]",
   },
   {
     href: "https://youtube.com/@connectingdotserp?si=hSKEiEg3MdytdEe_",
     label: "YouTube",
     icon: ICONS.youtube,
-    hoverClass: styles.youtubeHover,
+    hoverClass: "hover:text-[#dc2626]",
   },
   {
     href: "https://in.linkedin.com/in/connecting-dots-erp-043039171",
     label: "LinkedIn",
     icon: ICONS.linkedin,
-    hoverClass: styles.linkedinHover,
+    hoverClass: "hover:text-[#1d4ed8]",
   },
   {
     href: "https://www.instagram.com/connecting_dots_sap_training?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==",
     label: "Instagram",
     icon: ICONS.instagram,
-    hoverClass: styles.instagramHover,
+    hoverClass: "hover:text-[#ec4899]",
   },
 ];
 
@@ -67,11 +67,17 @@ const CallAdvisorsStrip = () => {
   const advisorsContact = "9004001938";
 
   return (
-    <div className={styles.callAdvisorsStrip}>
+    <Container
+      className="relative flex items-center h-[38px] overflow-hidden bg-[#182e4a] border-t border-[#050e1b] pt-0 px-0 pb-1 text-[10px] z-40 max-[480px]:h-[42px] max-[480px]:py-0.5 max-[480px]:px-2 max-[480px]:items-center"
+    >
       {/* Right side content - Social Icons */}
-      <div className={styles.rightStripContent}>
+      <div
+        className="absolute top-1/2 right-5 flex justify-end -translate-y-1/2 max-[480px]:right-2 max-[480px]:w-[calc(50%-8px)]"
+      >
         <div>
-          <div className={styles.socialIconsStrip}>
+          <div
+            className="flex items-center justify-end gap-[0.08rem] max-[480px]:gap-[0.02rem] max-[480px]:w-full max-[480px]:flex-nowrap max-[480px]:justify-end"
+          >
             {SOCIAL_LINKS.map(({ href, label, icon, hoverClass }) => (
               <a
                 key={href}
@@ -79,7 +85,7 @@ const CallAdvisorsStrip = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label}
-                className={hoverClass}
+                className={`inline-flex items-center justify-center w-[38px] h-[38px] text-[1.05rem] text-[#ecf0f1] transition-colors duration-300 max-[480px]:w-6 max-[480px]:h-6 max-[480px]:text-[0.72rem] ${hoverClass}`}
               >
                 <Icon path={icon} />
               </a>
@@ -89,24 +95,28 @@ const CallAdvisorsStrip = () => {
       </div>
 
       {/* Left side content (Call Advisors) */}
-      <div className={styles.leftStripContent}>
-        <span className={styles.phoneIcon}>
+      <div
+        className="flex items-center gap-[0.35rem] ml-5 min-w-0 pr-[260px] whitespace-nowrap max-[480px]:w-1/2 max-[480px]:ml-0 max-[480px]:pr-2 max-[480px]:gap-[0.12rem] max-[480px]:whitespace-normal max-[480px]:flex-wrap max-[480px]:content-start max-[480px]:leading-[1.05]"
+      >
+        <span
+          className="inline-flex items-center justify-center w-[1.2em] h-[1.2em] mr-1.5 text-[0.95rem] text-[#f3f3f3] max-[480px]:text-[0.68rem] max-[480px]:mr-0.5 max-[480px]:self-start max-[480px]:mt-0.5"
+        >
           <Icon path={ICONS.phone} />
         </span>
-        <span className={styles.advisorText}>
-          {/* This text is static, consider if it should also be dynamic */}
+        <span
+          className="font-bold text-white text-[0.88rem] leading-[1.2] max-[480px]:text-[0.6rem] max-[480px]:whitespace-normal max-[480px]:leading-[1.05]"
+        >
           Get Free Career Counselling:
         </span>
 
-        {/* --- Use a standard <a> tag for the tel: link --- */}
         <a
-          href={`tel:${advisorsContact}`} // Use the state variable
-          className={`${styles.advisorNumber} text-decoration-none`} // Keep your styles
+          href={`tel:${advisorsContact}`}
+          className="font-bold text-[#f7f7f7] text-[0.88rem] leading-[1.2] whitespace-nowrap no-underline max-[480px]:text-[0.6rem] max-[480px]:whitespace-normal max-[480px]:leading-[1.05]"
         >
-          {advisorsContact} {/* Display the number from state */}
+          {advisorsContact}
         </a>
       </div>
-    </div>
+    </Container>
   );
 };
 
