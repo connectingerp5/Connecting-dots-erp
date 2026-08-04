@@ -166,10 +166,12 @@ const hrMenu = {
     },
 };
 
+// CHANGED: every item now has an explicit `href` so clicking always
+// navigates, even the ones that also carry a `menu` (mega menu).
 const NAV_ITEMS = [
-    { label: "SAP S/4 HANA", menu: sapMenu },
-    { label: "IT Courses with AI", menu: itMenu },
-    { label: "HR Courses", menu: hrMenu },
+    { label: "SAP S/4 HANA", href: "/sap-course-in-pune", menu: sapMenu },
+    { label: "IT Courses with AI", href: "/it-course-with-ai-in-pune", menu: itMenu },
+    { label: "HR Courses", href: "/hr-training-course-in-pune", menu: hrMenu },
     { label: "Placements", href: "/placements" },
     { label: "About us", href: "/aboutus" },
 ];
@@ -361,7 +363,7 @@ const NAVBAR_EXTRA_CSS = `
     box-sizing: border-box;
   }
 
-  @media (min-width: 1024px) {
+  @media (min-width: 1280px) {
     .cdErpNavbarRoot .desktop-nav {
       display: flex;
     }
@@ -502,7 +504,10 @@ export default function Navbar2() {
         const onDown = (e) => {
             const inFull = fullBarRef.current && fullBarRef.current.contains(e.target);
             const inPill = pillBarRef.current && pillBarRef.current.contains(e.target);
-            if (!inFull && !inPill) setOpen(null);
+            const inDrawer = e.target instanceof Node && document.getElementById("nav-drawer")?.contains(e.target);
+            if (!inFull && !inPill && !inDrawer) {
+                setOpen(null);
+            }
         };
         window.addEventListener("resize", onResize, { passive: true });
         document.addEventListener("keydown", onKey);
@@ -577,62 +582,74 @@ export default function Navbar2() {
         };
     }, []);
 
+    useEffect(() => {
+    const updateNavbarBottom = () => {
+        const el = scrolled ? pillBarRef.current : fullBarRef.current;
+        if (el) {
+            const bottom = el.getBoundingClientRect().bottom;
+            document.documentElement.style.setProperty(
+                "--navbar-bottom",
+                `${Math.max(bottom, 0)}px`
+            );
+        }
+    };
+
+    updateNavbarBottom();
+    window.addEventListener("resize", updateNavbarBottom);
+    window.addEventListener("scroll", updateNavbarBottom, { passive: true });
+    return () => {
+        window.removeEventListener("resize", updateNavbarBottom);
+        window.removeEventListener("scroll", updateNavbarBottom);
+    };
+}, [scrolled]);
+
     // ================================================================
     // FULL (non-scrolled) BAR
     // ================================================================
     const renderFullBar = () => (
         <div className="relative w-full max-w-full" ref={fullBarRef}>
             <nav
-                // ============================================================
-                // FULL BAR HEIGHT CONTROL
-                // Overall height comes from THIS py value plus the logo size
-                // and nav-item/CTA py below — not a fixed height property.
-                // To adjust, tune in this order:
-                //   1. This "py-0.5" (nav's own vertical padding) — biggest lever
-                //   2. Logo classes just below ("h-8 sm:h-12")
-                //   3. Nav item "py-1" and CTA "py-1" further down
-                //   4. Burger button "h-[30px] w-[30px]" if it looks oversized
-                // ============================================================
-                className="flex items-center justify-evenly overflow-hidden border-b border-slate-200 bg-gradient-to-b from-white via-slate-50 to-blue-50/80 px-3 py-0.5 sm:px-4 lg:px-5"
+                className="flex items-center justify-evenly overflow-hidden border-b border-slate-200 bg-gradient-to-b from-white via-slate-50 to-blue-50/80 px-3 py-px sm:px-4 sm:py-0.5 lg:px-5"
                 aria-label="Main"
             >
                 <Link href="/" className="flex shrink-0 items-center box-border px-2 py-0.5 text-decoration-none">
-                    {/* LOGO SIZE CONTROL — lever #2 above */}
-                    <AnimatedLogo className="h-5 w-5 shrink-0 transition-all duration-300 sm:h-[22px] sm:w-[22px]" />
+                    <AnimatedLogo className="h-4 w-4 shrink-0 transition-all duration-300 sm:h-5 sm:w-5 lg:h-7 lg:w-7" />
                     <Image
                         src="https://res.cloudinary.com/bropujss/image/upload/v1783687070/logo_rju9sa_scdui4.webp"
                         alt="Connecting Dots ERP Logo"
                         width={150}
                         height={120}
                         loading="lazy"
-                        sizes="(max-width: 640px) 80px, 150px"
-                        className="h-8 w-auto shrink-0 object-contain sm:h-12 sm:w-24"
+                        sizes="(max-width: 640px) 90px, 70px"
+                        className="h-7 w-auto shrink-0 object-contain sm:h-10 sm:w-20 lg:h-14 lg:w-28"
                     />
                 </Link>
 
                 <ul className="desktop-nav flex items-center justify-center gap-4">
                     {NAV_ITEMS.map((item, i) =>
                         item.menu ? (
+                            // CHANGED: hover on the <li> still opens the mega panel
+                            // (hoverOpen/hoverClose unchanged). Click now navigates
+                            // via <Link href> instead of only toggling `open`.
                             <li
                                 key={item.label}
                                 className="relative flex items-center"
                                 onMouseEnter={() => hoverOpen(i)}
                                 onMouseLeave={hoverClose}
                             >
-                                <button
-                                    type="button"
-                                    // Lever #3: py-1
+                                <Link
+                                    href={item.href}
                                     className="relative mx-1 flex items-center gap-1.5 whitespace-nowrap rounded-[10px] px-2.5 py-1 text-[14.5px] font-semibold text-slate-700 transition-colors duration-200 hover:text-blue-700"
                                     data-tab={i}
                                     data-open={open === i}
                                     aria-expanded={open === i}
                                     aria-controls={`mega-full-${i}`}
-                                    onClick={() => setOpen(open === i ? null : i)}
+                                    onClick={() => setOpen(null)}
                                 >
                                     {item.label}
                                     <ChevronDown className={`h-[14px] w-[14px] shrink-0 text-slate-400 transition-transform duration-300 ${open === i ? "rotate-180 text-blue-700" : ""}`} />
                                     <span className={`absolute bottom-[-6px] left-2 right-2 h-1 rounded-b-full bg-gradient-to-r from-blue-700 via-blue-500 to-blue-400 transition-opacity duration-200 ${open === i ? "opacity-100" : "opacity-0"}`} aria-hidden="true" />
-                                </button>
+                                </Link>
                             </li>
                         ) : (
                             <li key={item.label} className="relative flex items-center" onMouseEnter={() => hoverOpen(null)}>
@@ -644,14 +661,13 @@ export default function Navbar2() {
                     )}
                 </ul>
 
-                <Link href={ENQUIRE_HREF} className="desktop-cta ml-4 inline-flex shrink-0 items-center gap-1.5 rounded-[11px] bg-gradient-to-b from-blue-600 to-blue-700 px-3.5 py-1 text-[13px] font-semibold text-white shadow-[0_1px_0_rgba(255,255,255,0.45)_inset,_0_-2px_0_rgba(23,54,140,0.5)_inset,_0_12px_22px_-10px_rgba(37,99,235,0.6)] transition-transform duration-150 hover:-translate-y-0.5">
-                    <PhoneIcon />
+                <Link href={ENQUIRE_HREF} className="desktop-cta ml-4 inline-flex shrink-0 items-center gap-1.5 rounded-[11px] bg-gradient-to-b from-blue-600 to-blue-700 px-3.5 py-2 box-border text-[13px] font-semibold text-white shadow-[0_1px_0_rgba(255,255,255,0.45)_inset,_0_-2px_0_rgba(23,54,140,0.5)_inset,_0_12px_22px_-10px_rgba(37,99,235,0.6)] transition-transform duration-150 hover:-translate-y-0.5">
+                    <PhoneIcon /> 
                     Enquire Now
                 </Link>
 
                 <button
                     type="button"
-                    // Lever #4: 30px — bump back to 34px if it looks too small
                     className="burger ml-auto grid h-[30px] w-[30px] shrink-0 place-items-center rounded-[12px] border border-slate-200 bg-gradient-to-b from-white to-blue-50 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]"
                     data-open={mobileOpen}
                     aria-expanded={mobileOpen}
@@ -672,11 +688,6 @@ export default function Navbar2() {
                     <div
                         key={item.label}
                         id={`mega-full-${i}`}
-                        // BUG-1 FIX: gate on "!scrolled" so this panel can never show
-                        // while the pill bar is the visible one (they share `open`).
-                        // BUG-3 FIX: pointer-events-none/auto now live ONLY in their
-                        // own branch, never both at once — avoids the Tailwind
-                        // cascade-order conflict that made clicks unreliable.
                         className={`absolute left-0 right-0 top-full z-[2147483000] pt-1 transition-all duration-200 ${open === i && !scrolled
                             ? "pointer-events-auto visible opacity-100 translate-y-0"
                             : "pointer-events-none invisible opacity-0 -translate-y-2"
@@ -702,13 +713,25 @@ export default function Navbar2() {
     // PILL / SHRUNK BAR (shows once the page is scrolled)
     // ================================================================
     const renderPillBar = () => (
-        <div className="relative mx-auto w-full max-w-[1000px] px-6 rounded-8xl" ref={pillBarRef}>
+        <div className="relative mx-auto w-full max-w-[1000px] px-3 sm:px-6 rounded-8xl" ref={pillBarRef}>
             <nav
-                className="flex items-center justify-evenly overflow-hidden rounded-[26px] border border-white/90 bg-gradient-to-b from-white via-slate-50 to-blue-50/90 px-4 py-0.5 shadow-[0_1px_0_rgba(255,255,255,0.95)_inset,_0_20px_40px_-20px_rgba(30,64,175,0.26),_0_2px_6px_rgba(30,64,175,0.07)] sm:px-2"
+                className="flex items-center justify-evenly overflow-hidden rounded-[26px] border border-white/90 bg-gradient-to-b from-white via-slate-50 to-blue-50/90 px-3 py-px shadow-[0_1px_0_rgba(255,255,255,0.95)_inset,_0_20px_40px_-20px_rgba(30,64,175,0.26),_0_2px_6px_rgba(30,64,175,0.07)] sm:px-2 sm:py-0.5"
                 aria-label="Main"
             >
-                <Link href="/" className="flex shrink-0 items-center box-border py-0.5 text-decoration-none">
-                    <AnimatedLogo className="h-5 w-5 shrink-0 transition-all duration-300 sm:h-[22px] sm:w-[22px]" />
+                <Link href="/" className="flex md:hidden lg:hidden xl:hidden shrink-0 items-center box-border py-0.5 text-decoration-none">
+                    <AnimatedLogo className="h-4 w-4 shrink-0 transition-all duration-300" />
+                    <Image
+                        src="https://res.cloudinary.com/bropujss/image/upload/v1783687070/logo_rju9sa_scdui4.webp"
+                        alt="Connecting Dots ERP Logo"
+                        width={80}
+                        height={80}
+                        loading="lazy"
+                        sizes="(max-width: 500px) 100px, 130px"
+                        className="h-7 w-auto shrink-0 object-contain sm:h-10 sm:w-16"
+                    />
+                </Link>
+                <Link href="/" className="hidden md:flex lg:flex xl:flex shrink-0 items-center box-border py-0.5 text-decoration-none">
+                    <AnimatedLogo className="h-4 w-4 shrink-0 transition-all duration-300 sm:h-5 sm:w-5 lg:h-6 lg:w-6" />
                     <Image
                         src="https://res.cloudinary.com/bropujss/image/upload/v1783687070/logo_rju9sa_scdui4.webp"
                         alt="Connecting Dots ERP Logo"
@@ -716,36 +739,44 @@ export default function Navbar2() {
                         height={120}
                         loading="lazy"
                         sizes="(max-width: 500px) 100px, 130px"
-                        className="h-20 w-50 shrink-0 object-contain sm:h-12 sm:w-20"
+                        className="h-7 w-auto shrink-0 object-contain sm:h-10 sm:w-16 lg:h-12 lg:w-20"
                     />
                 </Link>
 
                 <ul className="desktop-nav flex items-center justify-center gap-2 shrink-0">
                     {NAV_ITEMS.map((item, i) =>
                         item.menu ? (
+                            // CHANGED: same click-navigates / hover-opens pattern as the full bar.
                             <li
                                 key={item.label}
                                 className="relative flex items-center shrink-0"
                                 onMouseEnter={() => hoverOpen(i)}
                                 onMouseLeave={hoverClose}
                             >
-                                <button
-                                    type="button"
+                                <Link
+                                    href={item.href}
                                     className="relative mx-0.5 flex items-center gap-1 whitespace-nowrap rounded-[10px] px-2 py-1 text-[13px] font-semibold text-slate-700 transition-colors duration-200 hover:text-blue-700"
                                     data-tab={i}
                                     data-open={open === i}
                                     aria-expanded={open === i}
                                     aria-controls={`mega-pill-${i}`}
-                                    onClick={() => setOpen(open === i ? null : i)}
+                                    onClick={() => setOpen(null)}
                                 >
                                     {item.label}
                                     <ChevronDown className={`h-[12px] w-[12px] shrink-0 text-slate-400 transition-transform duration-300 ${open === i ? "rotate-180 text-blue-700" : ""}`} />
                                     <span className={`absolute bottom-[-6px] left-2 right-2 h-1 rounded-b-full bg-gradient-to-r from-blue-700 via-blue-500 to-blue-400 transition-opacity duration-200 ${open === i ? "opacity-100" : "opacity-0"}`} aria-hidden="true" />
-                                </button>
+                                </Link>
                             </li>
                         ) : (
                             <li key={item.label} className="relative flex items-center shrink-0" onMouseEnter={() => hoverOpen(null)}>
-                                <Link href={item.href || "/"} className="relative mx-0.5 flex items-center whitespace-nowrap rounded-[10px] px-2 py-1 text-[13px] font-semibold text-slate-700 transition-colors duration-200 hover:text-blue-700">
+                                {/* FIXED: was referencing item.menu === "sapMenu" (a string
+                                    compared against an object, always false) as a fallback.
+                                    Every NAV_ITEMS entry now carries a real href, so this
+                                    just uses it directly. */}
+                                <Link
+                                    href={item.href || "/"}
+                                    className="relative mx-0.5 flex items-center whitespace-nowrap rounded-[10px] px-2 py-1 text-[13px] font-semibold text-slate-700 transition-colors duration-200 hover:text-blue-700"
+                                >
                                     {item.label}
                                 </Link>
                             </li>
@@ -759,7 +790,7 @@ export default function Navbar2() {
 
                 <button
                     type="button"
-                    className="burger ml-auto grid h-[30px] w-[30px] shrink-0 place-items-center rounded-[12px] border border-slate-200 bg-gradient-to-b from-white to-blue-50 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]"
+                    className="burger ml-auto grid h-[30px] w-[30px] shrink-0 place-items-center rounded-md border border-slate-200 bg-gradient-to-b from-white to-blue-50 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]"
                     data-open={mobileOpen}
                     aria-expanded={mobileOpen}
                     aria-controls="nav-drawer"
@@ -779,9 +810,6 @@ export default function Navbar2() {
                     <div
                         key={item.label}
                         id={`mega-pill-${i}`}
-                        // BUG-1 FIX: gate on "scrolled" so this panel can never show
-                        // while the full bar is the visible one.
-                        // BUG-3 FIX: same pointer-events branch split as full bar.
                         className={`absolute left-0 right-0 top-full z-[2147483000] pt-1 transition-all duration-200 ${open === i && scrolled
                             ? "pointer-events-auto visible opacity-100 translate-y-0"
                             : "pointer-events-none invisible opacity-0 -translate-y-2"
@@ -822,7 +850,7 @@ export default function Navbar2() {
                 <div id="nav-drawer" className="drawer pointer-events-auto w-full max-w-full" data-open={mobileOpen}>
                     <div className="mb-2 flex items-center justify-between rounded-[16px] p-2.5">
                         <Link href="/" className="flex items-center gap-2 text-decoration-none" onClick={() => setMobileOpen(false)}>
-                            <AnimatedLogo className="h-[36px] w-[36px] shrink-0" />
+                            <AnimatedLogo className="h-7 w-7 shrink-0 sm:h-[36px] sm:w-[36px]" />
                             <Image
                                 src="https://res.cloudinary.com/bropujss/image/upload/v1783687070/logo_rju9sa_scdui4.webp"
                                 alt="Connecting Dots ERP Logo"
@@ -830,7 +858,7 @@ export default function Navbar2() {
                                 height={100}
                                 loading="lazy"
                                 sizes="130px"
-                                className="h-[36px] w-auto shrink-0 object-contain"
+                                className="h-7 w-auto shrink-0 object-contain sm:h-[36px]"
                             />
                         </Link>
 
@@ -849,6 +877,10 @@ export default function Navbar2() {
                             <li key={item.label}>
                                 {item.menu ? (
                                     <>
+                                        {/* Mobile drawer intentionally keeps a toggle button
+                                            (no hover on touch), plus a separate "view all"
+                                            CTA link inside the expanded panel below — so users
+                                            can still reach item.href if desired. */}
                                         <button
                                             type="button"
                                             className="flex w-full items-center justify-between rounded-[12px] border border-slate-200 bg-gradient-to-b from-white to-slate-50 px-3.5 py-3 text-[14.5px] font-semibold text-slate-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]"

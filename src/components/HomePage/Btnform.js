@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import axios from "axios";
 import styles from "@/styles/HomePage/Btnform.module.css";
 import { User, Mail, Phone, MapPin, X, CheckCircle } from "lucide-react";
@@ -52,10 +53,15 @@ const Btnform = ({ onClose, course }) => {
   const [isLoadingCities, setIsLoadingCities] = useState(true);
   const [showCourseDropdown, setShowCourseDropdown] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [isMounted, setIsMounted] = useState(false);
 
   const locationInputRef = useRef(null);
   const suggestionsRef = useRef(null);
   const courseDropdownRef = useRef(null);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     document.body.classList.add("popup-form-open");
@@ -367,7 +373,9 @@ const Btnform = ({ onClose, course }) => {
     } digit number`
     : "Enter phone number";
 
-  return (
+  if (!isMounted) return null;
+
+  return createPortal(
     <div className={styles.formModal}>
       <div className={styles.formContainer}>
         <button onClick={onClose} className={styles.closeButton} aria-label="Close form">
@@ -642,7 +650,8 @@ const Btnform = ({ onClose, course }) => {
           </div>
         </div>
       )}
-    </div>
+    </div>,
+    document.body,
   );
 };
 

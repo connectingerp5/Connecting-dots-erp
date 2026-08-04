@@ -24,12 +24,12 @@ function seededRandom(seed) {
 // Static info for the 6 SAP courses. Update `img` to match your
 // actual asset filenames in /public.
 const COURSE_META = [
-  { key: "fico", title: "sap", subtitle: "Fico", img: "/SAPFICO.png", duration: "2-4 Months",from:'#f8fafe', to:"#f4f6fd",card:"#DBEAFE",head:"#1166ec" },
-  { key: "ai", title: "AI", subtitle: "COURSES", img: "/ai.png", duration: "2-4 Months", from:"#f0ecfb", to:"#f0ecfb",card:"#dfccfd", head:"#8b40f4" },
-  { key: "hr", title: "HR", subtitle: "MANAGEMENT", img: "/hrmanagement.png", duration: "2-4 Months", from:"#fce4ec", to:"#fce4ec", card:"#fee7ed",head:"#fa4c79" },
-  { key: "data", title: "DATA", subtitle: "ANALYTICS", img: "/dataanalytics.png", duration: "2-4 Months", from:"#d6ead8", to:"#d6ead8", card:"#e7f3eb",head:"#5ed0a0" },
-  { key: "py", title: "PYTHON", subtitle: "PROGRAMMING", img: "/python.png", duration: "2-4 Months", from:"#d0ddf9", to:"#d0ddf9", card:"#dfe8fc",head:"#003a8e" },
-  { key: "sd", title: "sap", subtitle: "SD", img: "/sapsd.png", duration: "2-4 Months", from:"#fdefd9", to:"#fdefd8", card:"#fef5e6",head:"#fdc53b" },
+  { key: "fico", title: "sap", subtitle: "Fico", img: "/SAPFICO.png", duration: "2-4 Months",from:'#f8fafe', to:"#f4f6fd",card:"#DBEAFE",head:"#1166ec",slug:"sap-fico-course-in-pune" },
+  { key: "ai", title: "AI", subtitle: "COURSES", img: "/ai.png", duration: "2-4 Months", from:"#f0ecfb", to:"#f0ecfb",card:"#dfccfd", head:"#8b40f4",slug:"generative-ai-course-in-pune" },
+  { key: "hr", title: "HR", subtitle: "MANAGEMENT", img: "/hrmanagement.png", duration: "2-4 Months", from:"#fce4ec", to:"#fce4ec", card:"#fee7ed",head:"#fa4c79",slug:"hr-training-course-in-pune" },
+  { key: "data", title: "DATA", subtitle: "ANALYTICS", img: "/dataanalytics.png", duration: "2-4 Months", from:"#d6ead8", to:"#d6ead8", card:"#e7f3eb",head:"#5ed0a0",slug:"advanced-data-analytics-with-generative-ai-course-in-pune" },
+  { key: "py", title: "PYTHON", subtitle: "PROGRAMMING", img: "/python.png", duration: "2-4 Months", from:"#d0ddf9", to:"#d0ddf9", card:"#dfe8fc",head:"#003a8e",slug:"python-with-ai-course-in-pune" },
+  { key: "sd", title: "sap", subtitle: "SD", img: "/sapsd.png", duration: "2-4 Months", from:"#fdefd9", to:"#fdefd8", card:"#fef5e6",head:"#fdc53b",slug:"sap-sd-course-in-pune" },
 ];
 
 // How often the seats / timer data refreshes.
@@ -107,7 +107,7 @@ function CourseCard({ course }) {
 
   const goToCourse = () => {
     // Adjust this route to wherever each course's detail page lives.
-    router.push(`/courses/${course.key}`);
+    router.push(`/${course.slug}`);
   };
 
   return (

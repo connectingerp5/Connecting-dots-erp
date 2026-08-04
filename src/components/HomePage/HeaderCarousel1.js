@@ -209,7 +209,7 @@ export default function CareerHeroSlide({ onOpenForm }) {
 
               <div className="mt-8 flex items-center justify-start gap-3 sm:mt-9 sm:flex-row sm:flex-wrap sm:gap-4">
                 <ConsultationButton onOpenForm={onOpenForm} />
-                <button className="rounded-xl border-1 border-blue-600 px-3 py-2.5 capitalize text-[#1b3a6d] sm:w-auto sm:px-7 sm:py-3">
+                <button className="rounded-xl border-1 border-blue-600 px-3 py-2.5 capitalize text-[#1b3a6d] sm:w-auto sm:px-5 sm:py-2.5 md:text-[15px] lg:text-[15px] xl:text-[15px]">
                   Book a free demo class
                 </button>
               </div>
