@@ -38,7 +38,7 @@ export default function CareerHeroSlide({ onOpenForm }) {
         {/* Image — normal flow, w-full h-auto means it scales by its own
             intrinsic aspect ratio and the container height follows it */}
         <Image
-          src="/mobileHero.png"
+          src="https://res.cloudinary.com/djdhtkjhn/image/upload/v1785906042/mobileHero2_l4nu4u.png"
           alt="AI powered learning, SAP industry standard, smart assessments, personalized roadmap"
           width={1200}
           height={1500}
@@ -96,9 +96,6 @@ export default function CareerHeroSlide({ onOpenForm }) {
 
             <div className="mt-6 flex items-center gap-3">
               <ConsultationButton onOpenForm={onOpenForm} />
-              <button className="rounded-xl w-full md:w-auto lg:w-auto xl:w-auto text-xs md:text-lg lg:text-lg xl:text-xl border border-blue-600 px-3 py-2.5 capitalize text-[#1b3a6d] bg-white/70 backdrop-blur-sm">
-                Book a free demo class
-              </button>
             </div>
           </div>
         </div>
@@ -116,8 +113,8 @@ export default function CareerHeroSlide({ onOpenForm }) {
           }
         }
       >
-        <div className="absolute inset-0 z-10 mx-auto flex max-w-[1400px] items-center px-5 sm:px-8 lg:px-10">
-          <div className="grid w-full grid-cols-1 items-center gap-6 lg:grid-cols-12 lg:gap-8">
+        <div className="absolute inset-0 z-10 mx-auto flex max-w-[1400px] items-start pt-16 box-border px-5 sm:px-8 lg:px-10">
+          <div className="grid w-full grid-cols-1 items-start gap-6 lg:grid-cols-12 lg:gap-8">
             <div className="relative z-10 max-w-2xl lg:col-span-5">
               <div className="inline-flex max-w-full items-center gap-2 rounded-full bg-white px-3 py-2 text-xs shadow-sm ring-1 ring-purple-100 sm:px-4 mb-4">
                 <StarIcon className="h-4 w-4 shrink-0 text-purple-600" />
@@ -209,9 +206,6 @@ export default function CareerHeroSlide({ onOpenForm }) {
 
               <div className="mt-8 flex items-center justify-start gap-3 sm:mt-9 sm:flex-row sm:flex-wrap sm:gap-4">
                 <ConsultationButton onOpenForm={onOpenForm} />
-                <button className="rounded-xl border-1 border-blue-600 px-3 py-2.5 capitalize text-[#1b3a6d] sm:w-auto sm:px-5 sm:py-2.5 md:text-[15px] lg:text-[15px] xl:text-[15px]">
-                  Book a free demo class
-                </button>
               </div>
             </div>
           </div>

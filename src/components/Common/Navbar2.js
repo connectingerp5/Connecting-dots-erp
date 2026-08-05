@@ -166,8 +166,6 @@ const hrMenu = {
     },
 };
 
-// CHANGED: every item now has an explicit `href` so clicking always
-// navigates, even the ones that also carry a `menu` (mega menu).
 const NAV_ITEMS = [
     { label: "SAP S/4 HANA", href: "/sap-course-in-pune", menu: sapMenu },
     { label: "IT Courses with AI", href: "/it-course-with-ai-in-pune", menu: itMenu },
@@ -532,12 +530,28 @@ export default function Navbar2() {
         };
     }, [mobileOpen]);
 
+    // ================================================================
+    // SCROLL STATE — with hysteresis to stop flicker
+    // ================================================================
+    // CHANGED: previously both directions flipped at the same scrollY
+    // (80px), so scrolling slowly near that boundary made `scrolled`
+    // toggle back and forth rapidly (each toggle re-triggers the
+    // full-bar/pill-bar transition, which read as a "glitch"). Now the
+    // bar only switches to the pill once scrolled past 80px, and only
+    // switches back once scrolled back up past 40px — a dead zone in
+    // between that a normal slow scroll can pass through only once.
     useEffect(() => {
         let ticking = false;
+        const SCROLL_DOWN_THRESHOLD = 80;
+        const SCROLL_UP_THRESHOLD = 40;
         const handleScroll = () => {
             if (!ticking) {
                 requestAnimationFrame(() => {
-                    setScrolled(window.scrollY > 80);
+                    setScrolled((prev) => {
+                        const y = window.scrollY;
+                        if (prev) return y > SCROLL_UP_THRESHOLD;
+                        return y > SCROLL_DOWN_THRESHOLD;
+                    });
                     ticking = false;
                 });
                 ticking = true;
@@ -628,9 +642,6 @@ export default function Navbar2() {
                 <ul className="desktop-nav flex items-center justify-center gap-4">
                     {NAV_ITEMS.map((item, i) =>
                         item.menu ? (
-                            // CHANGED: hover on the <li> still opens the mega panel
-                            // (hoverOpen/hoverClose unchanged). Click now navigates
-                            // via <Link href> instead of only toggling `open`.
                             <li
                                 key={item.label}
                                 className="relative flex items-center"
@@ -662,7 +673,7 @@ export default function Navbar2() {
                 </ul>
 
                 <Link href={ENQUIRE_HREF} className="desktop-cta ml-4 inline-flex shrink-0 items-center gap-1.5 rounded-[11px] bg-gradient-to-b from-blue-600 to-blue-700 px-3.5 py-2 box-border text-[13px] font-semibold text-white shadow-[0_1px_0_rgba(255,255,255,0.45)_inset,_0_-2px_0_rgba(23,54,140,0.5)_inset,_0_12px_22px_-10px_rgba(37,99,235,0.6)] transition-transform duration-150 hover:-translate-y-0.5">
-                    <PhoneIcon /> 
+                    <PhoneIcon />
                     Enquire Now
                 </Link>
 
@@ -746,7 +757,6 @@ export default function Navbar2() {
                 <ul className="desktop-nav flex items-center justify-center gap-2 shrink-0">
                     {NAV_ITEMS.map((item, i) =>
                         item.menu ? (
-                            // CHANGED: same click-navigates / hover-opens pattern as the full bar.
                             <li
                                 key={item.label}
                                 className="relative flex items-center shrink-0"
@@ -769,10 +779,6 @@ export default function Navbar2() {
                             </li>
                         ) : (
                             <li key={item.label} className="relative flex items-center shrink-0" onMouseEnter={() => hoverOpen(null)}>
-                                {/* FIXED: was referencing item.menu === "sapMenu" (a string
-                                    compared against an object, always false) as a fallback.
-                                    Every NAV_ITEMS entry now carries a real href, so this
-                                    just uses it directly. */}
                                 <Link
                                     href={item.href || "/"}
                                     className="relative mx-0.5 flex items-center whitespace-nowrap rounded-[10px] px-2 py-1 text-[13px] font-semibold text-slate-700 transition-colors duration-200 hover:text-blue-700"
@@ -836,13 +842,35 @@ export default function Navbar2() {
             <div className="cdErpNavbarRoot box-border ">
                 <style>{NAVBAR_EXTRA_CSS}</style>
 
-                <Container className={`isolate relative z-[60] ${scrolled ? "hidden" : ""}`}>
+                {/*
+                  CHANGED: this used to be `${scrolled ? "hidden" : ""}`, which
+                  is a `display:none` toggle — instant, no transition. That
+                  collapsed this bar's reserved height in the document the
+                  moment `scrolled` flipped, shifting the page/scroll position
+                  out from under the still-animating pill bar below — that
+                  shift is what read as a "glitch".
+
+                  Now this bar is NEVER removed from layout. It always stays
+                  in the document flow (so its height is always reserved,
+                  and nothing shifts), and only its opacity/interactivity
+                  crossfades with the pill bar. `pointer-events-none` when
+                  scrolled keeps it from intercepting clicks/hovers while
+                  it's invisible underneath the pill bar.
+                */}
+                <Container
+                    className={`isolate relative z-[60] transition-opacity duration-300 ease-out ${
+                        scrolled ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto"
+                    }`}
+                >
                     {renderFullBar()}
                 </Container>
 
                 <Container
-                    className={`isolate fixed inset-x-0 top-0 z-[2147483000] pt-2 transition-all duration-300 ${scrolled ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"
-                        }`}
+                    className={`isolate fixed inset-x-0 top-0 z-[2147483000] pt-2 transition-[opacity,transform] duration-300 ease-out ${
+                        scrolled
+                            ? "opacity-100 translate-y-0 pointer-events-auto"
+                            : "opacity-0 -translate-y-2 pointer-events-none"
+                    }`}
                 >
                     {renderPillBar()}
                 </Container>
@@ -877,10 +905,6 @@ export default function Navbar2() {
                             <li key={item.label}>
                                 {item.menu ? (
                                     <>
-                                        {/* Mobile drawer intentionally keeps a toggle button
-                                            (no hover on touch), plus a separate "view all"
-                                            CTA link inside the expanded panel below — so users
-                                            can still reach item.href if desired. */}
                                         <button
                                             type="button"
                                             className="flex w-full items-center justify-between rounded-[12px] border border-slate-200 bg-gradient-to-b from-white to-slate-50 px-3.5 py-3 text-[14.5px] font-semibold text-slate-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,_0_1px_2px_rgba(30,64,175,0.09)]"
