@@ -66,7 +66,7 @@ const homeFaqData = allowedFaqKeys.flatMap((key) => {
   const firstSection = Object.values(sectionGroup)[0];
   return firstSection ? [firstSection] : [];
 });
-console.log("homeFaqData", homeFaqData)
+
 
 const LazySection = ({ children, fallback, rootMargin = "350px", intrinsicSize }) => {
   const ref = useRef(null);
@@ -158,7 +158,7 @@ export default function HomeClient() {
             <OurStats />
           </LazySection>
           <LazySection fallback={<div style={{ minHeight: "400px" }} />}>
-            <FAQAccordion data={homeFaqData} />
+            <FAQAccordion data={homeFaqData[0]?.items} />
           </LazySection>
 
         </main>

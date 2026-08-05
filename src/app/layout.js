@@ -4,7 +4,7 @@ import Script from "next/script";
 import { Partytown } from "@builder.io/partytown/react";
 import "./globals.css";
 
-import Navbar from "@/components/Common/Navbar";
+// import Navbar from "@/components/Common/Navbar";
 import Footer from "@/components/Common/Footer";
 import CallAdvisorsStrip from "@/components/Common/CallAdvisorsStrip";
 import Marquee from "@/components/Common/Marquee";
