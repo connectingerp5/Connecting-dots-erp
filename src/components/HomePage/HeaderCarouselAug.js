@@ -320,6 +320,9 @@ export default function HeaderCarouselAug({
       <img ref={jetsRef} className={s.jets} src={`/jets.png`} alt="" aria-hidden="true" />
       <img ref={chakraRef} className={s.chakra} src={`/Chakra.png`} alt="" aria-hidden="true" />
 
+      {/* offer card */}
+      <img className={s.offerCard} src='/image.png' alt='offer card'/>
+
       <div className={s.beam} aria-hidden="true" />
       <div ref={robotRef} className={s.robotWrap}>
         <img className={s.robot} src={`/pngRobo.png`} alt="Friendly AI learning robot" />
