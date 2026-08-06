@@ -282,29 +282,145 @@
 }
 
 @media (max-width: 900px) {
-  .hero { aspect-ratio: auto; height: auto; --u: 0.26cqw; }
-  .desktop { display: none; }
-  .mobile { display: block; position: relative; z-index: 3; padding: calc(46 * var(--u)) calc(26 * var(--u)) calc(40 * var(--u)); }
-  .stage { position: relative; height: 62vw; min-height: 250px; }
-  .mobile .badge, .mobile .headline, .mobile .divider, .mobile .sub,
-  .mobile .ctaRow, .mobile .offerWrap, .mobile .cards { position: static; left: auto; top: auto; }
-  .mobile .headline { margin-top: calc(30 * var(--u)); }
-  .mobile .h1 { font-size: calc(80 * var(--u)); }
-  .mobile .h2 { font-size: calc(74 * var(--u)); }
-  .mobile .h3 { font-size: calc(64 * var(--u)); }
-  .mobile .divider { width: 100%; max-width: calc(458 * var(--u)); margin: calc(20 * var(--u)) 0; }
-  .mobile .sub { font-size: calc(30 * var(--u)); margin-bottom: calc(28 * var(--u)); }
-  .mobile .ctaRow { flex-wrap: wrap; margin-bottom: calc(34 * var(--u)); }
-  .mobile .offerWrap { width: 100%; height: calc(300 * var(--u)); position: relative; margin-bottom: calc(34 * var(--u)); }
-  .mobile .cards { width: 100%; grid-template-columns: 1fr 1fr; }
-  .mobile .card { height: auto; min-height: calc(280 * var(--u)); }
-  .mobile .robotWrap, .mobile .beam { display: none; }
-}
-
-@media (max-width: 520px) {
+   .mobile{
+    height: 120vh;
+  }
+  .badge{
+    padding: 10px 0px;
+    left: calc(150*var(--u));
+    top: calc(50*var(--u));
+  }
+  .headline{
+    margin-top: 0;
+  }
+  .bg{
+    background-position: right;
+    object-position: left;
+    background-size: contain;
+  }
+  .mobile .h1{
+    font-size: calc(25* var(--u));
+    font-weight: 600;
+  }
+  .mobile .h2{
+    font-size: calc(38* var(--u));
+    font-weight: 600;
+    padding: 10px 0;
+  }
+  .desc{
+    /* font-size: calc(30 * var(--u)); */
+    width: 40%;
+    padding: 10px;
+    left: calc(150 * var(--u));
+    top: calc(300 * var(--u));
+    margin: 0 auto;
+  }
+  .consultBtn{
+    width: 100%;
+    margin: 0 auto;
+    left: calc(170*var(--u));
+    top: calc(500*var(--u));
+  }
+  .offerCard{
+    width: 30%;
+    height: auto;
+    border-radius: 15px;
+    left: calc(150*var(--u));
+    bottom: calc(5 * var(--u));
+  }
+  .chakra{
+    right: calc(0*var(--u));
+    top: calc(10*var(--u));
+  }
   .mobile .cards { grid-template-columns: 1fr; }
   .mobile .offerCard { grid-template-columns: 1fr; grid-template-rows: 1fr auto 1fr; height: calc(430 * var(--u)); }
   .mobile .offerWrap { height: calc(480 * var(--u)); }
   .mobile .offerSplit { margin: 0 calc(30 * var(--u)); height: calc(1.4 * var(--u)); align-self: center; background: repeating-linear-gradient(90deg, #b9b3ab 0 calc(5 * var(--u)), transparent calc(5 * var(--u)) calc(11 * var(--u))); }
 }
+
+@media (max-width: 520px) {
+  .hero{
+    overflow: hidden;
+    height: 50vh;
+  }
+  .mobile{
+    /* height: 140vh; */
+    width: fit-content;
+    margin: 0 auto;
+  }
+  .badge{
+    margin-bottom: 0;
+    padding: 10px;
+    left: calc(40* var(--u));
+  }
+  .headline{
+    width: 100%;
+    /* text-align: center; */
+    /* margin-top: 20px; */
+    left: calc(50*var(--u));
+  }
+  .divider{
+    left: calc(50 * var(--u));
+    top: calc(420 * var(--u));
+    /* padding: 10px 0; */
+    display: none;
+  }
+  .bg{
+    background-position: right;
+    object-position: bottom;
+    background-size: contain;
+  }
+  .chakra{
+    display: none;
+  }
+  .robotWrap{
+    top: calc(520*var(--u));
+    z-index: 1;
+  }
+  .cards{
+    top: calc(200*var(--u));
+    left: calc(800*var(--u));
+    width: 50%;
+  }
+  .h1{
+    font-size: calc(80* var(--u));
+    left: calc(0*var(--u));
+    font-weight: 600;
+  }
+  .h2{
+    font-size: calc(90* var(--u));
+    font-weight: 600;
+    padding: 10px 0;
+  }
+  .desc{
+    /* font-size: calc(10 * var(--u)); */
+    width: 50%;
+    padding: 10px 10px;
+    left: calc(15 * var(--u));
+    top: calc(300 * var(--u));
+    margin: 0 auto;
+  }
+  .consultBtn{
+    width: 90%;
+    margin: 0 auto;
+    z-index: 5;
+    left: calc(50*var(--u));
+    top: calc(900*var(--u));
+  }
+  .offerCard{
+    width: 53%;
+    height: auto;
+    border-radius: 15px;
+    left: calc(70*var(--u));
+    bottom: calc(15 * var(--u));
+  }
+  .chakra{
+    right: calc(0*var(--u));
+    top: calc(10*var(--u));
+  }
+  .mobile .cards { grid-template-columns: 1fr; }
+  .mobile .offerCard { grid-template-columns: 1fr; grid-template-rows: 1fr auto 1fr; height: calc(430 * var(--u)); }
+  .mobile .offerWrap { height: calc(480 * var(--u)); }
+  .mobile .offerSplit { margin: 0 calc(30 * var(--u)); height: calc(1.4 * var(--u)); align-self: center; background: repeating-linear-gradient(90deg, #b9b3ab 0 calc(5 * var(--u)), transparent calc(5 * var(--u)) calc(11 * var(--u))); }
+} 
 

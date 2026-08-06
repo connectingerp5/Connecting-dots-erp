@@ -221,7 +221,7 @@ export default function HeaderCarouselAug({
 
   const Desc = (
     <div className={s.desc}>
-      <p className="mt-4 text-[24px] xs:text-[16px] leading-relaxed text-gray-800">
+      <p className="mt-4 text-[12px] xs:text-[16px] leading-relaxed text-gray-800">
         Real SAP, IT & HR training — taught by people who've done the job.
         Online or offline batches, built around your schedule.
       </p>
@@ -246,40 +246,36 @@ export default function HeaderCarouselAug({
 
   // Button
   const Buttons = (
-    <div className="flex items-center justify-start gap-2 sm:gap-3">
-      <button
-        className="rounded-lg border border-blue-600 bg-[#593adc] text-white
-                    px-3 py-2.5 text-xs
-                    sm:px-2 sm:py-2.5 sm:text-sm
-                    md:px-5 md:py-3 md:text-[15px]
-                    lg:px-6 lg:py-3"
-        onClick={() => {
-          window.open(
-            "https://wa.me/9004001938?text=Hi%20I'm%20interested%20in%20your%20courses.",
-            "_blank"
-          );
-        }}
-      >
-        Book a Free Demo Class
-      </button>
+    <div className="flex flex-wrap items-center gap-3">
+  <button
+    className="rounded-lg border-1 border-blue-600 bg-[#593adc] text-white
+               p-2 text-[8px]
+               md:px-8 md:py-6 md:text-base
+               lg:px-7"
+    onClick={() =>
+      window.open(
+        "https://wa.me/9004001938?text=Hi%20I'm%20interested%20in%20your%20courses.",
+        "_blank"
+      )
+    }
+  >
+    Book a Free Demo Class
+  </button>
 
-      <button
-        onClick={onOpenForm}
-        className="inline-flex items-center justify-center gap-1
-                    rounded-lg border-1 border-[#593adc]
-                    text-[#593adc] transition
-                    hover:bg-[#593adc] hover:text-white
-                    px-3 py-2.5 text-xs
-                    sm:gap-2 sm:px-2 sm:py-2.5 sm:text-sm
-                    md:px-6 md:py-2.5 md:text-[15px]
-                    lg:px-7 lg:py-3"
-      >
-        Start My Journey
-        <ChevronRight
-          className="h-4 w-4 sm:h-5 sm:w-5"
-        />
-      </button>
-    </div>
+  <button
+    onClick={onOpenForm}
+    className="inline-flex items-center justify-center gap-1
+               rounded-lg border-1 border-[#593adc]
+               text-[#593adc]
+               hover:bg-[#593adc] hover:text-white transition
+               p-2 text-[8px]
+               md:px-8 md:py-6 md:text-base
+               lg:px-7"
+  >
+    Start My Journey
+    <ChevronRight className="h-3 w-3 md:h-5 md:w-5" />
+  </button>
+</div>
   )
 
   /* --------------------------------------------------------------- view -- */
@@ -321,7 +317,7 @@ export default function HeaderCarouselAug({
       <img ref={chakraRef} className={s.chakra} src={`/Chakra.png`} alt="" aria-hidden="true" />
 
       {/* offer card */}
-      <img className={s.offerCard} src='/image.png' alt='offer card'/>
+      <img className={s.offerCard} src='/image.png' alt='offer card' />
 
       <div className={s.beam} aria-hidden="true" />
       <div ref={robotRef} className={s.robotWrap}>
@@ -335,9 +331,9 @@ export default function HeaderCarouselAug({
         <div ref={leftRef} className={s.layer} style={{ pointerEvents: 'none' }}>
           <div style={{ pointerEvents: 'auto' }}>
             {/* white badge */}
-            <div className={`${s.badge} inline-flex max-w-full items-center gap-2 rounded-full bg-white px-3 py-2 text-xs shadow-sm ring-1 ring-purple-100 sm:px-4 mb-4`}>
-              <StarIcon className="h-4 w-4 shrink-0 text-purple-600" />
-              <span className="min-w-0 text-xs font-semibold text-gray-800 sm:text-sm">
+            <div className={`${s.badge} inline-flex max-w-full items-center gap-1 rounded-full bg-white text-[10px] shadow-sm ring-1 ring-purple-100 mb-4 px-2 py-2.5 md:px-3 md:py-4`}>
+              <StarIcon className="h-3 w-3 shrink-0 text-purple-600" />
+              <span className="min-w-0 font-semibold text-gray-800 sm:text-sm">
                 India&apos;s Leading SAP &amp; IT Training with AI Institute
               </span>
             </div>
