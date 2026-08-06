@@ -9,7 +9,6 @@ import Container from "../StandardContainer";
 export default function FAQAccordion({ data }) {
   const [openIndex, setOpenIndex] = useState(0);
   const FAQ_DATA = data || [];
-  console.log(FAQ_DATA, "FAQ_DATA");
   return (
     <Container>
       <SectionBackground>

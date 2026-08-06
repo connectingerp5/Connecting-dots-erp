@@ -50,8 +50,7 @@
     "swiper": "^11.2.5",
     "tailwind-merge": "^3.0.2",
     "tailwind-scrollbar-hide": "^4.0.0",
-    "tailwindcss-animate": "^1.0.7",
-    "xlsx": "^0.18.5"
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.10",
