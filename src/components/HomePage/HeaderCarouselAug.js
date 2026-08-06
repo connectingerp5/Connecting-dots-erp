@@ -1,21 +1,86 @@
-import Image from "next/image";
-import dynamic from "next/dynamic";
-import { Barlow_Condensed } from "next/font/google";
+'use client';
 
-const ConsultationButton = dynamic(() => import("./ConsultationButton"), {
-  ssr: false,
-  loading: () => (
-    <div
-      aria-hidden="true"
-      className="h-11 w-40 rounded-xl bg-purple-200/40 animate-pulse"
+/**
+ * IndependenceHero
+ * ----------------------------------------------------------------------------
+ * Pixel recreation of the 79th Independence Day campaign banner.
+ *
+ * Design canvas .......... 1563 x 1006 px
+ * Scaling ................ every dimension is authored in SOURCE PIXELS and
+ *                          multiplied by the CSS var --u (1px === 0.0639795cqw)
+ *                          so the whole composition scales perfectly with the
+ *                          container at any width.
+ * Layers ................. bg.jpg (scenery plate)  →  jets.png  →  chakra.png
+ *                          →  robot.png  →  HTML/CSS UI
+ * Motion ................. mouse + scroll parallax, floating robot, spinning
+ *                          chakra, drifting jets, falling confetti, live
+ *                          countdown to 15 August, staggered entrance reveals.
+ *
+ * Props
+ *   offerDeadline  Date | string  target for the countdown (default: next 15 Aug)
+ *   onPrimary      () => void     "Start My Journey" click
+ *   onSecondary    () => void     "Book A Free Demo Class" click
+ *   assetPath      string         folder holding bg.jpg / jets.png / chakra.png / robot.png
+ */
+
+import { useEffect, useRef, useState, useCallback } from 'react';
+import s from '@/styles/HomePage/IndependenceHero.module.css';
+import { Barlow_Condensed } from 'next/font/google';
+import { ChevronRight } from 'lucide-react';
+/* ------------------------------------------------------------------ data -- */
+
+const CONFETTI = [
+  { l: 6.4, s: 9, c: '#f2a03c', d: 13, delay: 0 },
+  { l: 12.1, s: 7, c: '#3f9d4a', d: 17, delay: 3.4 },
+  { l: 33.5, s: 8, c: '#f4801f', d: 15, delay: 1.2 },
+  { l: 41.8, s: 6, c: '#ffffff', d: 19, delay: 5.6 },
+  { l: 52.3, s: 9, c: '#3f9d4a', d: 14, delay: 2.1 },
+  { l: 60.4, s: 7, c: '#f2a03c', d: 18, delay: 7.3 },
+  { l: 67.2, s: 8, c: '#ffffff', d: 16, delay: 4.4 },
+  { l: 71.6, s: 6, c: '#f4801f', d: 21, delay: 0.8 },
+  { l: 79.5, s: 9, c: '#3f9d4a', d: 15, delay: 6.2 },
+  { l: 84.9, s: 7, c: '#f2a03c', d: 20, delay: 2.9 },
+  { l: 89.3, s: 8, c: '#ffffff', d: 17, delay: 8.1 },
+  { l: 94.6, s: 6, c: '#f4801f', d: 14, delay: 3.7 },
+  { l: 22.8, s: 7, c: '#ffffff', d: 22, delay: 9.4 },
+  { l: 47.1, s: 6, c: '#f2a03c', d: 19, delay: 11.2 },
+];
+
+/* --------------------------------------------------------------- helpers -- */
+
+const CHAKRA_SPOKES = Array.from({ length: 24 }, (_, i) => ({
+  x2: Number((20 + 17 * Math.cos((i * Math.PI) / 12)).toFixed(4)),
+  y2: Number((20 + 17 * Math.sin((i * Math.PI) / 12)).toFixed(4)),
+}));
+
+const ChakraGlyph = () => (
+  <svg
+    viewBox="0 0 40 40"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+  >
+    <circle
+      cx="20"
+      cy="20"
+      r="17"
+      fill="none"
+      stroke="#1b3f9c"
+      strokeWidth="2.4"
     />
-  ),
-});
 
-/* ---------- Inline SVG icons ---------- */
-const StarIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-    <path d="M12 2.5l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.8 6.2 20.9l1.1-6.5L2.6 9.3l6.5-.9L12 2.5z" />
+    <circle cx="20" cy="20" r="3.4" fill="#1b3f9c" />
+
+    {CHAKRA_SPOKES.map(({ x2, y2 }, i) => (
+      <line
+        key={i}
+        x1={20}
+        y1={20}
+        x2={x2}
+        y2={y2}
+        stroke="#1b3f9c"
+        strokeWidth="1.1"
+      />
+    ))}
   </svg>
 );
 
@@ -25,190 +90,275 @@ const barlow = Barlow_Condensed({
   display: "swap",
 });
 
+function nextIndependenceDay() {
+  const now = new Date();
+  const y = now.getFullYear();
+  const target = new Date(y, 7, 15, 0, 0, 0);
+  if (target.getTime() < now.getTime()) target.setFullYear(y + 1);
+  return target;
+}
 
-export default function CareerHeroSlide({ onOpenForm }) {
-  return (
-    <section className="relative w-full h-auto bg-white">
-      {/* ================================================================
-        MOBILE-ONLY: image is a normal in-flow element (sets the section's
-        height by its own aspect ratio). Text panel is absolutely positioned
-        on top of it with a glassmorphic look. No hard-coded heights needed.
-      ================================================================ */}
-      <div className="relative sm:hidden w-full">
-        {/* Image — normal flow, w-full h-auto means it scales by its own
-            intrinsic aspect ratio and the container height follows it */}
-        <Image
-          src="https://res.cloudinary.com/djdhtkjhn/image/upload/v1785906042/mobileHero2_l4nu4u.png"
-          alt="AI powered learning, SAP industry standard, smart assessments, personalized roadmap"
-          width={1200}
-          height={1500}
-          className="w-full h-auto"
-          priority
+function diffParts(target) {
+  const ms = Math.max(0, target - Date.now());
+  return {
+    d: Math.floor(ms / 86400000),
+    h: Math.floor(ms / 3600000) % 24,
+    m: Math.floor(ms / 60000) % 60,
+    s: Math.floor(ms / 1000) % 60,
+  };
+}
+
+/* ------------------------------------------------------------- component -- */
+
+export default function HeaderCarouselAug({
+  offerDeadline,
+  onOpenForm
+}) {
+  const rootRef = useRef(null);
+  const bgRef = useRef(null);
+  const jetsRef = useRef(null);
+  const chakraRef = useRef(null);
+  const robotRef = useRef(null);
+  const leftRef = useRef(null);
+  const cardsRef = useRef(null);
+
+  const [visible, setVisible] = useState(false);
+  const [time, setTime] = useState(null);
+
+  const target = useRef(
+    offerDeadline ? new Date(offerDeadline) : nextIndependenceDay()
+  ).current;
+
+  /* countdown ------------------------------------------------------------- */
+  useEffect(() => {
+    setTime(diffParts(target));
+    const id = setInterval(() => setTime(diffParts(target)), 1000);
+    return () => clearInterval(id);
+  }, [target]);
+
+  /* entrance -------------------------------------------------------------- */
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([e]) => e.isIntersecting && setVisible(true),
+      { threshold: 0.15 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  /* parallax (mouse + scroll), rAF-batched -------------------------------- */
+  const state = useRef({ mx: 0, my: 0, sy: 0, raf: 0 });
+
+  const apply = useCallback(() => {
+    state.current.raf = 0;
+    const { mx, my, sy } = state.current;
+    const set = (ref, kx, ky, ks, extra = '') => {
+      if (ref.current) {
+        ref.current.style.transform = `translate3d(${mx * kx}px, ${my * ky + sy * ks}px, 0) ${extra}`;
+      }
+    };
+    set(bgRef, -8, -5, 0.06, 'scale(1.06)');
+    set(jetsRef, 26, 16, -0.16);
+    set(chakraRef, 18, 12, -0.1);
+    set(robotRef, -14, -9, 0.12);
+    set(leftRef, 7, 4, 0.04);
+    set(cardsRef, -10, -6, 0.09);
+  }, []);
+
+  const schedule = useCallback(() => {
+    if (!state.current.raf) state.current.raf = requestAnimationFrame(apply);
+  }, [apply]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (window.matchMedia('(max-width: 900px)').matches) return;
+
+    const el = rootRef.current;
+    const onMove = (e) => {
+      const r = el.getBoundingClientRect();
+      state.current.mx = (e.clientX - r.left) / r.width - 0.5;
+      state.current.my = (e.clientY - r.top) / r.height - 0.5;
+      state.current.mx *= 2;
+      state.current.my *= 2;
+      schedule();
+    };
+    const onLeave = () => {
+      state.current.mx = 0;
+      state.current.my = 0;
+      schedule();
+    };
+    const onScroll = () => {
+      const r = el.getBoundingClientRect();
+      state.current.sy = -r.top;
+      schedule();
+    };
+    el.addEventListener('mousemove', onMove);
+    el.addEventListener('mouseleave', onLeave);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => {
+      el.removeEventListener('mousemove', onMove);
+      el.removeEventListener('mouseleave', onLeave);
+      window.removeEventListener('scroll', onScroll);
+      if (state.current.raf) cancelAnimationFrame(state.current.raf);
+    };
+  }, [schedule]);
+
+  /* ------------------------------------------------------------- blocks -- */
+
+  const Headline = (
+    <h1 className={s.headline}>
+      <span className={`${s.hLine} ${s.h1} ${s.reveal} ${s.d2}`}>from "just applying" to</span>
+      <span className={`${s.hLine} ${s.h2} ${s.reveal} ${s.d3}`}>
+        <span className={s.lead}>" Just</span> <span className={s.tomorrow}>Got Hired"</span>
+      </span>
+      {/* <span className={`${s.hLine} ${s.h3} ${s.reveal} ${s.d4}`}>Build India&rsquo;s Future</span> */}
+    </h1>
+  );
+
+  const Desc = (
+    <div className={s.desc}>
+      <p className="mt-4 text-[24px] xs:text-[16px] leading-relaxed text-gray-800">
+        Real SAP, IT & HR training — taught by people who've done the job.
+        Online or offline batches, built around your schedule.
+      </p>
+    </div>
+  )
+
+  const Divider = (
+    <div className={`${s.divider} ${s.reveal} ${s.d5}`} aria-hidden="true">
+      <span className={`${s.divLine} ${s.saffron}`} />
+      <span className={s.divDot}><ChakraGlyph /></span>
+      <span className={`${s.divLine} ${s.greenL}`} />
+    </div>
+  );
+
+
+  // staricon
+  const StarIcon = ({ className }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 2.5l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.8 6.2 20.9l1.1-6.5L2.6 9.3l6.5-.9L12 2.5z" />
+    </svg>
+  );
+
+  // Button
+  const Buttons = (
+    <div className="flex items-center justify-start gap-2 sm:gap-3">
+      <button
+        className="rounded-lg border border-blue-600 bg-[#593adc] text-white
+                    px-3 py-2.5 text-xs
+                    sm:px-2 sm:py-2.5 sm:text-sm
+                    md:px-5 md:py-3 md:text-[15px]
+                    lg:px-6 lg:py-3"
+        onClick={() => {
+          window.open(
+            "https://wa.me/9004001938?text=Hi%20I'm%20interested%20in%20your%20courses.",
+            "_blank"
+          );
+        }}
+      >
+        Book a Free Demo Class
+      </button>
+
+      <button
+        onClick={onOpenForm}
+        className="inline-flex items-center justify-center gap-1
+                    rounded-lg border-1 border-[#593adc]
+                    text-[#593adc] transition
+                    hover:bg-[#593adc] hover:text-white
+                    px-3 py-2.5 text-xs
+                    sm:gap-2 sm:px-2 sm:py-2.5 sm:text-sm
+                    md:px-6 md:py-2.5 md:text-[15px]
+                    lg:px-7 lg:py-3"
+      >
+        Start My Journey
+        <ChevronRight
+          className="h-4 w-4 sm:h-5 sm:w-5"
         />
+      </button>
+    </div>
+  )
 
-        {/* Scrim for text readability regardless of what's under the panel */}
-        <div className="absolute inset-0 bg-black/10" />
+  /* --------------------------------------------------------------- view -- */
 
-        {/* Glassmorphic hero text panel — overlaid on the image */}
-        <div className="absolute inset-0 z-10 flex flex-col justify-start p-3 xs:px-4">
-          <div className=" p-3 xs:p-3">
-            <div className="inline-flex max-w-full py-2 items-center gap-2 rounded-full bg-white/90 px-2 xs:px-3.5 xs:py-2 shadow-sm ring-1 ring-purple-100 backdrop-blur-sm">
-              <StarIcon className="h-3.5 w-3.5 xs:h-4 xs:w-4 shrink-0 text-purple-600" />
-              <span className="min-w-0 text-[11px] xs:text-xs font-semibold text-gray-800">
+  return (
+    <section
+      ref={rootRef}
+      className={`${s.hero} ${visible ? s.in : ''}`}
+      aria-label="Celebrating India's 79th Independence Day"
+    >
+      {/* ---------- scenery ---------- */}
+      <img
+        ref={bgRef}
+        className={`${s.layer} ${s.bg}`}
+        src={`/bg.jpg`}
+        alt=""
+        aria-hidden="true"
+        fetchPriority="high"
+      />
+
+      <div className={s.confetti} aria-hidden="true">
+        {CONFETTI.map((c, i) => (
+          <span
+            key={i}
+            className={s.flake}
+            style={{
+              left: `${c.l}%`,
+              width: `calc(${c.s} * var(--u))`,
+              height: `calc(${c.s * 1.5} * var(--u))`,
+              background: c.c,
+              animationDuration: `${c.d}s`,
+              animationDelay: `-${c.delay}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      <img ref={jetsRef} className={s.jets} src={`/jets.png`} alt="" aria-hidden="true" />
+      <img ref={chakraRef} className={s.chakra} src={`/Chakra.png`} alt="" aria-hidden="true" />
+
+      <div className={s.beam} aria-hidden="true" />
+      <div ref={robotRef} className={s.robotWrap}>
+        <img className={s.robot} src={`/pngRobo.png`} alt="Friendly AI learning robot" />
+      </div>
+      <div className='w-[400px]'>
+        <img className={s.cards} src={'/AICards.png'} alt='ai cards' />
+      </div>
+      {/* ---------- desktop composition (absolute, 1563x1006 canvas) ---------- */}
+      <div className={s.desktop}>
+        <div ref={leftRef} className={s.layer} style={{ pointerEvents: 'none' }}>
+          <div style={{ pointerEvents: 'auto' }}>
+            {/* white badge */}
+            <div className={`${s.badge} inline-flex max-w-full items-center gap-2 rounded-full bg-white px-3 py-2 text-xs shadow-sm ring-1 ring-purple-100 sm:px-4 mb-4`}>
+              <StarIcon className="h-4 w-4 shrink-0 text-purple-600" />
+              <span className="min-w-0 text-xs font-semibold text-gray-800 sm:text-sm">
                 India&apos;s Leading SAP &amp; IT Training with AI Institute
               </span>
             </div>
 
-            <h1
-              className={`${barlow.className} heroHeading relative mt-3 text-[30px] xs:text-[36px] leading-[0.95] xs:leading-[0.9] font-extrabold uppercase tracking-[0.05em] text-[#1b3a6d]`}
-            >
-              From <span className="font-normal">&#x22;</span>Just applying<span className="font-normal">&#x22;</span> to
-              <br />
-              <span className="bg-gradient-to-r from-[#ff9a3d] via-[#ff5b7b] to-[#b17dff] bg-clip-text text-transparent">
-                <span className="font-normal">&#x22;</span>just got hired<span className="font-normal">&#x22;</span>
-              </span>
-              <br />
-            </h1>
-
-            <style jsx>{`
-              /* Underline */
-                .heroHeading::after {
-                  content: "";
-                  position: absolute;
-                  left: 0;
-                  bottom: -18px;
-                  width: 90px;
-                  height: 5px;
-                  border-radius: 999px;
-                  background: linear-gradient(
-                    90deg,
-                    #ff9f43 0%,
-                    #ff5e62 50%,
-                    #b16cea 100%
-                  );
-                }
-            `}</style>
-
-            <p className="mt-4 text-[14px] xs:text-[15px] leading-relaxed text-gray-800">
-              Real SAP, IT & HR training — taught by people who've done the job.
-              Online or offline batches, built around your schedule.
-            </p>
-
-            <div className="mt-6 flex items-center gap-3">
-              <ConsultationButton onOpenForm={onOpenForm} />
+            {/* heading */}
+            {Headline}
+            {Divider}
+            {Desc}
+            <div className={`flex items-center gap-3 ${s.consultBtn}`}>
+              {Buttons}
             </div>
           </div>
         </div>
+
       </div>
 
-      {/* ================================================================
-        DESKTOP (sm+) — UNCHANGED: image with text overlaid on top of it.
-      ================================================================ */}
-      <div className="relative hidden bg-no-repeat w-full overflow-hidden sm:block sm:aspect-[16/9] lg:aspect-[14/9] xl:aspect-[2.4/1]"
-        style={
-          {
-            backgroundImage: "url('https://res.cloudinary.com/djdhtkjhn/image/upload/v1785573435/RoboWidth_mduj2r.png')",
-            backgroundPosition: "center",
-            backgroundSize: "cover"
-          }
-        }
-      >
-        <div className="absolute inset-0 z-10 mx-auto flex max-w-[1400px] items-start pt-16 box-border px-5 sm:px-8 lg:px-10">
-          <div className="grid w-full grid-cols-1 items-start gap-6 lg:grid-cols-12 lg:gap-8">
-            <div className="relative z-10 max-w-2xl lg:col-span-5">
-              <div className="inline-flex max-w-full items-center gap-2 rounded-full bg-white px-3 py-2 text-xs shadow-sm ring-1 ring-purple-100 sm:px-4 mb-4">
-                <StarIcon className="h-4 w-4 shrink-0 text-purple-600" />
-                <span className="min-w-0 text-xs font-semibold text-gray-800 sm:text-sm">
-                  India&apos;s Leading SAP &amp; IT Training with AI Institute
-                </span>
-              </div>
+      {/* ---------- mobile composition (stacked) ---------- */}
+      <div className={s.mobile}>
+        {Headline}
+        {Divider}
+        {Desc}
 
-              <h1
-                className={`${barlow.className} text-[36px] lg:text-[58px] xl:text-[65px] leading-[0.9] font-extrabold uppercase tracking-[0.05em] text-[#1b3a6d] heroHeading`}
-              >
-                From <span className="font-normal">&#34;</span>Just applying<span className="font-normal">&#34;</span> to
-                <br />
-
-                <span className="gradientText">
-                  <span className="font-normal">&#34;</span>just got hired<span className="font-normal">&#34;</span>
-                </span>
-              </h1>
-
-              <style jsx>{`
-                .heroHeading {
-                  position: relative;
-                  display: inline-block;
-                }
-
-                /* Underline */
-                .heroHeading::after {
-                  content: "";
-                  position: absolute;
-                  left: 0;
-                  bottom: -18px;
-                  width: 120px;
-                  height: 5px;
-                  border-radius: 999px;
-                  background: linear-gradient(
-                    90deg,
-                    #ff9f43 0%,
-                    #ff5e62 50%,
-                    #b16cea 100%
-                  );
-                }
-
-                /* Animated Gradient Text */
-                .gradientText {
-                  display: inline-block;
-                  font-weight: 800;
-                  line-height: inherit;
-
-                  background: linear-gradient(
-                    90deg,
-                    #FF3B5C,
-                    #E11D48,
-                    #C026D3,
-                    #8B5CF6,
-                    #6D28D9,
-                    #FF3B5C
-                  );
-
-                  background-size: 300% 100%;
-                  background-position: 0% 50%;
-
-                  -webkit-background-clip: text;
-                  background-clip: text;
-                  color: transparent;
-                  -webkit-text-fill-color: transparent;
-
-                  animation: gradientFlow 6s ease infinite;
-                }
-
-                @keyframes gradientFlow {
-                  0% {
-                    background-position: 0% 50%;
-                  }
-
-                  50% {
-                    background-position: 100% 50%;
-                  }
-
-                  100% {
-                    background-position: 0% 50%;
-                  }
-                }
-              `}</style>
-
-              <p className="mt-4 max-w-md rounded-3xl py-2 md:text-md font-thin leading-relaxed text-[#1b3a6d] sm:mt-6 sm:text-lg">
-                Real SAP, IT & HR training — taught by people who've done the
-                job. Online or offline batches, built around your schedule.
-              </p>
-
-              <div className="mt-8 flex items-center justify-start gap-3 sm:mt-9 sm:flex-row sm:flex-wrap sm:gap-4">
-                <ConsultationButton onOpenForm={onOpenForm} />
-              </div>
-            </div>
-          </div>
+        <div className={`flex items-center gap-3 consultBtn`}>
+          {Buttons}
         </div>
       </div>
     </section>

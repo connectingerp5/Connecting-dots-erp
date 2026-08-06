@@ -2,6 +2,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import dynamic from "next/dynamic";
 import CareerHeroSlide from "@/components/HomePage/HeaderCarousel1";
+import HeaderCarouselAug from './HeaderCarouselAug';
 
 const loadBtnform = () => import("./Btnform");
 
@@ -37,7 +38,8 @@ const HeaderCarousel = () => {
     <div className="w-full max-w-[1800px] mx-auto overflow-hidden relative">
   <div className="relative bg-white overflow-hidden">
     <div className="w-full h-full">
-      <CareerHeroSlide onOpenForm={toggleForm} />
+      {/* <CareerHeroSlide onOpenForm={toggleForm} /> */}
+      <HeaderCarouselAug onOpenForm={toggleForm} offerDeadline={new Date("2026-08-15")}/>
     </div>
   </div>
 

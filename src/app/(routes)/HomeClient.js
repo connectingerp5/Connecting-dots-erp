@@ -10,6 +10,7 @@ import WhatWeOffer from "../../components/HomePage/WhatWeOffer"
 import SectionBackground from "@/components/BackgroundCss/SectionBackground";
 import RegistrationForm from "@/components/PopupForm2";
 import Container from "@/components/StandardContainer";
+import HeaderCarouselAug from "@/components/HomePage/HeaderCarouselAug";
 
 const Marquee = dynamic(() => import("@/components/HomePage/Marquee2"), {
   ssr: false,
@@ -124,7 +125,8 @@ export default function HomeClient() {
           </h1>
 
           {/* Above the fold */}
-          <HeaderCarousel />
+          {/* <HeaderCarousel /> */}
+          <HeaderCarouselAug/>
 
           {/* Below the fold — lazy loaded */}
           <LazySection fallback={<div style={{ height: "60px" }} />}>
