@@ -1,801 +1,606 @@
-@media (max-width: 320px) {
-  .form {
-    width: 100vw !important;
-    max-width: 95vw !important;
-    margin: 0 auto !important;
-    box-sizing: border-box;
-    padding: 1rem !important;
-  }
-  .submitButtonItDs {
-    margin-top: 2.2rem !important;
-    border-radius: 9999px !important;
-  }
-  .phoneInputItDs {
-    width: 100% !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 0.5rem !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    display: flex !important;
-  }
-  .phoneInputItDs select {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin-bottom: 0.5rem !important;
-    display: block !important;
-  }
-  .phoneInputItDs input[type="tel"] {
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-    margin-bottom: 0.5rem !important;
-    display: block !important;
-  }
-}
-.containerItDsHeader {
+/* ============================================================
+   Course Page Hero — EXACT canvas system from IndependenceHero
+   Design canvas: 1563 x 1006 px, scaled with --u (container query)
+   100 / 1563 = 0.0639795  ->  1px === 0.0639795cqw
+   ============================================================ */
+
+.hero {
+  container-type: inline-size;
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 3rem;
-  padding: 88px 70px 104px;
-  background-blend-mode: overlay;
-  /* background-color: rgba(249, 249, 249, 0.75); */
-  /* background-color: #000; */
   width: 100%;
-  max-width: 1800px;
-  min-height: 680px;
-  height: auto;
-  margin: 0 auto;
-  overflow: hidden;
+  aspect-ratio: 1563 / 1006;
   isolation: isolate;
-  background-image: url('https://res.cloudinary.com/djdhtkjhn/image/upload/v1785563975/updatedHeroSec_eyyvqz.webp');
-  background-size: cover;
-  background-position: center;
+  background: #0a1a5c;
+
+  /* Clamped so the canvas-scaled type/layout never collapses to
+     illegible sizes on narrower desktop/tablet widths, and never
+     balloons past the design intent on ultra-wide screens. Below
+     the 900px breakpoint the whole canvas system is switched off
+     in favour of a fixed, hand-tuned mobile layout (see bottom) —
+     that layout mirrors the SAME elements in the SAME visual order
+     as desktop (badge-less headline, robot, description, chips,
+     alumni, CTAs, form), just resized down, not redesigned. */
+  --u: clamp(0.72px, 0.0639795cqw, 1.15px);
+
+  --navy: #0a1a5c;
+  --navy-deep: #061460;
+  --orange: #f45807;
+  --orange-2: #dc2626;
+  --ink: #12203f;
 }
 
-.backgroundVideo {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100%;
-  object-fit: cover;
-  z-index: -1;
-  min-width: 100%;
-  min-height: 100%;
-}
-
-.leftSectionItDs {
-  max-width: 50%;
-  position: relative;
-  z-index: 1;
-}
-
-.rightSectionItDs {
-  width: min(430px, 36%);
-  flex: 0 0 min(430px, 36%);
-  align-self: center;
-  margin: 0 0 1.5rem;
-  position: relative;
-  z-index: 5;
-  transform: translateY(-16px);
-}
-
-.leftSectionItDs h1 {
-  font-size: 2rem;
-  font-weight: 800;
-  color: #1e3a8a;
-  margin-bottom: 1rem;
-}
-
-.leftSectionItDs h2 {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #fff;
-  margin-bottom: 0.5rem;
-  text-align: justify;
-}
-.leftSectionItDs h2 span {
-  color: #1f2937;
-  text-align: justify;
-}
-
-.leftSectionItDs p {
-  color: #fff;
-  margin-bottom: 1rem;
-  text-align: justify;
-}
-
-.featuresItDs {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.featuresItDs li {
-  font-size: 1rem;
-  color: #f85757;
-  font-weight: bolder;
-  list-style-position: inside;
-  padding-left: 1rem;
-  margin-left: -20px;
-}
-.featuresItDs li::before {
-  content: "• ";
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%); /* Vertically center the marker */
-  width: 10px; /* Adjust marker size */
-  height: 10px; /* Adjust marker size */
-  /* Adjust marker color */
-  border-radius: 50%;
-}
-
-.alumniItDs {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 1.5rem;
-  border-radius: 30px;
-}
-
-.alumniLogosItDs {
-  display: flex;
-  gap: 0.5rem;
-  border-radius: 40px;
-  width: 19%;
-  aspect-ratio: 3/1;
-  object-fit: contain;
-  mix-blend-mode: color-dodge #c8c4c4;
-}
-
-.ButtonItDs {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-.submitButtonItDs {
-  background: linear-gradient(90deg, #eb5a25c2 0%, hsl(10, 64%, 33%) 100%);
-  color: #fff;
-  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-  font-size: 1.08rem;
-  font-weight: 600;
-  padding: 0.75rem 2.2rem;
-  border-radius: 9999px;
-  border: none;
-  margin-top: 1.2rem;
-  box-shadow: 0 2px 8px rgba(37,99,235,0.08);
-  cursor: pointer;
-  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
-}
-.submitButtonItDs:hover {
-  background: linear-gradient(90deg, hsla(0, 64%, 33%, 0.567) 0%, #eb2525 100%);
-  box-shadow: 0 4px 16px rgba(37,99,235,0.15);
-  transform: translateY(-2px) scale(1.03);
-}
-
-
-.batchButtonItDs {
-  background-color: #2563eb;
-  color: #fdfdfd;
-  padding: 0.5rem 1rem;
-  border-radius: 9999px;
-  font-size: 0.875rem;
-  display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.batchButtonItDs:hover {
-  background-color: white;
-  color: #2563eb;
-  border-color: #2563eb;
-}
-.buttons {
-  display: flex;
-  gap: 3rem;
-  margin-top: 2rem;
-}
-.buttonStyle1 {
-  background: linear-gradient(90deg, #2563eb 0%, #1e3a8a 100%);
-  color: #fff;
-  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-  font-size: 1rem;
-  font-weight: 500;
-  padding: 0.7rem 2rem;
-  border-radius: 8px;
-  border: none;
-  box-shadow: 0 2px 8px rgba(37,99,235,0.07);
-  transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.1s;
-}
-.buttonStyle1:hover {
-  background: linear-gradient(90deg, #1e3a8a 0%, #2563eb 100%);
-  box-shadow: 0 4px 16px rgba(37,99,235,0.15);
-  transform: translateY(-2px) scale(1.03);
-}
-
-.buttonStyle2 {
-  background: #fff;
-  color: #2563eb;
-  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-  font-size: 1rem;
-  font-weight: 500;
-  padding: 0.7rem 2rem;
-  border-radius: 8px;
-  border: 1px solid #2563eb;
-  box-shadow: 0 2px 8px rgba(37,99,235,0.07);
-  transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.1s;
-}
-.buttonStyle2:hover {
-  background: #2563eb;
-  color: #fff;
-  border: 1px solid #fff;
-  box-shadow: 0 4px 16px rgba(37,99,235,0.15);
-  transform: translateY(-2px) scale(1.03);
-}
-
-.buttonStyle1.smallBtn,
-.buttonStyle2.smallBtn {
-  font-size: 0.85rem;
-  padding: 0.4rem 1.1rem;
-  border-radius: 9999px;
-}
-
-
-.buttonStyle2:hover {
-  background-color: #2563eb;
-  color: #fff;
-  border: 1px solid #fff;
-}
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-  background: transparent;
-  border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(37,99,235,0.07);
-  padding: 2.2rem 2.5rem;
-  align-items: stretch;
-  position: relative;
-  z-index: 1;
-  box-sizing: border-box;
-  max-width: 100%;
-}
-.form::before {
-  content: "";
+/* ---------- decorative canvas (bg + confetti only — this layer clips) ---------- */
+.canvasDecor {
   position: absolute;
   inset: 0;
-  z-index: -2;
-  background: url('https://res.cloudinary.com/duz9xipfm/image/upload/v1763383214/blue_1_w9iczj.avif') center/cover no-repeat;
-   opacity: 0.60;
-  border-radius: 16px;
+  overflow: hidden;
+  z-index: -3;
 }
 
-
-.form input {
+.bg {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  padding: 12px 16px;
+  height: 100%;
+  background-image: url('/bg.jpg');
+  background-size: cover;
+  background-position: center;
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.06);
+  transform-origin: 50% 60%;
+  will-change: transform;
+  transition: transform 0.2s ease-out;
+}
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, rgba(6,20,96,0.55) 0%, rgba(6,20,96,0.18) 45%, rgba(6,20,96,0) 68%);
+}
+
+/* confetti */
+.confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.flake {
+  position: absolute;
+  border-radius: 1px;
+  animation-name: flakeFall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  opacity: 0.85;
+}
+@keyframes flakeFall {
+  0%   { transform: translate3d(0, -12%, 0) rotate(0deg); opacity: 0; }
+  8%   { opacity: 0.9; }
+  92%  { opacity: 0.9; }
+  100% { transform: translate3d(calc(30 * var(--u)), 118%, 0) rotate(540deg); opacity: 0; }
+}
+
+/* ---------- spinning accent glyph (chakra-role, top right) ---------- */
+.accentGlyph {
+  position: absolute;
+  left: calc(1360 * var(--u));
+  top: calc(50 * var(--u));
+  width: calc(120 * var(--u));
+  z-index: 1;
+  animation: floatY 6s ease-in-out infinite;
+  filter: drop-shadow(0 0 calc(18 * var(--u)) rgba(255,255,255,0.35));
+}
+.accentGlyph svg { width: 100%; animation: spin 30s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(calc(-10 * var(--u))); }
+}
+
+/* ---------- robot mascot — desktop canvas position ----------
+   Sits in the gap between the left copy column (ends ~x625) and
+   the form card (starts x980), so it never overlaps either. */
+.robotWrap {
+  position: absolute;
+  left: calc(600 * var(--u));
+  top: calc(120 * var(--u));
+  width: calc(380 * var(--u));
+  z-index: 1;
+  animation: floatY 5.2s ease-in-out infinite;
+}
+.robot {
+  width: 100%;
+  display: block;
+  filter: drop-shadow(0 calc(18 * var(--u)) calc(22 * var(--u)) rgba(6,20,96,0.25));
+}
+
+/* ============================================================ */
+/*  LEFT COLUMN                                                 */
+/* ============================================================ */
+
+.headline {
+  position: absolute;
+  left: calc(165 * var(--u));
+  top: calc(128 * var(--u));
+  font-family: 'Bricolage Grotesque', 'Inter', sans-serif;
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: calc(0.4 * var(--u));
+  margin: 0;
+  z-index: 2;
+}
+.hLine { display: block; }
+.hLine1 { font-size: calc(24 * var(--u)); color: #fff; text-shadow: 0 calc(3 * var(--u)) calc(10 * var(--u)) rgba(6,20,96,0.4); }
+.hLine2 {
+  font-size: calc(20 * var(--u));
+  margin-top: calc(4 * var(--u));
+  font-weight: 800;
+  background: linear-gradient(90deg, var(--orange) 0%, var(--orange-2) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.desc {
+  position: absolute;
+  left: calc(165 * var(--u));
+  top: calc(230 * var(--u));
+  width: calc(430 * var(--u));
+  font-size: calc(15 * var(--u));
+  line-height: 1.5;
+  color: #fff;
+  text-shadow: 0 calc(1 * var(--u)) calc(6 * var(--u)) rgba(6,20,96,0.3);
+  z-index: 2;
+}
+
+.features {
+  position: absolute;
+  left: calc(165 * var(--u));
+  top: calc(430 * var(--u));
+  width: calc(460 * var(--u));
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(9 * var(--u));
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  z-index: 2;
+}
+.featureChip {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(6 * var(--u));
+  padding: calc(6 * var(--u)) calc(14 * var(--u));
+  background: rgba(255,255,255,0.14);
+  border: calc(1 * var(--u)) solid rgba(255,255,255,0.35);
+  border-radius: 999px;
+  color: #fff;
+  font-size: calc(13 * var(--u));
+  font-weight: 600;
+  backdrop-filter: blur(2px);
+}
+.featureChip::before { content: ""; width: calc(6 * var(--u)); height: calc(6 * var(--u)); border-radius: 50%; background: var(--orange); flex: none; }
+
+.alumni {
+  position: absolute;
+  left: calc(165 * var(--u));
+  top: calc(500 * var(--u));
+  display: flex;
+  align-items: center;
+  gap: calc(14 * var(--u));
+  z-index: 2;
+}
+.alumni span { color: #fff; font-size: calc(14 * var(--u)); }
+.alumniLogos { display: flex; gap: calc(9 * var(--u)); }
+.alumniLogos img { width: calc(62 * var(--u)); aspect-ratio: 3/1; object-fit: contain; mix-blend-mode: color-dodge; }
+
+.buttons {
+  position: absolute;
+  left: calc(165 * var(--u));
+  top: calc(550 * var(--u));
+  display: flex;
+  gap: calc(16 * var(--u));
+  z-index: 2;
+}
+.buttonStyle1 {
+  background: linear-gradient(90deg, var(--orange) 0%, var(--orange-2) 100%);
+  color: #fff;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  font-size: calc(16 * var(--u));
+  font-weight: 600;
+  padding: calc(12 * var(--u)) calc(34 * var(--u));
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 calc(2 * var(--u)) calc(8 * var(--u)) rgba(37,99,235,0.08);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.buttonStyle1:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 4px 16px rgba(220,38,38,0.25); }
+.buttonStyle2 {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  font-size: calc(16 * var(--u));
+  font-weight: 600;
+  padding: calc(11 * var(--u)) calc(32 * var(--u));
+  border-radius: 999px;
+  border: calc(1 * var(--u)) solid rgba(255,255,255,0.7);
+  backdrop-filter: blur(2px);
+  cursor: pointer;
+  transition: transform 0.15s, background 0.15s;
+}
+.buttonStyle2:hover { background: #fff; color: var(--navy-deep); transform: translateY(-2px) scale(1.03); }
+
+/* ============================================================ */
+/*  RIGHT — glass lead-capture card, on-canvas (same slot the
+    festival artwork used to occupy)                             */
+/* ============================================================ */
+.formWrap {
+  position: absolute;
+  left: calc(980 * var(--u));
+  top: calc(90 * var(--u));
+  width: calc(500 * var(--u));
+  z-index: 3;
+}
+
+.formCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: calc(18 * var(--u));
+  background: rgba(255,255,255,0.94);
+  border-radius: calc(24 * var(--u));
+  box-shadow: 0 calc(16 * var(--u)) calc(38 * var(--u)) rgba(20,20,40,0.22),
+              inset 0 calc(1.5 * var(--u)) 0 rgba(255,255,255,0.9);
+  padding: calc(34 * var(--u)) calc(38 * var(--u));
+  backdrop-filter: blur(6px);
+  box-sizing: border-box;
+}
+
+.formTitle {
+  font-size: calc(26 * var(--u));
+  font-weight: 700;
+  color: #1f2937;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  text-align: center;
+  position: relative;
+  margin: 0;
+}
+.formTitle::after {
+  content: "";
+  display: block;
+  margin: calc(9 * var(--u)) auto 0;
+  width: calc(70 * var(--u));
+  height: calc(3 * var(--u));
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--orange-2) 0%, var(--orange) 100%);
+}
+
+.form { display: flex; flex-direction: column; gap: calc(16 * var(--u)); }
+
+.input,
+.form input,
+.form select {
+  width: 100%;
+  padding: calc(12 * var(--u)) calc(16 * var(--u));
   border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  font-size: 1rem;
+  border-radius: calc(8 * var(--u));
+  font-size: calc(16 * var(--u));
   font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
   background: #f9fafb;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
   transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
 }
-.typewriterInput {
-  position: relative;
-  font-family: monospace;
-}
-
-.typewriterInput::after {
-  content: '';
-  display: inline-block;
-  width: 2px;
-  opacity: 0.85;
-  background: #2563eb;
-  vertical-align: middle;
-  animation: blink 1s steps(1) infinite;
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-.form input:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 2px rgba(37,99,235,0.15);
+.input:focus, .form input:focus, .form select:focus {
+  border-color: var(--orange);
+  box-shadow: 0 0 0 2px rgba(244,88,7,0.15);
   outline: none;
 }
-.phoneInputItDs {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.1rem;
-  width: 100%;
-}
-.phoneInputItDs select,
-.phoneInputItDs input {
-  flex: 1 1 0%;
-  padding: 3px;
-  height: 2.9vw;
-  border: 1px solid rgb(209, 213, 219);
-  border-radius: 0.375rem;
-  color: rgb(107, 107, 107);
-}
-  .phoneInputItDs input[type="tel"] {
-    width: 180px;
-    min-width: 120px;
-    max-width: 220px;
-    display: inline-block;
-    /* Keep height and input text style unchanged */
-    padding: 12px 16px;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-    background: #f9fafb;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-.error {
-  color: red;
-}
-.input {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid rgb(45, 46, 49);
-  border-radius: 0.375rem;
-}
 
-.brochureButtonItDs {
-  background-color: white;
-  color: #2563eb;
-  padding: 0.5rem 1rem;
-  border-radius: 9999px;
-  border: 1px solid #2563eb;
-  font-size: 0.875rem;
-}
-.brochureButtonItDs {
-  padding: 0.1rem 1rem;
-  border-radius: 9px;
-  width: 40%;
-}
-.brochureButtonItDs:hover {
-  color: white;
-}
-
-/* .rightSectionItDs {
-  background:transparent;
-  /* Removed glass effect */
-  /*padding: 1.5rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 30%;
-  height: 110%;
-  max-height: 570px;
-  text-align: justify;
-} */
-
-.rightSectionItDs h3 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1f2937;
-  font-family: Bricolage Grotesque;
-  margin-bottom: 1.2rem;
-  text-align: center;
-}
-  .rightSectionItDs h3 {
-    position: relative;
-  }
-  .rightSectionItDs h3::after {
-    content: "";
-    display: block;
-    margin: 0.5rem auto 0 auto;
-  width: 80px;
-  height: 3px;
-  background: linear-gradient(90deg, #dc2626 0%, #ff3300 100%);
-  border-radius: 2px;
-  }
-
-.rightSectionItDs h3 span {
-  color: #dc2626;
-}
-
-.accountInfoItDs {
-  font-size: 0.75rem;
-  color: #6b7280;
-  margin-top: 1rem;
-}
-
-.accountInfoItDs a {
-  color: #2563eb;
-}
-
-.termsInfoItDs {
-  font-size: 0.75rem;
-  color: #6b7280;
-}
-
-.termsInfoItDs a {
-  color: #2563eb;
-}
-.dsHeaderSpan {
-  color: #ff3300;
-}
-.dsHeaderSpan2 {
-  color: #fff;
-}
-.dsHeaderSpan3 {
-  color: #1e3a8a;
-  font-weight: 800;
-}
-
+.phoneInputItDs { display: flex; flex-direction: row; align-items: center; gap: calc(8 * var(--u)); width: 100%; }
 .selectCountryCode {
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  width: 80px; /* Adjust width as needed */
-  margin-right: 10px; /* Space between the country code and phone number input */
+  padding: calc(12 * var(--u)) calc(8 * var(--u));
+  border-radius: calc(8 * var(--u));
+  border: 1px solid #e5e7eb;
+  width: calc(92 * var(--u));
+  flex: none;
+  background: #f9fafb;
 }
 
-@media (min-width: 1024px) {
-  .leftSectionItDs {
-    max-width: 40%;
-  }
-}
-
-/* Responsive styles for mobile screens */
-@media (min-width: 765px) and (max-width: 1024px) {
-  .containerItDsHeader {
-    flex-direction: row;
-    align-items: flex-start;
-    width: 100vw;
-    max-width: 100vw;
-    height: auto;
-    padding: 2rem 2vw 2.5rem;
-    margin-bottom: 0;
-    margin-left: 0;
-    margin-right: 0;
-    box-sizing: border-box;
-    justify-content: center;
-    background-image: url("https://res.cloudinary.com/djdhtkjhn/image/upload/v1785563975/updatedHeroSec_eyyvqz.webp");
-  }
-  .leftSectionItDs,
-  .rightSectionItDs {
-    max-width: 48vw;
-    width: 48vw;
-    margin-bottom: 0;
-    margin-left: 0;
-    margin-right: 0;
-  }
-  .rightSectionItDs {
-    padding: 1.5rem;
-    box-shadow: none;
-    margin-left: 2vw;
-    margin-bottom: 1rem;
-    transform: translateY(-12px);
-    box-sizing: border-box;
-  }
-  .form {
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-  }
-  .form input {
-    width: 90%;
-    padding: 3px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-  }
-  .phoneInputItDs {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    width: 40vw;
-  }
-  .phoneInputItDs select,
-  .phoneInputItDs input {
-    flex: 1 1 0%;
-    padding: 17px 10px;
-    height: 5vw;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-    color: grey;
-  }
-
-  .phoneInputItDs select {
-    max-width: 49px;
-    flex: 0 0 10px;
-    padding: 0.01rem;
-    height: 5vw;
-    border: 1px solid rgb(209, 213, 219);
-    border-radius: 0.375rem;
-  }
-  .submitButtonItDs {
-    background-color: #dc2626;
-    color: white;
-    padding: 0.5rem;
-    border-radius: 9999px !important;
-    margin-top: 1.2rem;
-    width: 90%;
-  }
-}
-@media (max-width: 480px) and (max-height: 800px) {
-  .containerItDsHeader {
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    min-height: auto;
-    height: auto;
-    padding: 0.75rem 0.75rem 1.75rem;
-    margin-bottom: 0;
-    background-image: url("https://res.cloudinary.com/djdhtkjhn/image/upload/v1785563975/updatedHeroSec_eyyvqz.webp");
-  }
-
-  .alumniLogosItDs {
-    width: 100%;
-    height: 1rem;
-  }
-
-  .leftSectionItDs,
-  .rightSectionItDs {
-    max-width: 100%;
-    width: 100%;
-    margin-bottom: 2rem;
-  }
-
-  .leftSectionItDs h1 {
-    font-size: 1.75rem;
-  }
-
-  .leftSectionItDs h2 {
-    font-size: 1.2rem;
-  }
-
-  .leftSectionItDs p {
-    font-size: 0.8rem;
-  }
-  .featuresItDs li,
-  .alumniItDs span,
-  .batchButtonItDs,
-  .brochureButtonItDs {
-    font-size: 0.8rem;
-  }
-  .rightSectionItDs h3 {
-    font-size: 1.2rem;
-    text-align: center;
-  }
-
-  .rightSectionItDs {
-    padding: 1rem;
-    box-shadow: none;
-    margin-bottom: 1rem;
-    transform: translateY(-12px);
-    box-sizing: border-box;
-  }
-  .form {
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-    width: 100%;
-    padding: 1.25rem;
-    margin: 0 auto;
-    box-sizing: border-box;
-  }
-  .form input {
-    width: 90%;
-    padding: 3px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-  }
-  .phoneInputItDs {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    /* gap: 0.01rem; */
-    width: 81vw;
-    height: 33px;
-  }
-  .phoneInputItDs select,
-  .phoneInputItDs input {
-    flex: 1 1 0%;
-    padding: 17px 10px;
-    height: 7vw;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-    color: grey;
-  }
-
-  .phoneInputItDs select {
-    max-width: 49px;
-    flex: 0 0 10px;
-    padding: 0.01rem;
-    height: 9vw;
-    border: 1px solid rgb(209, 213, 219);
-    border-radius: 0.375rem;
-  }
-  .submitButtonItDs {
-    background-color: #dc2626;
-    color: white;
-    padding: 0.5rem;
-    border-radius: 9999px !important;
-    margin-top: 1.2rem;
-    width: 90%;
-  }
-}
-
-/* Add these styles to your existing CSS file */
-
-/* Status message styling */
-.statusMessage {
-  margin-bottom: 15px;
-  padding: 10px 15px;
-  border-radius: 5px;
-  text-align: center;
-  font-size: 14px;
-  animation: fadeIn 0.3s ease;
-}
-
-.success {
-  background-color: rgba(76, 175, 80, 0.2);
-  color: #2e7d32;
-  border: 1px solid rgba(76, 175, 80, 0.5);
-}
-
-.error {
-  background-color: rgba(244, 67, 54, 0.2);
-  color: #d32f2f;
-  border: 1px solid rgba(244, 67, 54, 0.5);
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Button loading state */
-.loading {
-  position: relative;
+.submitButtonItDs {
+  background: linear-gradient(90deg, var(--orange) 0%, var(--orange-2) 100%);
+  color: #fff;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  font-size: calc(17 * var(--u));
+  font-weight: 600;
+  padding: calc(13 * var(--u)) calc(32 * var(--u));
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: not-allowed;
 }
-
-.buttonText {
-  margin-right: 10px;
-}
-
+.submitButtonItDs:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 4px 16px rgba(220,38,38,0.2); }
+.submitButtonItDs.loading { cursor: not-allowed; opacity: 0.85; }
+.buttonText { margin-right: 10px; }
 .buttonLoader {
   display: inline-block;
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
   border-radius: 50%;
   border-top-color: #fff;
-  animation: spin 0.8s linear infinite;
+  animation: btnSpin 0.8s linear infinite;
 }
+@keyframes btnSpin { to { transform: rotate(360deg); } }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+.statusMessage {
+  padding: calc(10 * var(--u)) calc(15 * var(--u));
+  border-radius: calc(8 * var(--u));
+  text-align: center;
+  font-size: calc(14 * var(--u));
+  animation: fadeIn 0.3s ease;
 }
+.success { background-color: rgba(76,175,80,0.15); color: #2e7d32; border: 1px solid rgba(76,175,80,0.4); }
+.error { background-color: rgba(244,67,54,0.15); color: #d32f2f; border: 1px solid rgba(244,67,54,0.4); }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Disabled form elements */
+.locationContainer { position: relative; }
+
+.suggestionsDropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  width: 100%;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 8px 0;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  z-index: 999;
+  animation: slideUpFade 0.2s ease;
+}
+.suggestionsDropdown::-webkit-scrollbar { width: 6px; }
+.suggestionsDropdown::-webkit-scrollbar-thumb { background: #ddd; border-radius: 6px; }
+@keyframes slideUpFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+.dropdownCategory { padding: 12px 16px; font-weight: 600; color: #222; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.15s; }
+.dropdownCategory:hover { background: #f5f7fa; }
+.categoryArrow { font-size: 14px; opacity: 0.6; }
+.dropdownItem { padding: 10px 18px; font-size: 14px; color: #444; cursor: pointer; transition: background 0.15s, color 0.15s; }
+.dropdownItem:hover { background: #eef4ff; color: var(--orange); }
+.dropdownBack { padding: 10px 16px; font-size: 13px; color: #888; cursor: pointer; border-bottom: 1px solid #eee; margin-bottom: 5px; }
+.dropdownBack:hover { color: #000; }
+
 .input:disabled,
 .phoneInputItDs input:disabled,
 .phoneInputItDs select:disabled,
-.inputField:disabled,
 .selectCountryCode:disabled {
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255,255,255,0.7);
   cursor: not-allowed;
   opacity: 0.8;
 }
 
-/* 🔥 Dropdown container */
-.suggestionsDropdown {
-  padding: 8px 0;
-  background: #ffffff;
-  border-radius: 14px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-  overflow: hidden;
-  backdrop-filter: blur(8px);
+/* ---------- entrance reveal (identical timing model to source) ---------- */
+.reveal { opacity: 0; transform: translateY(calc(26 * var(--u))); }
+.in .reveal { opacity: 1; transform: none; transition: opacity .8s ease, transform .9s cubic-bezier(.2,.75,.25,1); }
+.in .d1 { transition-delay: .05s } .in .d2 { transition-delay: .15s }
+.in .d3 { transition-delay: .25s } .in .d4 { transition-delay: .35s }
+.in .d5 { transition-delay: .45s } .in .d6 { transition-delay: .55s }
+.in .d7 { transition-delay: .65s }
+
+@media (prefers-reduced-motion: reduce) {
+  .bg, .accentGlyph, .robotWrap, .divDot svg, .flake { animation: none !important; transition: none !important; }
+  .reveal { opacity: 1; transform: none; }
 }
 
-/* 🔥 Category (first level) */
-.dropdownCategory {
-  padding: 12px 16px;
-  font-weight: 600;
-  color: #222;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
+/* ============================================================ */
+/*  RESPONSIVE — below 900px the canvas re-flows to a fixed,     */
+/*  hand-tuned stacked layout that mirrors the SAME elements as   */
+/*  desktop, just resized down. The --u/cqw canvas system is only */
+/*  reliable while the container stays reasonably close to the   */
+/*  1563px design width; below 900px every size switches to plain */
+/*  px so nothing shrinks to illegible text on narrow phones.     */
+/* ============================================================ */
+.mobile { display: none; }
+.desktop { display: block; }
 
-.dropdownCategory:hover {
-  background: #f5f7fa;
-  transform: translateX(4px);
-}
-
-/* Arrow */
-.categoryArrow {
-  font-size: 14px;
-  opacity: 0.6;
-}
-
-/* 🔥 Course items */
-.dropdownItem {
-  padding: 10px 18px;
-  font-size: 14px;
-  color: #444;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.dropdownItem:hover {
-  background: #eef4ff;
-  color: #2563eb;
-  padding-left: 22px;
-}
-
-/* 🔥 Back button */
-.dropdownBack {
-  padding: 10px 16px;
-  font-size: 13px;
-  color: #888;
-  cursor: pointer;
-  border-bottom: 1px solid #eee;
-  margin-bottom: 5px;
-}
-
-.dropdownBack:hover {
-  color: #000;
-}
-
-/* 🔥 Scroll if long */
-.suggestionsDropdown {
-  max-height: 320px;
-  overflow-y: auto;
-}
-
-/* 🔥 Smooth scrollbar */
-.suggestionsDropdown::-webkit-scrollbar {
-  width: 6px;
-}
-
-.suggestionsDropdown::-webkit-scrollbar-thumb {
-  background: #ddd;
-  border-radius: 6px;
-}
-
-
-@keyframes slideUpFade {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.96);
+@media (max-width: 900px) {
+  .hero {
+    aspect-ratio: auto;
+    height: auto;
+    min-height: 100vh;
+    padding: 84px 24px 40px;
+    box-sizing: border-box;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+  .desktop { display: none; }
+  .mobile { display: block; position: relative; z-index: 2; }
+
+  .mobile .headline,
+  .mobile .divider,
+  .mobile .desc,
+  .mobile .features,
+  .mobile .alumni,
+  .mobile .buttons,
+  .mobile .formWrap {
+    position: static;
+    left: auto; top: auto; width: 50%;
+    margin-bottom: 20px;
   }
+  
+  .mobile .formWrap { width: 50%; margin-bottom: 0; }
+
+  /* headline — same 24/20 desktop ratio, scaled up for tablet legibility */
+  .mobile .headline { letter-spacing: normal; }
+  .mobile .hLine1 { font-size: 20px; text-shadow: 0 2px 8px rgba(6,20,96,0.4); }
+  .mobile .hLine2 { font-size: 16px; margin-top: 4px; }
+
+  /* description */
+  .mobile .desc { width: 80%; font-size: 12px; line-height: 1.55; }
+
+  /* feature chips */
+  .mobile .features { width: 100%; gap: 8px; }
+  .mobile .featureChip { font-size: 12.5px; padding: 6px 12px; gap: 5px; }
+  .mobile .featureChip::before { width: 5px; height: 5px; }
+
+  /* alumni row */
+  .mobile .alumni { flex-wrap: wrap; gap: 10px; }
+  .mobile .alumni span { font-size: 13px; }
+  .mobile .alumniLogos { gap: 8px; flex-wrap: wrap; }
+  .mobile .alumniLogos img { width: 56px; }
+
+  /* CTA buttons */
+  .mobile .buttons { flex-wrap: wrap; gap: 12px; }
+  .mobile .buttonStyle1,
+  .mobile .buttonStyle2 { font-size: 14.5px; padding: 12px 24px; flex: 1 1 auto; text-align: center; }
+
+  /* lead-capture form card */
+  .mobile .formCard { padding: 28px 22px; border-radius: 18px; gap: 16px; }
+  .mobile .formTitle { font-size: 21px; }
+  .mobile .formTitle::after { width: 56px; height: 3px; margin-top: 8px; }
+  .mobile .form { gap: 14px; }
+  .mobile .input,
+  .mobile .form input,
+  .mobile .form select {
+    font-size: 16px; /* prevents iOS auto-zoom on focus */
+    padding: 12px 14px;
+    border-radius: 8px;
+  }
+  .mobile .phoneInputItDs { gap: 8px; }
+  .mobile .selectCountryCode { width: 96px; padding: 12px 6px; font-size: 14px; }
+  .mobile .submitButtonItDs { font-size: 16px; padding: 13px 24px; }
+  .mobile .statusMessage { font-size: 13.5px; padding: 10px 14px; }
+
+  .accentGlyph {
+    left: auto;
+    right: 20px;
+    top: 20px;
+    width: 44px;
+  }
+
+  /* robot mascot — tablet: same mascot as desktop, just minimized
+     and dropped into normal flow above the stacked copy instead
+     of sitting mid-canvas (there's no room beside the text once
+     things stack). It renders as a sibling before .desktop/.mobile
+     in the JSX, so static positioning naturally puts it at the top. */
+  .robotWrap {
+    top: calc(350*var(--u));
+    left: calc(350*var(--u));
+  }
+  .robot {
+    width: 100%;
+    display: block;
+    filter: drop-shadow(0 10px 16px rgba(6,20,96,0.25));
+  }
+}
+
+@media (max-width: 520px) {
+  .hero {
+    width: 100%;
+    padding: 72px 18px 32px;
+  }
+
+  .mobile {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* Stack all direct sections vertically */
+  .mobile > * {
+    width: 100%;
+    max-width: 100%;
+  }
+  .mobile .headline{
+    width: 100%;
+  }
+
+  .mobile .hLine1 {
+    width: 100%;
+    font-size: 26px;
+  }
+
+  .mobile .hLine2 {
+    width: 100%;
+    font-size: 21px;
+  }
+
+  .mobile .desc {
+    width: 100%;
+    font-size: 14.5px;
+  }
+  
+  .mobile .features{
+    width: 100%;
+  }
+
+  .mobile .alumni{
+    width: 100%;
+  }
+  
+  /* Buttons stacked and full width */
+  .mobile .buttons {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .mobile .buttonStyle1,
+  .mobile .buttonStyle2 {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 14px;
+    padding: 11px 18px;
+  }
+
+  /* Form */
+  .mobile .formWrap{
+    width: 100%;
+  }
+  .mobile .formCard {
+    width: 100% !important;
+    box-sizing: border-box;
+    padding: 24px 18px;
+  }
+
+  .mobile .formTitle {
+    width: 100%;
+    font-size: 19px;
+  }
+
+  .mobile .input,
+  .mobile .form input,
+  .mobile .form select {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 16px;
+    padding: 11px 12px;
+  }
+
+  .mobile .submitButtonItDs {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 15px;
+    padding: 12px 20px;
+  }
+
+  /* Hide robot completely */
+  .robot,
+  .robotWrap {
+    display: none;
+  }
+}
+
+/* extra-small phones */
+@media (max-width: 360px) {
+  .hero { padding: 64px 14px 28px; }
+  .mobile .hLine1 { font-size: 22px; }
+  .mobile .hLine2 { font-size: 18px; }
+  .mobile .desc { font-size: 14px; }
+  .mobile .formCard { padding: 20px 14px; }
+  .mobile .buttonStyle1,
+  .mobile .buttonStyle2 { flex: 1 1 100%; }
+
+  .robotWrap { width: 100px; margin-bottom: 12px; }
 }

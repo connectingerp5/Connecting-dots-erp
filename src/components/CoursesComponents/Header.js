@@ -2,16 +2,14 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import dynamic from 'next/dynamic';
 import { countryCodes } from '@/utils/countryCodes';
 import styles from "@/styles/CoursesComponents/Header.module.css";
-import Image from "next/image";
 const Btnform = dynamic(() => import('@/components/HomePage/Btnform'), {
   ssr: false,
   loading: () => null
 });
-
 
 const courseOptions = {
   "SAP Functional": [
@@ -44,6 +42,20 @@ const courseOptions = {
   ]
 };
 
+/* Confetti field — same approach/config shape as IndependenceHero,
+   recoloured to the brand palette (orange / navy / white) instead
+   of the festival tricolour. */
+const CONFETTI = [
+  { l: 8.2, s: 8, c: '#f45807', d: 15, delay: 0 },
+  { l: 18.4, s: 6, c: '#0a1a5c', d: 18, delay: 3.1 },
+  { l: 34.9, s: 7, c: '#ffffff', d: 16, delay: 1.4 },
+  { l: 47.1, s: 6, c: '#dc2626', d: 19, delay: 5.2 },
+  { l: 58.6, s: 8, c: '#0a1a5c', d: 14, delay: 2.3 },
+  { l: 66.8, s: 6, c: '#f45807', d: 20, delay: 7.0 },
+  { l: 75.2, s: 7, c: '#ffffff', d: 17, delay: 4.1 },
+  { l: 86.5, s: 6, c: '#dc2626', d: 21, delay: 0.9 },
+  { l: 92.7, s: 7, c: '#0a1a5c', d: 15, delay: 6.4 },
+];
 
 // DSHeader now directly receives the 'data' prop (already processed with city placeholders replaced)
 const DSHeader = ({ data }) => {
@@ -59,6 +71,63 @@ const DSHeader = ({ data }) => {
   const [activeSuggestion, setActiveSuggestion] = useState(-1);
   const [showCourseDropdown, setShowCourseDropdown] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
+
+  /* ---------- canvas motion: refs, entrance reveal, parallax ---------- */
+  const rootRef = useRef(null);
+  const robotRef = useRef(null);
+  const bgRef = useRef(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([e]) => e.isIntersecting && setVisible(true),
+      { threshold: 0.15 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  const state = useRef({ mx: 0, my: 0, raf: 0 });
+  const apply = useCallback(() => {
+    state.current.raf = 0;
+    const { mx, my } = state.current;
+    if (bgRef.current) {
+      bgRef.current.style.transform = `scale(1.06) translate3d(${mx * 12}px, ${my * 9}px, 0)`;
+    }
+  }, []);
+  const schedule = useCallback(() => {
+    if (!state.current.raf) state.current.raf = requestAnimationFrame(apply);
+  }, [apply]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia("(max-width: 900px)").matches) return;
+
+    const el = rootRef.current;
+    if (!el) return;
+
+    const onMove = (e) => {
+      const r = el.getBoundingClientRect();
+      state.current.mx = ((e.clientX - r.left) / r.width - 0.5) * 2;
+      state.current.my = ((e.clientY - r.top) / r.height - 0.5) * 2;
+      schedule();
+    };
+    const onLeave = () => {
+      state.current.mx = 0;
+      state.current.my = 0;
+      schedule();
+    };
+    el.addEventListener("mousemove", onMove);
+    el.addEventListener("mouseleave", onLeave);
+    return () => {
+      el.removeEventListener("mousemove", onMove);
+      el.removeEventListener("mouseleave", onLeave);
+      if (state.current.raf) cancelAnimationFrame(state.current.raf);
+    };
+  }, [schedule]);
 
   // Clear status message after 5 seconds
   useEffect(() => {
@@ -120,8 +189,8 @@ const DSHeader = ({ data }) => {
   // If data is null or undefined, render a loading/error state
   if (!data) {
     return (
-      <div className={styles.containerItDsHeader}>
-        <p>Loading header data...</p> {/* Or a proper loader/error message */}
+      <div className={styles.hero}>
+        <p>Loading header data...</p>
       </div>
     );
   }
@@ -270,7 +339,7 @@ const DSHeader = ({ data }) => {
       setFormData({
         name: "",
         email: "",
-        course: "", // You might want to pre-fill this based on 'data' prop
+        course: "",
         countryCode: "+91",
         contact: "",
       });
@@ -287,95 +356,60 @@ const DSHeader = ({ data }) => {
   const handleButtonClick = () => setShowForm(true);
   const handleCloseForm = () => setShowForm(false);
 
-  return (
-    <div className={styles.containerItDsHeader}>
-      {/* Removed <Head> component here as metadata is handled by page.js */}
+  /* ------------------------------------------------------------- blocks -- */
+  const Headline = (
+    <h1 className={`${styles.headline} ${styles.reveal} ${styles.d2} text-[12px]`}>
+      <span className={`${styles.hLine} ${styles.hLine1}`}>{data.title}</span>
+      <span className={`${styles.hLine} ${styles.hLine2}`}>{data.subtitle}</span>
+    </h1>
+  );
 
-      {/* 🔹 Background Video */}
-      {/* <video
-        className={styles.backgroundVideo}
-        src={data.backgroundVideo}
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
-        fetchPriority="high"
-        importance="high"
-        loading="eager"
-        decoding="async"
-      /> */}
+  const Desc = (
+    <p className={`${styles.desc} ${styles.reveal} ${styles.d3}`}>{data.description}</p>
+  );
 
-      <div className={styles.leftSectionItDs}>
-        <h1>
-          <span className={styles.dsHeaderSpan}>{data.title}</span>
-        </h1>
-        <h2>
-          <span className={styles.dsHeaderSpan2}>{data.subtitle}</span>
-        </h2>
-        <p className="text-black">{data.description}</p>
-        <ul className={styles.featuresItDs}>
-          {data.features.map((feature, index) => (
-            <li className={styles.featuresItDsli} key={index}>
-              {feature}
-            </li>
-          ))}
-        </ul>
-        <div className={styles.alumniItDs}>
-          <span>Find our Alumni at -</span>
-          <div className={styles.alumniLogosItDs}>
-            {data.alumni.map((company, index) => (
-              <img
-                key={index}
-                src={company.logo}
-                alt={`${company.name} logo`}
-              />
-            ))}
-          </div>
-        </div>
-        <div className={styles.buttons}>
-          {(() => {
-            const isITTraining = data.buttons.some(b => b.courseName === "IT Training Program");
-            if (isITTraining) {
-              // IT Training Program: both buttons small and shifted up
-              return (
-                <div style={{ marginTop: '-12px', display: 'flex', gap: '1rem' }}>
-                  {data.buttons.map((button, index) => (
-                    <button
-                      key={index}
-                      className={`${index === 0 ? styles.buttonStyle1 : styles.buttonStyle2} ${styles.smallBtn}`}
-                      onClick={handleButtonClick}
-                    >
-                      {button.text}
-                    </button>
-                  ))}
-                </div>
-              );
-            }
-            // Default: normal buttons
-            return data.buttons.map((button, index) => {
-              const btnClass = `${index === 0 ? styles.buttonStyle1 : styles.buttonStyle2}`;
-              return (
-                <button
-                  key={index}
-                  className={btnClass}
-                  onClick={handleButtonClick}
-                >
-                  {button.text}
-                </button>
-              );
-            });
-          })()}
-        </div>
+  const Features = (
+    <ul className={`${styles.features} ${styles.reveal} ${styles.d4}`}>
+      {data.features.map((feature, index) => (
+        <li className={styles.featureChip} key={index}>
+          {feature}
+        </li>
+      ))}
+    </ul>
+  );
+
+  const Alumni = (
+    <div className={`${styles.alumni} ${styles.reveal} ${styles.d5}`}>
+      <span>Find our Alumni at -</span>
+      <div className={styles.alumniLogos}>
+        {data.alumni.map((company, index) => (
+          <img key={index} src={company.logo} alt={`${company.name} logo`} />
+        ))}
       </div>
+    </div>
+  );
 
-      <div className={styles.rightSectionItDs}>
-        <h3>{data.form.title}</h3>
+  const Buttons = (
+    <div className={`${styles.buttons} ${styles.reveal} ${styles.d6}`}>
+      {data.buttons.map((button, index) => (
+        <button
+          key={index}
+          className={index === 0 ? styles.buttonStyle1 : styles.buttonStyle2}
+          onClick={handleButtonClick}
+        >
+          {button.text}
+        </button>
+      ))}
+    </div>
+  );
+
+  const FormPanel = (
+    <div className={`${styles.formWrap} ${styles.reveal} ${styles.d3}`}>
+      <div className={styles.formCard}>
+        <h3 className={styles.formTitle}>{data.form.title}</h3>
 
         {statusMessage.text && (
-          <div
-            className={`${styles.statusMessage} ${styles[statusMessage.type]}`}
-          >
+          <div className={`${styles.statusMessage} ${styles[statusMessage.type]}`}>
             {statusMessage.text}
           </div>
         )}
@@ -390,22 +424,20 @@ const DSHeader = ({ data }) => {
                 const maxLength = selectedCountry?.maxLength || 10;
                 return (
                   <div key={index} className={styles.phoneInputItDs}>
-                    <div className={styles.countryCodeWrapper}>
-                      <select
-                        id="countryCode"
-                        name="countryCode"
-                        value={formData.countryCode}
-                        onChange={handleChange}
-                        className={styles.selectCountryCode}
-                        disabled={isSubmitting}
-                      >
-                        {countryCodes.map(({ code, country }) => (
-                          <option key={code} value={code}>
-                            {code} ({country})
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                    <select
+                      id="countryCode"
+                      name="countryCode"
+                      value={formData.countryCode}
+                      onChange={handleChange}
+                      className={styles.selectCountryCode}
+                      disabled={isSubmitting}
+                    >
+                      {countryCodes.map(({ code, country }) => (
+                        <option key={code} value={code}>
+                          {code} ({country})
+                        </option>
+                      ))}
+                    </select>
                     <input
                       type="tel"
                       id="contact"
@@ -424,42 +456,23 @@ const DSHeader = ({ data }) => {
 
                 if (input.name === "location") {
                   return (
-                    <div
-                      key={index}
-                      className={styles.locationContainer}
-                      style={{ position: "relative" }} // 🔥 REQUIRED
-                    >
-                      <div className={styles.inputWrapper}>
-                        <input
-                          type="text"
-                          name="location"
-                          value={location}
-                          onChange={handleLocationChange}
-                          onFocus={() => {
-                            if (filteredSuggestions.length > 0) setShowSuggestions(true);
-                          }}
-                          className={styles.input}
-                          placeholder="Enter your location"
-                        />
-                      </div>
+                    <div key={index} className={styles.locationContainer}>
+                      <input
+                        type="text"
+                        name="location"
+                        value={location}
+                        onChange={handleLocationChange}
+                        onFocus={() => {
+                          if (filteredSuggestions.length > 0) setShowSuggestions(true);
+                        }}
+                        className={styles.input}
+                        placeholder="Enter your location"
+                      />
 
                       {showSuggestions && filteredSuggestions.length > 0 && (
                         <div
                           className={styles.suggestionsDropdown}
                           onPointerDown={(e) => e.stopPropagation()}
-                          style={{
-                            position: "absolute",
-                            right: "105%",
-                            bottom: "0",                 // ✅ FIX (opens upward)
-                            maxHeight: "320px",         // ✅ prevents overflow
-                            overflowY: "auto",          // ✅ scroll instead of cut
-                            width: "250px",
-                            background: "#fff",
-                            zIndex: 999,
-                            borderRadius: "12px",
-                            boxShadow: "0 20px 40px rgba(0,0,0,0.15)",
-                            animation: "slideUpFade 0.25s ease"
-                          }}
                         >
                           {filteredSuggestions.slice(0, 6).map((suggestion, i) => (
                             <div
@@ -478,12 +491,7 @@ const DSHeader = ({ data }) => {
 
                 if (input.type === "course") {
                   return (
-                    <div
-                      key={index}
-                      className={styles.locationContainer}
-                      style={{ position: "relative" }} // 🔥 REQUIRED
-                    >
-
+                    <div key={index} className={styles.locationContainer}>
                       <div
                         className={styles.input}
                         onClick={() => setShowCourseDropdown(!showCourseDropdown)}
@@ -491,14 +499,12 @@ const DSHeader = ({ data }) => {
                           display: "flex",
                           justifyContent: "space-between",
                           alignItems: "center",
-                          backgroundColor: "#fff",
                           cursor: "pointer"
                         }}
                       >
                         <span style={{ color: formData.course ? "#000" : "#888" }}>
                           {formData.course || "Select Course"}
                         </span>
-
                         <span>{showCourseDropdown ? "▲" : "▼"}</span>
                       </div>
 
@@ -506,21 +512,7 @@ const DSHeader = ({ data }) => {
                         <div
                           className={styles.suggestionsDropdown}
                           onPointerDown={(e) => e.stopPropagation()}
-                          style={{
-                            position: "absolute",
-                            right: "105%",
-                            bottom: "0",                // ✅ FIX
-                            maxHeight: "320px",
-                            overflow: "visible",
-                            width: "260px",
-                            background: "#fff",
-                            zIndex: 3000,
-                            borderRadius: "12px",
-                            boxShadow: "0 20px 40px rgba(0,0,0,0.15)",
-                            animation: "slideUpFade 0.25s ease"
-                          }}
                         >
-                          {/* CATEGORY LIST */}
                           {!selectedCategory &&
                             Object.keys(courseOptions).map((category) => (
                               <div
@@ -538,11 +530,10 @@ const DSHeader = ({ data }) => {
                             ))
                           }
 
-                          {/* COURSE LIST */}
                           {selectedCategory && (
                             <>
                               <div
-                                className={styles.dropdownItem}
+                                className={styles.dropdownBack}
                                 onPointerDown={(e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
@@ -561,9 +552,8 @@ const DSHeader = ({ data }) => {
                                     e.stopPropagation();
                                     setFormData((prev) => ({
                                       ...prev,
-                                      course: course, // 🔥 ONLY selected value
+                                      course: course,
                                     }));
-
                                     setShowCourseDropdown(false);
                                     setSelectedCategory(null);
                                   }}
@@ -572,7 +562,6 @@ const DSHeader = ({ data }) => {
                                 </div>
                               ))}
 
-                              {/* 🔥 ADD OTHER OPTION */}
                               <div
                                 className={styles.dropdownItem}
                                 onPointerDown={(e) => {
@@ -582,7 +571,6 @@ const DSHeader = ({ data }) => {
                                     ...prev,
                                     course: "Other",
                                   }));
-
                                   setShowCourseDropdown(false);
                                   setSelectedCategory(null);
                                 }}
@@ -597,8 +585,6 @@ const DSHeader = ({ data }) => {
                   );
                 }
 
-
-                // 🔥 ALL OTHER INPUTS (UNCHANGED)
                 return (
                   <input
                     key={index}
@@ -632,9 +618,65 @@ const DSHeader = ({ data }) => {
           </button>
         </form>
       </div>
+    </div>
+  );
+
+  /* --------------------------------------------------------------- view -- */
+
+  return (
+    <section
+      ref={rootRef}
+      className={`${styles.hero} ${visible ? styles.in : ""}`}
+      aria-label={data.title}
+    >
+      {/* ---------- decorative canvas: bg + confetti (this layer clips) ---------- */}
+      <div className={styles.canvasDecor} aria-hidden="true">
+        <div ref={bgRef} className={styles.bg} />
+        <div className={styles.overlay} />
+        <div className={styles.confetti}>
+          {CONFETTI.map((c, i) => (
+            <span
+              key={i}
+              className={styles.flake}
+              style={{
+                left: `${c.l}%`,
+                width: `calc(${c.s} * var(--u))`,
+                height: `calc(${c.s * 1.5} * var(--u))`,
+                background: c.c,
+                animationDuration: `${c.d}s`,
+                animationDelay: `-${c.delay}s`,
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div ref={robotRef} className={styles.robotWrap}>
+        <img className={styles.robot} src={`/pngRobo.png`} alt="Friendly AI learning robot" />
+      </div>
+
+      {/* ---------- desktop composition (absolute, 1563x1006 canvas) ---------- */}
+      <div className={styles.desktop}>
+        {Headline}
+        {Desc}
+        {Features}
+        {Alumni}
+        {Buttons}
+        {FormPanel}
+      </div>
+
+      {/* ---------- mobile composition (stacked) ---------- */}
+      <div className={styles.mobile}>
+        {Headline}
+        {Desc}
+        {Features}
+        {Alumni}
+        {Buttons}
+        {FormPanel}
+      </div>
 
       {showForm && <Btnform onClose={handleCloseForm} />}
-    </div>
+    </section>
   );
 };
 
