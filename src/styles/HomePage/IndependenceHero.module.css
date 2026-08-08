@@ -241,7 +241,7 @@
     transform: scale(1.02);
   }
 }
-.offerCard.offerCardMobile { display: none; }
+
 /* ============================================================ */
 /*  FEATURE CARDS                                               */
 /* ============================================================ */
@@ -286,7 +286,7 @@
     height: 120vh;
   }
   .badge{
-    padding: 15px;
+    padding: 10px 0px;
     left: calc(150*var(--u));
     top: calc(50*var(--u));
   }
@@ -294,11 +294,9 @@
     margin-top: 0;
   }
   .bg{
-    /* background-position: right; */
+    background-position: right;
     object-position: left;
-    /* background-size: cover; */
-    object-fit: contain;
-    background-position: bottom;
+    background-size: contain;
   }
   .mobile .h1{
     font-size: calc(25* var(--u));
@@ -318,29 +316,23 @@
     margin: 0 auto;
   }
   .consultBtn{
-    width: 70%;
+    width: 100%;
     margin: 0 auto;
     left: calc(170*var(--u));
-    top: calc(600*var(--u));
-  }
-  .consultBtn>button{
-    font-size: 12px;
+    top: calc(500*var(--u));
   }
   .offerCard{
-    width: 18%;
+    width: 30%;
     height: auto;
     border-radius: 15px;
     left: calc(150*var(--u));
-    bottom: calc(15 * var(--u));
-    display: none;
+    bottom: calc(5 * var(--u));
   }
-  .offerCard.offerCardDesktop { display: none; }
-  .offerCard.offerCardMobile  { display: grid; }
   .chakra{
     right: calc(0*var(--u));
     top: calc(10*var(--u));
   }
-  .mobile .cards { grid-template-columns: 1fr;width: 40%; }
+  .mobile .cards { grid-template-columns: 1fr; }
   .mobile .offerCard { grid-template-columns: 1fr; grid-template-rows: 1fr auto 1fr; height: calc(430 * var(--u)); }
   .mobile .offerWrap { height: calc(480 * var(--u)); }
   .mobile .offerSplit { margin: 0 calc(30 * var(--u)); height: calc(1.4 * var(--u)); align-self: center; background: repeating-linear-gradient(90deg, #b9b3ab 0 calc(5 * var(--u)), transparent calc(5 * var(--u)) calc(11 * var(--u))); }
@@ -427,8 +419,7 @@
     top: calc(10*var(--u));
   }
   .mobile .cards { grid-template-columns: 1fr; }
-  .mobile .offerCard { grid-template-columns: 1fr; display: none; grid-template-rows: 1fr auto 1fr; height: calc(430 * var(--u)); }
+  .mobile .offerCard { grid-template-columns: 1fr; grid-template-rows: 1fr auto 1fr; height: calc(430 * var(--u)); }
   .mobile .offerWrap { height: calc(480 * var(--u)); }
   .mobile .offerSplit { margin: 0 calc(30 * var(--u)); height: calc(1.4 * var(--u)); align-self: center; background: repeating-linear-gradient(90deg, #b9b3ab 0 calc(5 * var(--u)), transparent calc(5 * var(--u)) calc(11 * var(--u))); }
 } 
-
