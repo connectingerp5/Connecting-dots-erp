@@ -250,7 +250,7 @@ export default function HeaderCarouselAug({
   <button
     className="rounded-lg border-1 border-blue-600 bg-[#593adc] text-white
                p-2 text-[8px]
-               md:px-8 md:py-6 md:text-[12px]
+               md:px-8 md:py-6 md:text-base
                lg:px-7"
     onClick={() =>
       window.open(
@@ -269,7 +269,7 @@ export default function HeaderCarouselAug({
                text-[#593adc]
                hover:bg-[#593adc] hover:text-white transition
                p-2 text-[8px]
-               md:px-8 md:py-6 md:md:text-[12px]
+               md:px-8 md:py-6 md:md:text-base
                lg:px-7"
   >
     Start My Journey
