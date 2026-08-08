@@ -125,9 +125,10 @@
   z-index: 2;
 }
 .hLine { display: block; }
-.hLine1 { font-size: calc(24 * var(--u)); color: #fff; text-shadow: 0 calc(3 * var(--u)) calc(10 * var(--u)) rgba(6,20,96,0.4); }
+.hLine1 { font-size: calc(26 * var(--u)); color: #fff; text-shadow: 0 calc(3 * var(--u)) calc(10 * var(--u)) rgba(6,20,96,0.4); }
 .hLine2 {
-  font-size: calc(20 * var(--u));
+  width: 60%;
+  font-size: calc(24 * var(--u));
   margin-top: calc(4 * var(--u));
   font-weight: 800;
   background: linear-gradient(90deg, var(--orange) 0%, var(--orange-2) 100%);
@@ -432,7 +433,7 @@
   /* headline — same 24/20 desktop ratio, scaled up for tablet legibility */
   .mobile .headline { letter-spacing: normal; }
   .mobile .hLine1 { font-size: 20px; text-shadow: 0 2px 8px rgba(6,20,96,0.4); }
-  .mobile .hLine2 { font-size: 16px; margin-top: 4px; }
+  .mobile .hLine2 { font-size: 16px; margin-top: 4px; width: 100%; }
 
   /* description */
   .mobile .desc { width: 80%; font-size: 12px; line-height: 1.55; }

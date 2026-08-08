@@ -210,15 +210,15 @@
   width: auto;
   height: calc(263 * var(--u));
   border-radius: calc(26 * var(--u));
-  box-shadow: 0 calc(16 * var(--u)) calc(38 * var(--u)) rgba(60, 60, 80, .20),
-              inset 0 calc(1.5 * var(--u)) 0 rgba(255,255,255,.9);
+  /* box-shadow: 0 calc(16 * var(--u)) calc(38 * var(--u)) rgba(60, 60, 80, .20),
+              inset 0 calc(1.5 * var(--u)) 0 rgba(255,255,255,.9); */
   display: grid;
   grid-template-columns: 1fr calc(1.4 * var(--u)) 1fr;
   align-items: center;
   overflow: hidden;
   object-fit: contain;
   object-position: center;
-  animation: offer 3s infinite linear;
+  /* animation: offer 3s infinite linear; */
   transition: all;
 }
 @keyframes offer {
@@ -327,6 +327,7 @@
     border-radius: 15px;
     left: calc(150*var(--u));
     bottom: calc(5 * var(--u));
+    background-blend-mode: screen;
   }
   .chakra{
     right: calc(0*var(--u));
