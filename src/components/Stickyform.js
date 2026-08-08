@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-// import stickybg from '../../public/'
 
 const countryCodes = [
   { code: "+1", country: "US", minLength: 10, maxLength: 10 },
