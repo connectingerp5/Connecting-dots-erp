@@ -250,7 +250,7 @@ export default function HeaderCarouselAug({
   <button
     className="rounded-lg border-1 border-blue-600 bg-[#593adc] text-white
                p-2 text-[8px]
-               md:px-8 md:py-6 md:text-base
+               md:px-8 md:py-6 md:text-[12px]
                lg:px-7"
     onClick={() =>
       window.open(
@@ -269,7 +269,7 @@ export default function HeaderCarouselAug({
                text-[#593adc]
                hover:bg-[#593adc] hover:text-white transition
                p-2 text-[8px]
-               md:px-8 md:py-6 md:text-base
+               md:px-8 md:py-6 md:md:text-[12px]
                lg:px-7"
   >
     Start My Journey
@@ -317,7 +317,8 @@ export default function HeaderCarouselAug({
       <img ref={chakraRef} className={s.chakra} src={`/Chakra.png`} alt="" aria-hidden="true" />
 
       {/* offer card */}
-      <img className={s.offerCard} src='/image.png' alt='offer card' />
+      <img className={`${s.offerCard} ${s.offerCardDesktop}`} src='/image.png' alt='offer card' />
+      <img className={`${s.offerCard} ${s.offerCardMobile}`} src='/mobileOffer.png' alt='offer card' />
 
       <div className={s.beam} aria-hidden="true" />
       <div ref={robotRef} className={s.robotWrap}>
